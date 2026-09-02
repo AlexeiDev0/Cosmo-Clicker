@@ -129,6 +129,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     val gameState: StateFlow<GameState> = _gameState.asStateFlow()
 
     init {
+        // Acknowledge any startup offline reward immediately so a process crash cannot replay it.
+        saveGameState()
         resumeSimulation()
         
         refreshTimedQuests()
@@ -291,20 +293,20 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 prefs.getInt("station_${module.name}", 0).coerceIn(0, 5)
             }
         )
+        val restoredState = EventStateCodec.restoreActive(
+            loadedState.copy(
+                pendingEventChain = EventStateCodec.decodePending(prefs.getString(PENDING_EVENT_KEY, null))
+            ),
+            prefs.getString(ACTIVE_EVENT_KEY, null)
+        )
         val offline = OfflineProgressEngine.calculate(
             lastActiveAtMillis = prefs.getLong(LAST_ACTIVE_AT_KEY, 0L),
             nowMillis = System.currentTimeMillis(),
-            fleetCounts = loadedState.activeFleetCounts,
+            fleetCounts = restoredState.activeFleetCounts,
             fleetRarities = fleetById.mapValues { it.value.rarity },
-            rewardMultiplier = (if (Technology.OFFLINE_AI in loadedState.technologies) 1.35 else 1.0) *
-                EconomyBalance.planetIncomeMultiplier(loadedState.currentPlanetId) *
-                EconomyBalance.planetSalvageSpecial(loadedState.currentPlanetId)
+            rewardMultiplier = offlineRewardMultiplier(restoredState)
         )
-        return FeatureEngine.refreshWeekly(loadedState).copy(
-            totalDebris = loadedState.totalDebris + offline.reward,
-            lastOfflineReward = offline.reward,
-            lastOfflineSeconds = offline.elapsedSeconds
-        )
+        return OfflineProgressEngine.apply(FeatureEngine.refreshWeekly(restoredState), offline)
     }
 
     private fun saveGameState() {
@@ -353,6 +355,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             putStringSet("claimedAchievementIds", state.claimedAchievementIds)
             putString("eventLog", EventLogCodec.encode(state.eventLog))
             putStringSet("encounteredEventTypes", state.encounteredEventTypes.map { it.name }.toSet())
+            EventStateCodec.encodeActive(state)?.let { putString(ACTIVE_EVENT_KEY, it) }
+                ?: remove(ACTIVE_EVENT_KEY)
+            EventStateCodec.encodePending(state.pendingEventChain)?.let { putString(PENDING_EVENT_KEY, it) }
+                ?: remove(PENDING_EVENT_KEY)
             putLong("galaxyWeekKey", state.weeklyGalaxy.weekKey)
             putString("galaxyRule", state.weeklyGalaxy.rule.name)
             putBoolean("galaxyActive", state.weeklyGalaxy.active)
@@ -400,6 +406,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun resumeSimulation() {
         if (simulationJobs.isRunning()) return
         val now = System.currentTimeMillis()
+        applyOfflineProgress(now)
         _gameState.update { EventEngine.expireEventIfNeeded(it, now) }
         startGameLoop()
         startEventLoop()
@@ -559,6 +566,25 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         val now = System.currentTimeMillis()
         _gameState.update { EventEngine.onChallengeClick(it, now, randomProvider) }
     }
+
+    private fun applyOfflineProgress(now: Long) {
+        val state = _gameState.value
+        val offline = OfflineProgressEngine.calculate(
+            lastActiveAtMillis = prefs.getLong(LAST_ACTIVE_AT_KEY, 0L),
+            nowMillis = now,
+            fleetCounts = state.activeFleetCounts,
+            fleetRarities = fleetById.mapValues { it.value.rarity },
+            rewardMultiplier = offlineRewardMultiplier(state)
+        )
+        if (offline.elapsedSeconds <= 0L) return
+        _gameState.update { OfflineProgressEngine.apply(it, offline) }
+        saveGameState()
+    }
+
+    private fun offlineRewardMultiplier(state: GameState): Double =
+        (if (Technology.OFFLINE_AI in state.technologies) 1.35 else 1.0) *
+            EconomyBalance.planetIncomeMultiplier(state.currentPlanetId) *
+            EconomyBalance.planetSalvageSpecial(state.currentPlanetId)
 
     fun onStormNodeClick(node: Int) {
         val now = System.currentTimeMillis()
@@ -1556,5 +1582,7 @@ private const val SAVE_VERSION_KEY = "saveVersion"
 private const val CURRENT_SAVE_VERSION = 1
 private const val SAVE_INTERVAL_SECONDS = 15
 private const val LAST_ACTIVE_AT_KEY = "lastActiveAt"
+private const val ACTIVE_EVENT_KEY = "activeEventState"
+private const val PENDING_EVENT_KEY = "pendingEventChainState"
 private const val MAX_COMBO = 10
 private const val COMBO_BONUS_PER_LEVEL = 0.05

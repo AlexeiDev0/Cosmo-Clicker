@@ -6,6 +6,14 @@ object OfflineProgressEngine {
 
     data class Result(val elapsedSeconds: Long, val reward: Double)
 
+    fun apply(state: GameState, result: Result): GameState =
+        if (result.elapsedSeconds <= 0L || result.reward <= 0.0 || !result.reward.isFinite()) state
+        else state.copy(
+            totalDebris = state.totalDebris + result.reward,
+            lastOfflineReward = result.reward,
+            lastOfflineSeconds = result.elapsedSeconds
+        )
+
     fun calculate(
         lastActiveAtMillis: Long,
         nowMillis: Long,
