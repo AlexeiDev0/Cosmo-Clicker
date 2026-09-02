@@ -33,4 +33,23 @@ class TimedQuestFactoryTest {
         assertTrue(late > early)
         assertTrue(late <= 30_000.0)
     }
+
+    @Test
+    fun `clock rollback cannot regenerate a completed quest cycle`() {
+        assertTrue(
+            !TimedQuestSchedule.shouldRefresh(
+                storedKey = 2_026_245L,
+                currentKey = 2_026_244L,
+                hasQuests = false,
+                completedAt = 1_000L,
+                hasLegacyQuests = false
+            )
+        )
+        assertEquals(2_026_245L, TimedQuestSchedule.retainedKey(2_026_245L, 2_026_244L))
+    }
+
+    @Test
+    fun `quest cycle advances only when calendar key moves forward`() {
+        assertTrue(TimedQuestSchedule.shouldRefresh(2_026_245L, 2_026_246L, true, -1L, false))
+    }
 }

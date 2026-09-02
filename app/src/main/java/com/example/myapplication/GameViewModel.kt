@@ -1470,36 +1470,38 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun refreshTimedQuests(now: Long = System.currentTimeMillis()) {
-        val calendar = java.util.Calendar.getInstance()
-        val dayKey = calendar.get(java.util.Calendar.YEAR) * 1_000L +
-            calendar.get(java.util.Calendar.DAY_OF_YEAR)
-        val weekKey = calendar.getWeekYear() * 100L + calendar.get(java.util.Calendar.WEEK_OF_YEAR)
+        val dayKey = TimedQuestSchedule.dayKey(now)
+        val weekKey = TimedQuestSchedule.weekKey(now)
         _gameState.update { state ->
             var quests = state.activeQuests
             var dailyCompletedAt = state.dailyQuestsCompletedAt
             var weeklyCompletedAt = state.weeklyQuestsCompletedAt
             val hasDaily = quests.any { it.cadence == QuestCadence.DAILY }
             val hasWeekly = quests.any { it.cadence == QuestCadence.WEEKLY }
-            if (state.dailyQuestDay != dayKey ||
-                (!hasDaily && dailyCompletedAt < 0L) ||
-                quests.any { it.cadence == QuestCadence.DAILY && !it.id.startsWith(TimedQuestFactory.DAILY_ID_PREFIX) }
-            ) {
+            val hasLegacyDaily = quests.any {
+                it.cadence == QuestCadence.DAILY && !it.id.startsWith(TimedQuestFactory.DAILY_ID_PREFIX)
+            }
+            if (TimedQuestSchedule.shouldRefresh(
+                    state.dailyQuestDay, dayKey, hasDaily, dailyCompletedAt, hasLegacyDaily
+                )) {
                 quests = quests.filterNot { it.cadence == QuestCadence.DAILY } +
-                    createDailyQuests(dayKey, state.currentPlanetId)
+                    createDailyQuests(TimedQuestSchedule.retainedKey(state.dailyQuestDay, dayKey), state.currentPlanetId)
                 dailyCompletedAt = -1L
             }
-            if (state.weeklyQuestWeek != weekKey ||
-                (!hasWeekly && weeklyCompletedAt < 0L) ||
-                quests.any { it.cadence == QuestCadence.WEEKLY && !it.id.startsWith(TimedQuestFactory.WEEKLY_ID_PREFIX) }
-            ) {
+            val hasLegacyWeekly = quests.any {
+                it.cadence == QuestCadence.WEEKLY && !it.id.startsWith(TimedQuestFactory.WEEKLY_ID_PREFIX)
+            }
+            if (TimedQuestSchedule.shouldRefresh(
+                    state.weeklyQuestWeek, weekKey, hasWeekly, weeklyCompletedAt, hasLegacyWeekly
+                )) {
                 quests = quests.filterNot { it.cadence == QuestCadence.WEEKLY } +
-                    createWeeklyQuests(weekKey, state.currentPlanetId)
+                    createWeeklyQuests(TimedQuestSchedule.retainedKey(state.weeklyQuestWeek, weekKey), state.currentPlanetId)
                 weeklyCompletedAt = -1L
             }
             state.copy(
                 activeQuests = quests,
-                dailyQuestDay = dayKey,
-                weeklyQuestWeek = weekKey,
+                dailyQuestDay = TimedQuestSchedule.retainedKey(state.dailyQuestDay, dayKey),
+                weeklyQuestWeek = TimedQuestSchedule.retainedKey(state.weeklyQuestWeek, weekKey),
                 dailyQuestsCompletedAt = dailyCompletedAt,
                 weeklyQuestsCompletedAt = weeklyCompletedAt
             )

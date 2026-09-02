@@ -22,6 +22,7 @@ import androidx.compose.material3.*
 import com.example.myapplication.ui.components.Button
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
@@ -78,6 +79,7 @@ fun GameScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val soundManager = remember(context) { SoundManager(context) }
+    val currentSoundEnabled by rememberUpdatedState(soundEnabled)
     LaunchedEffect(soundManager, soundEnabled) {
         if (soundEnabled) soundManager.resumeBackgroundMusic() else soundManager.pauseBackgroundMusic()
     }
@@ -173,7 +175,7 @@ fun GameScreen(
             when (event) {
                 Lifecycle.Event.ON_START -> {
                     viewModel.resumeSimulation()
-                    if (soundEnabled) soundManager.resumeBackgroundMusic()
+                    if (currentSoundEnabled) soundManager.resumeBackgroundMusic()
                 }
                 Lifecycle.Event.ON_STOP -> {
                     viewModel.pauseSimulation()
@@ -185,7 +187,7 @@ fun GameScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             viewModel.resumeSimulation()
-            if (soundEnabled) soundManager.resumeBackgroundMusic()
+            if (currentSoundEnabled) soundManager.resumeBackgroundMusic()
         }
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
