@@ -46,6 +46,13 @@ class EconomyBalanceTest {
             GameState(activeFleetCounts = mapOf("drone_1" to 1), discoveredDroneIds = setOf("drone_1")),
             2
         ))
+        val finalFleet = GameState(
+            clickLevels = mapOf("utility_flight" to EconomyController.utilityUpgradeMaxLevel("flight")),
+            activeFleetCounts = (1..7).associate { "drone_$it" to 1 },
+            lifetimeStats = LifetimeStats(prestiges = 1)
+        )
+        assertEquals(7, FleetController.activeCapacity(finalFleet))
+        assertTrue(EconomyBalance.planetFleetObjectiveMet(finalFleet, 39))
     }
 
     @Test

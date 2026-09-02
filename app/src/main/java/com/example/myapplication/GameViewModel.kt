@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong
 class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private val prefs = GameRepository(application)
+    private val saveCoordinator = StateSaveCoordinator<GameState>()
     private val storeActionLock = Any()
     private val lastStoreActionNanos = mutableMapOf<String, Long>()
     private val debrisId = AtomicLong(System.currentTimeMillis())
@@ -307,8 +308,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun saveGameState() {
-        val state = _gameState.value
-        prefs.edit {
+        saveCoordinator.save({ _gameState.value }) { state ->
+            prefs.edit {
             putInt(SAVE_VERSION_KEY, CURRENT_SAVE_VERSION)
             putLong(LAST_ACTIVE_AT_KEY, System.currentTimeMillis())
             putLong("totalDebrisBits", GameRules.encodeDouble(state.totalDebris))
@@ -382,6 +383,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             }
             
         }
+    }
     }
 
     private fun loadPreciseDouble(key: String, defaultValue: Double): Double {
@@ -1397,20 +1399,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun clearReward() {
-        _gameState.update { state ->
-            if (state.pendingCaseOpenings > 0 && state.openingCaseType != null) {
-                state.copy(lastDroppedDroneId = null, isOpeningCase = true, pendingCaseOpenings = state.pendingCaseOpenings - 1)
-            } else {
-                val isBundle = state.caseBundleRewards.values.sum() >= 2
-                state.copy(
-                    lastDroppedDroneId = null,
-                    openingCaseType = null,
-                    pendingCaseOpenings = 0,
-                    showCaseBundleSummary = isBundle,
-                    caseBundleRewards = if (isBundle) state.caseBundleRewards else emptyMap()
-                )
-            }
-        }
+        _gameState.update { state -> CaseController.collectDisplayedReward(state) ?: state }
         saveGameState()
     }
 

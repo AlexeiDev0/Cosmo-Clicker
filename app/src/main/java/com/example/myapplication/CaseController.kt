@@ -24,4 +24,23 @@ object CaseController {
             lastDroppedDroneId = null
         )
     }
+
+    fun collectDisplayedReward(state: GameState): GameState? {
+        if (state.lastDroppedDroneId == null) return null
+        if (state.pendingCaseOpenings > 0 && state.openingCaseType != null) {
+            return state.copy(
+                lastDroppedDroneId = null,
+                isOpeningCase = true,
+                pendingCaseOpenings = state.pendingCaseOpenings - 1
+            )
+        }
+        val isBundle = state.caseBundleRewards.values.sum() >= 2
+        return state.copy(
+            lastDroppedDroneId = null,
+            openingCaseType = null,
+            pendingCaseOpenings = 0,
+            showCaseBundleSummary = isBundle,
+            caseBundleRewards = if (isBundle) state.caseBundleRewards else emptyMap()
+        )
+    }
 }

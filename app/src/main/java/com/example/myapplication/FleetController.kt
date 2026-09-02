@@ -2,7 +2,8 @@ package com.example.myapplication
 
 object FleetController {
     fun activeCapacity(state: GameState): Int =
-        DroneTraitEngine.MAX_ACTIVE_DRONES + (state.clickLevels["utility_flight"] ?: 0).coerceIn(0, 2)
+        DroneTraitEngine.MAX_ACTIVE_DRONES +
+            (state.clickLevels["utility_flight"] ?: 0).coerceIn(0, EconomyController.utilityUpgradeMaxLevel("flight"))
 
     fun sell(state: GameState, item: FleetConfig): GameState? {
         val count = state.fleetCounts[item.id] ?: 0
