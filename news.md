@@ -160,7 +160,7 @@
   fleet-damage reduction, dragon regeneration, minion waves, and temporary drone
   shutdowns during boss battles.
 - Moved challenge battles from the Command Center dialog into the main game field,
-  where bosses replace thew planet and fight alongside the visible player drone fleet.
+  where bosses replace thewc planet and fight alongside the visible player drone fleet.
 - Replaced rectangular boss illustrations with four transparent full-body boss
   renders and added entrance, hovering, breathing, tilt, and hit-reaction animations.
 - Added clear victory and timeout results, floating damage values, boss ability

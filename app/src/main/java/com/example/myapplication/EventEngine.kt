@@ -3,8 +3,10 @@ package com.example.myapplication
 object EventEngine {
     enum class Category { POSITIVE, NEGATIVE, MIXED }
 
-    private const val MIN_INTERVAL_MS = 45_000L
-    private const val INTERVAL_RANGE_MS = 45_000L
+    // Events should punctuate the core loop, not replace it. Planet modifiers still
+    // matter, but even the event-heavy worlds now leave a meaningful quiet period.
+    private const val MIN_INTERVAL_MS = 120_000L
+    private const val INTERVAL_RANGE_MS = 120_000L
     private const val MIN_DURATION_MS = 20_000L
     private const val MAX_DURATION_MS = 60_000L
     private const val EVENT_CLICK_MULTIPLIER = 2.0
@@ -133,21 +135,21 @@ object EventEngine {
         } else null
 
         val baseReward = if (actualType == GameEventType.DISTRESS_SIGNAL) {
-            eventReward(state, clickValue, 500.0, 40.0, 0.006)
+            eventReward(state, clickValue, 500.0, 30.0, 0.003)
         } else if (actualType == GameEventType.ABANDONED_STATION) {
-            eventReward(state, clickValue, 1_500.0, 60.0, 0.010)
+            eventReward(state, clickValue, 1_500.0, 40.0, 0.004)
         } else if (actualType == GameEventType.PIRATE_RAID) {
-            eventReward(state, clickValue, 1_500.0, 50.0, 0.012)
+            eventReward(state, clickValue, 1_500.0, 36.0, 0.004)
         } else if (actualType == GameEventType.TRADING_SHIP) {
-            eventReward(state, clickValue, 500.0, 25.0, 0.004)
+            eventReward(state, clickValue, 500.0, 20.0, 0.002)
         } else if (actualType == GameEventType.CYBER_VIRUS) {
-            eventReward(state, clickValue, 1_000.0, 50.0, 0.008)
+            eventReward(state, clickValue, 1_000.0, 35.0, 0.003)
         } else if (actualType == GameEventType.STORM) {
-            eventReward(state, clickValue, 750.0, 35.0, 0.007)
+            eventReward(state, clickValue, 750.0, 28.0, 0.003)
         } else if (actualType == GameEventType.SOLAR_FLARE) {
-            eventReward(state, clickValue, 1_000.0, 45.0, 0.008)
+            eventReward(state, clickValue, 1_000.0, 32.0, 0.003)
         } else if (actualType == GameEventType.BLACK_HOLE && isElite) {
-            eventReward(state, clickValue, 1_500.0, 55.0, 0.009)
+            eventReward(state, clickValue, 1_500.0, 38.0, 0.004)
         } else {
             0.0
         }

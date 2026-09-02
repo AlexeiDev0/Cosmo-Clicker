@@ -65,7 +65,19 @@ class MainActivityUiTest {
     fun unaffordableShopActionIsVisibleBeforeEarningCurrency() {
         dismissStartScreenIfPresent()
         composeRule.onNodeWithContentDescription("Open shop").performClick()
+        composeRule.onNodeWithText("Cosmic Shop").assertIsDisplayed()
         composeRule.onAllNodesWithText("Buy")[0].assertIsDisplayed()
+    }
+
+    @Test
+    fun hangarIsReachableAndShowsLiveFleetOverview() {
+        dismissStartScreenIfPresent()
+        composeRule.onNodeWithContentDescription("Open drone hangar").performClick()
+        composeRule.onNodeWithText("Drone Hangar").assertIsDisplayed()
+        composeRule.onNodeWithText("Hangar capacity").assertIsDisplayed()
+        composeRule.onNodeWithText("All").assertIsDisplayed()
+        composeRule.onNodeWithText("Owned").assertIsDisplayed()
+        composeRule.onNodeWithText("In flight").assertIsDisplayed()
     }
 
     @Test
@@ -78,20 +90,22 @@ class MainActivityUiTest {
     }
 
     @Test
-    fun generatedButtonFramesStayOptimizedAndTransparent() {
+    fun navigationArtworkStaysOptimizedAndTransparent() {
         val resources = composeRule.activity.resources
-        val frames = listOf(
-            R.drawable.ui_button_primary_v5,
-            R.drawable.ui_button_reward_v5,
-            R.drawable.ui_button_danger_v5,
-            R.drawable.ui_button_locked_v5
+        val artwork = listOf(
+            R.drawable.ic_nav_shop_generated_v1,
+            R.drawable.ic_nav_hangar_generated_v1,
+            R.drawable.ui_button_quest_v3,
+            R.drawable.ui_button_statistics_v2,
+            R.drawable.ui_button_achievements_v2,
+            R.drawable.ui_button_settings_v3
         )
 
-        frames.forEach { drawable ->
+        artwork.forEach { drawable ->
             val bitmap = BitmapFactory.decodeResource(resources, drawable)
-            assertTrue("Button width is too large", bitmap.width <= 768)
+            assertTrue("Navigation artwork width is too large", bitmap.width <= 256)
             assertTrue("Button height is too large", bitmap.height <= 256)
-            assertEquals("Button corner must be transparent", 0, bitmap.getPixel(0, 0).ushr(24))
+            assertEquals("Navigation artwork corner must be transparent", 0, bitmap.getPixel(0, 0).ushr(24))
         }
     }
 

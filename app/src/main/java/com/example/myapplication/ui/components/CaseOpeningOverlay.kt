@@ -112,10 +112,18 @@ fun CaseOpeningOverlay(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.92f))
+                    .background(Color.Black)
                     .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {},
                 contentAlignment = Alignment.Center
             ) {
+                Image(
+                    painter = painterResource(R.drawable.bg_case_vault_v1),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds,
+                    alpha = .72f
+                )
+                Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = .28f)))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (!hasClickedToOpen) {
                         Text(
@@ -196,10 +204,18 @@ fun CaseOpeningOverlay(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.85f))
+                    .background(Color.Black)
                     .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {},
                 contentAlignment = Alignment.Center
             ) {
+                Image(
+                    painter = painterResource(R.drawable.bg_case_vault_v1),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds,
+                    alpha = .46f
+                )
+                Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = .54f)))
                 lastDroppedDrone?.let { drone ->
                     Column(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),

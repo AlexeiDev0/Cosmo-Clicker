@@ -57,21 +57,34 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
         colors = CardDefaults.cardColors(containerColor = Color(0xFF07111F)),
         border = null
     ) {
-        Column(
-            Modifier
-                .background(Brush.verticalGradient(listOf(accent.copy(alpha = .12f), Color(0xFF07111F), Color(0xFF090D1A))))
-                .padding(SpaceDesign.SheetPadding)
-        ) {
-            SpaceSheetHeader(stringResource(R.string.case_shop_title), stringResource(R.string.case_shop_subtitle), onClose)
-            Spacer(Modifier.height(12.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                listOf(R.string.shop_tab_upgrades, R.string.shop_tab_cases, R.string.shop_tab_planets, R.string.shop_tab_systems).forEachIndexed { index, title ->
-                    SpaceTab(stringResource(title), selectedTab == index, { selectedTab = index }, Modifier.weight(1f), accent = tabColors[index], iconSheetIndex = index)
+        Box(Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(R.drawable.bg_shop_orbital_market_v1),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds,
+                alpha = .42f
+            )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(accent.copy(alpha = .13f), Color(0xD907111F), Color(0xF2090D1A))
+                        )
+                    )
+            )
+            Column(Modifier.fillMaxSize().padding(SpaceDesign.SheetPadding)) {
+                SpaceSheetHeader(stringResource(R.string.case_shop_title), stringResource(R.string.case_shop_subtitle), onClose)
+                Spacer(Modifier.height(12.dp))
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    listOf(R.string.shop_tab_upgrades, R.string.shop_tab_cases, R.string.shop_tab_planets, R.string.shop_tab_systems).forEachIndexed { index, title ->
+                        SpaceTab(stringResource(title), selectedTab == index, { selectedTab = index }, Modifier.weight(1f), accent = tabColors[index], iconSheetIndex = index)
+                    }
                 }
-            }
-            Spacer(Modifier.height(12.dp))
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                when (selectedTab) {
+                Spacer(Modifier.height(12.dp))
+                LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                    when (selectedTab) {
                     0 -> items(viewModel.clickItems, key = { it.id }) { upgrade ->
                         val level = state.clickLevels[upgrade.id] ?: 0
                         val marketMultiplier = if (state.weeklyGalaxy.active && state.weeklyGalaxy.rule == com.example.myapplication.WeeklyRule.VOLATILE_MARKET) {
@@ -115,7 +128,7 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
                             onClick = { viewModel.buyPlanet(id) }
                         )
                     }
-                    else -> items(listOf("autoclick", "flight", "spawn", "magnet")) { id ->
+                        else -> items(listOf("autoclick", "flight", "spawn", "magnet")) { id ->
                         val level = viewModel.utilityUpgradeLevel(id)
                         val max = viewModel.utilityUpgradeMaxLevel(id)
                         val cost = viewModel.utilityUpgradeCost(id, level)
@@ -137,6 +150,7 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
                             accent = tabColors[3],
                             onBuy = { viewModel.buyUtilityUpgrade(id) }
                         )
+                        }
                     }
                 }
             }

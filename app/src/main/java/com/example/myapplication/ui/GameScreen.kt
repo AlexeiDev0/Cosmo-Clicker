@@ -488,14 +488,14 @@ fun GameScreen(
                     modifier = Modifier.weight(1f)
                 )
                 GameNavigationButton(
-                    icon = R.drawable.ic_nav_shop_minimal,
+                    icon = R.drawable.ic_nav_shop_generated_v1,
                     label = R.string.navigation_shop,
                     description = R.string.open_shop,
                     onClick = { isShopOpen = true },
                     modifier = Modifier.weight(1f)
                 )
                 GameNavigationButton(
-                    icon = R.drawable.ic_nav_hangar_minimal,
+                    icon = R.drawable.ic_nav_hangar_generated_v1,
                     label = R.string.navigation_hangar,
                     description = R.string.open_hangar,
                     onClick = { isHangarOpen = true },
