@@ -16,6 +16,18 @@ class ProgressionEngineTest {
         assertNull(DailyRewardEngine.claim(claimed, now))
     }
 
+    @Test fun dailyRewardCannotBeRepeatedByReturningToAnEarlierDate() {
+        val firstDay = 1_788_134_400_000L
+        val secondDay = firstDay + 86_400_000L
+        val claimedSecondDay = DailyRewardEngine.claim(
+            DailyRewardEngine.claim(GameState(), firstDay)!!,
+            secondDay
+        )!!
+
+        assertFalse(DailyRewardEngine.canClaim(claimedSecondDay, firstDay))
+        assertNull(DailyRewardEngine.claim(claimedSecondDay, firstDay))
+    }
+
     @Test fun dailyRewardBuildsASevenDayStreakAndThenCycles() {
         var state = GameState()
         val start = 1_788_134_400_000L

@@ -7,6 +7,20 @@ import org.junit.Test
 
 class MetaProgressEngineTest {
     @Test
+    fun prestigePreservesDailyRewardClaimAndStreak() {
+        val state = GameState(
+            ownedPlanets = setOf("p1", "p10"),
+            lastDailyRewardDay = 2_026_245L,
+            dailyRewardStreak = 6
+        )
+
+        val prestiged = MetaProgressEngine.prestige(state)!!
+
+        assertEquals(state.lastDailyRewardDay, prestiged.lastDailyRewardDay)
+        assertEquals(state.dailyRewardStreak, prestiged.dailyRewardStreak)
+    }
+
+    @Test
     fun collectionSetRequiresEveryDroneInTheSet() {
         val incomplete = (1..4).mapTo(mutableSetOf()) { "drone_$it" }
         assertTrue(MetaProgressEngine.completedCollectionSets(incomplete).isEmpty())

@@ -86,6 +86,14 @@ class GameRulesTest {
     }
 
     @Test
+    fun planetPurchaseCannotSkipTheNextLockedPlanet() {
+        val state = GameState(totalDebris = 1_000_000.0, ownedPlanets = setOf("p1"))
+
+        assertNull(GameRules.purchaseOrSelectPlanet(state, "p3", 50_000.0))
+        assertTrue(GameRules.purchaseOrSelectPlanet(state, "p2", 10_000.0) != null)
+    }
+
+    @Test
     fun activeHotelDebtUsesThirtyPercentOfTapIncome() {
         val result = GameRules.applyHotelDebtPayment(
             totalDebris = 100.0,

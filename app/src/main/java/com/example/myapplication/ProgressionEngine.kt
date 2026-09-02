@@ -11,7 +11,7 @@ object DailyRewardEngine {
     }
 
     fun canClaim(state: GameState, now: Long = System.currentTimeMillis()): Boolean =
-        state.lastDailyRewardDay != dayKey(now)
+        dayKey(now) > state.lastDailyRewardDay
 
     fun preview(state: GameState, now: Long = System.currentTimeMillis()): DailyReward {
         val today = dayKey(now)

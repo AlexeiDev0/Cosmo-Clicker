@@ -73,6 +73,7 @@ object GameRules {
         when {
             state.currentPlanetId == planetId -> null
             state.ownedPlanets.contains(planetId) -> state.copy(currentPlanetId = planetId)
+            EconomyBalance.nextPlanetIndex(state.ownedPlanets)?.let { "p$it" } != planetId -> null
             state.totalDebris >= price -> state.copy(
                 totalDebris = state.totalDebris - price,
                 currentPlanetId = planetId,
