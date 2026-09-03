@@ -16,9 +16,14 @@ private val DarkColorScheme = darkColorScheme(
     surface = AppColors.CardBackground,
     surfaceVariant = AppColors.SurfaceRaised,
     onPrimary = Color(0xFF001F18),
+    onSecondary = AppColors.SpaceBlack,
     onBackground = Color.White,
     onSurface = Color.White,
-    error = AppColors.Danger
+    onSurfaceVariant = AppColors.TextMuted,
+    outline = AppColors.Outline,
+    outlineVariant = AppColors.Outline.copy(alpha = .55f),
+    error = AppColors.Danger,
+    onError = AppColors.SpaceBlack
 )
 
 private val SpaceShapes = Shapes(

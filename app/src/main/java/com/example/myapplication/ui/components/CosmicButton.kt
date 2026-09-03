@@ -29,6 +29,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.ui.theme.AppColors
+import com.example.myapplication.ui.theme.SpaceDesign
 
 enum class CosmicButtonStyle { Primary, Secondary, Reward, Danger }
 
@@ -53,11 +55,11 @@ fun Button(
     val requestedContent = if (enabled) colors.contentColor else colors.disabledContentColor
     val accent = when (style) {
         CosmicButtonStyle.Primary -> requestedAccent
-        CosmicButtonStyle.Secondary -> Color(0xFFA9C8C2)
-        CosmicButtonStyle.Reward -> Color(0xFFFFCA62)
-        CosmicButtonStyle.Danger -> Color(0xFFFF6B74)
+        CosmicButtonStyle.Secondary -> AppColors.Secondary
+        CosmicButtonStyle.Reward -> AppColors.Reward
+        CosmicButtonStyle.Danger -> AppColors.Danger
     }
-    val effectiveAccent = if (enabled) accent else Color(0xFF778394)
+    val effectiveAccent = if (enabled) accent else AppColors.Disabled
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val pressScale by animateFloatAsState(if (pressed) .965f else 1f, label = "cosmic_button_press")
@@ -67,7 +69,7 @@ fun Button(
                 minWidth = if (compact) 72.dp else 96.dp,
                 minHeight = 48.dp
             )
-            .alpha(if (enabled) 1f else .72f)
+            .alpha(if (enabled) 1f else SpaceDesign.DisabledAlpha)
             .graphicsLayer {
                 scaleX = pressScale
                 scaleY = pressScale
@@ -77,7 +79,7 @@ fun Button(
                 Brush.verticalGradient(
                     listOf(
                         effectiveAccent.copy(alpha = if (enabled) .30f else .16f),
-                        Color(0xFF101B2C),
+                        AppColors.Surface,
                         effectiveAccent.copy(alpha = if (enabled) .13f else .08f)
                     )
                 )
