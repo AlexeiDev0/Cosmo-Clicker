@@ -523,7 +523,7 @@ fun GameScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ui_autoclick_warning_v1),
+                    painter = painterResource(R.drawable.ui_autoclick_warning_v2),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillBounds
