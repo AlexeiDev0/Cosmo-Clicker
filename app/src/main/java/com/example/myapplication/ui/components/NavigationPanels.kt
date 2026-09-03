@@ -235,6 +235,15 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
     val active = state.activeFleetCounts.values.sum()
     val owned = state.fleetCounts.values.sum()
     val discovered = viewModel.fleetItems.count { it.id in state.discoveredDroneIds || (state.fleetCounts[it.id] ?: 0) > 0 }
+    // One clock drives the entire grid. A transition per card kept every off-screen
+    // drone animating and scaled linearly with the collection size.
+    val hangarMotion = rememberInfiniteTransition(label = "hangar_hover")
+    val hangarHoverPhase by hangarMotion.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(1_600, easing = LinearEasing)),
+        label = "hangar_hover_phase"
+    )
     val visibleDrones = viewModel.fleetItems.filter { drone ->
         when (filter) {
             HangarFilter.ALL -> true
@@ -287,7 +296,7 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
         items(visibleDrones.chunked(2), key = { row -> row.first().id }) { row ->
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 row.forEach { drone ->
-                    CompactHangarDroneCard(drone, viewModel, state, Modifier.weight(1f))
+                    CompactHangarDroneCard(drone, viewModel, state, Modifier.weight(1f), hangarHoverPhase)
                 }
                 repeat(2 - row.size) { Spacer(Modifier.weight(1f)) }
             }
@@ -331,7 +340,8 @@ internal fun CompactHangarDroneCard(
     drone: com.example.myapplication.FleetConfig,
     viewModel: GameViewModel,
     state: GameState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hoverPhase: Float = 0f
 ) {
     val count = state.fleetCounts[drone.id] ?: 0
     val active = state.activeFleetCounts[drone.id] ?: 0
@@ -339,17 +349,8 @@ internal fun CompactHangarDroneCard(
     val repairCost = if (damaged > 0) EconomyBalance.droneRepairCost(state.totalDebris, drone.rarity) else 0.0
     val discovered = drone.id in state.discoveredDroneIds || count > 0
     val canDeploy = active > 0 || (count > 0 && state.totalDebris >= repairCost && state.activeFleetCounts.values.sum() < viewModel.activeDroneCapacity(state))
-    val hoverFrames = if (drone.rarity == Rarity.LEGENDARY) 16 else 8
-    val hoverMotion = rememberInfiniteTransition(label = "hangar_hover_${drone.id}")
-    val hoverPhase by hoverMotion.animateFloat(
-        initialValue = 0f,
-        targetValue = hoverFrames.toFloat(),
-        animationSpec = infiniteRepeatable(tween(1_600, easing = LinearEasing)),
-        label = "hangar_hover_phase"
-    )
-    val frame = hoverPhase.toInt().coerceIn(0, hoverFrames - 1)
-    val half = hoverFrames / 2
-    val hoverOffset = if (frame <= half) -frame else -(hoverFrames - frame)
+    val hoverOffset = -kotlin.math.sin(hoverPhase * Math.PI).toFloat() *
+        if (drone.rarity == Rarity.LEGENDARY) 4f else 2.5f
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
@@ -377,7 +378,7 @@ internal fun CompactHangarDroneCard(
                 Image(
                     painter = painterResource(drone.iconRes),
                     contentDescription = null,
-                    modifier = Modifier.size(68.dp).offset(y = (hoverOffset * 0.55f).dp),
+                    modifier = Modifier.size(68.dp).offset(y = hoverOffset.dp),
                     contentScale = ContentScale.Fit,
                     alpha = if (discovered) 1f else .18f
                 )
