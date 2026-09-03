@@ -357,6 +357,14 @@ internal fun CompactHangarDroneCard(
         colors = CardDefaults.cardColors(containerColor = if (active > 0) AppColors.Primary.copy(alpha = .15f) else AppColors.Surface.copy(alpha = .88f)),
         border = androidx.compose.foundation.BorderStroke(1.dp, if (active > 0) AppColors.Primary.copy(alpha = .38f) else AppColors.Outline.copy(alpha = .7f))
     ) {
+        Box {
+            Image(
+                painter = painterResource(R.drawable.ui_drone_bay_frame_v3),
+                contentDescription = null,
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.FillBounds,
+                alpha = if (active > 0) .52f else .38f
+            )
         Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Surface(shape = RoundedCornerShape(8.dp), color = drone.rarity.color.copy(alpha = .14f)) {
@@ -431,6 +439,7 @@ internal fun CompactHangarDroneCard(
                     onClick = { viewModel.sellFleet(drone.id) }
                 )
             }
+        }
         }
     }
 }
