@@ -1,12 +1,14 @@
 package com.example.myapplication.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
@@ -28,11 +30,15 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.example.myapplication.R
 import com.example.myapplication.ui.theme.AppColors
 import com.example.myapplication.ui.theme.SpaceDesign
 
 enum class CosmicButtonStyle { Primary, Secondary, Reward, Danger }
+enum class CosmicButtonState { Normal, Selected, Active, Locked }
 
 @Composable
 fun Button(
@@ -44,6 +50,7 @@ fun Button(
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     style: CosmicButtonStyle = CosmicButtonStyle.Primary,
+    state: CosmicButtonState = CosmicButtonState.Normal,
     compact: Boolean = false,
     generatedArtwork: Boolean = true,
     content: @Composable RowScope.() -> Unit
@@ -63,6 +70,14 @@ fun Button(
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val pressScale by animateFloatAsState(if (pressed) .965f else 1f, label = "cosmic_button_press")
+    val artworkRes = when {
+        !enabled -> R.drawable.ui_button_disabled_v6
+        state == CosmicButtonState.Locked -> R.drawable.ui_button_locked_v6
+        pressed -> R.drawable.ui_button_pressed_v6
+        state == CosmicButtonState.Active -> R.drawable.ui_button_active_v6
+        state == CosmicButtonState.Selected -> R.drawable.ui_button_selected_v6
+        else -> R.drawable.ui_button_normal_v6
+    }
     Box(
         modifier = modifier
             .defaultMinSize(
@@ -100,6 +115,15 @@ fun Button(
             ),
         contentAlignment = Alignment.Center
     ) {
+        if (generatedArtwork) {
+            Image(
+                painter = painterResource(artworkRes),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds,
+                alpha = .72f
+            )
+        }
         CompositionLocalProvider(
             LocalContentColor provides if (style == CosmicButtonStyle.Primary) requestedContent else Color.White
         ) {
