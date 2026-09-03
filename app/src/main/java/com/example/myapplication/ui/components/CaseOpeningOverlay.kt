@@ -117,7 +117,7 @@ fun CaseOpeningOverlay(
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.bg_case_vault_v1),
+                    painter = painterResource(R.drawable.bg_case_vault_v3),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillBounds,
@@ -209,7 +209,7 @@ fun CaseOpeningOverlay(
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.bg_case_vault_v1),
+                    painter = painterResource(R.drawable.bg_case_vault_v3),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillBounds,

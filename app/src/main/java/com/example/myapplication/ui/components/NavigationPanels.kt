@@ -59,7 +59,7 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
     ) {
         Box(Modifier.fillMaxSize()) {
             Image(
-                painter = painterResource(R.drawable.bg_shop_orbital_market_v1),
+                painter = painterResource(R.drawable.bg_shop_salvage_market_v3),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.FillBounds,
@@ -256,7 +256,7 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
         stringResource(R.string.drone_hangar_subtitle),
         onClose,
         modifier,
-        backgroundRes = R.drawable.bg_hangar_minimal_v1
+        backgroundRes = R.drawable.bg_hangar_command_v3
     ) {
         item {
             Card(
@@ -722,7 +722,7 @@ fun PrestigeShopPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
         stringResource(R.string.prestige_shop_subtitle),
         onClose,
         modifier,
-        backgroundRes = R.drawable.bg_prestige_shop_minimal_v2
+        backgroundRes = R.drawable.bg_prestige_core_v3
     ) {
         item {
             Surface(modifier = Modifier.fillMaxWidth().height(68.dp), shape = RoundedCornerShape(16.dp), color = Color(0xCC091426), border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF8A77FF).copy(.28f))) {
@@ -821,7 +821,7 @@ fun StatisticsPanel(viewModel: GameViewModel, state: GameState, onClose: () -> U
         subtitle = stringResource(R.string.statistics_subtitle),
         onClose = onClose,
         modifier = modifier,
-        backgroundRes = R.drawable.bg_statistics_observatory_v1
+        backgroundRes = R.drawable.bg_statistics_observatory_v3
     ) {
         item(key = "completion") {
             Column(

@@ -352,7 +352,7 @@ fun GameScreen(
 
                 state.activeEvent?.let { event ->
                     Image(
-                        painter = painterResource(R.drawable.bg_events_minimal_v2),
+                        painter = painterResource(R.drawable.bg_event_operations_v3),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize().zIndex(-1f),
                         contentScale = ContentScale.Crop

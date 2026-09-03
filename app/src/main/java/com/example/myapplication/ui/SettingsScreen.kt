@@ -88,7 +88,7 @@ fun SettingsScreen(
             .fillMaxSize()
     ) {
         Image(
-            painter = painterResource(R.drawable.bg_settings_space_v1),
+            painter = painterResource(R.drawable.bg_settings_control_v3),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
