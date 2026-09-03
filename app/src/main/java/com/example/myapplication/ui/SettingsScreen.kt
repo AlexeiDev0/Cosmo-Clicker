@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import com.example.myapplication.ui.components.Button
 import com.example.myapplication.ui.components.CosmicButtonStyle
+import com.example.myapplication.ui.components.CosmicButtonState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -264,14 +265,16 @@ fun SettingsScreen(
             content = {
                 languages.forEach { option ->
                     val selected = selectedLanguage == option.tag
-                    Surface(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable {
+                    Button(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        onClick = {
                             showLanguageDialog = false
                             onLanguageSelected(option.tag)
                         },
                         shape = RoundedCornerShape(12.dp),
-                        color = if (selected) AppColors.Primary.copy(alpha = 0.14f) else Color.White.copy(alpha = 0.04f),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, if (selected) AppColors.Primary else Color.White.copy(alpha = 0.08f))
+                        style = CosmicButtonStyle.Secondary,
+                        state = if (selected) CosmicButtonState.Selected else CosmicButtonState.Normal,
+                        generatedArtwork = true
                     ) {
                         Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
                             CosmicSelectionIndicator(selected)
@@ -404,19 +407,12 @@ private fun CosmicSelectionIndicator(selected: Boolean) {
 
 @Composable
 private fun SettingsImageButton(label: String, value: String, icon: Int, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(74.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                Brush.horizontalGradient(
-                    listOf(AppColors.Primary.copy(alpha = .16f), AppColors.Surface.copy(alpha = .96f))
-                )
-            )
-            .border(1.dp, AppColors.Primary.copy(alpha = .34f), RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+    Button(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().height(74.dp),
+        style = CosmicButtonStyle.Secondary,
+        generatedArtwork = true,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 28.dp),

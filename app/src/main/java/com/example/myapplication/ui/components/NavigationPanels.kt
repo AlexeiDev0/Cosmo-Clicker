@@ -454,20 +454,19 @@ private fun CosmicHangarAction(
     onClick: () -> Unit
 ) {
     val accent = if (primary) AppColors.Primary else AppColors.Danger
-    Surface(
-        modifier = modifier
-            .height(48.dp)
-            .alpha(if (enabled) 1f else .34f)
-            .clickable(enabled = enabled, onClick = onClick),
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(48.dp),
+        enabled = enabled,
         shape = RoundedCornerShape(12.dp),
-        color = if (primary) accent.copy(alpha = .20f) else AppColors.SurfaceRaised.copy(alpha = .72f),
-        border = androidx.compose.foundation.BorderStroke(
-            1.dp,
-            accent.copy(alpha = if (primary) .58f else .38f)
-        )
+        style = if (primary) CosmicButtonStyle.Primary else CosmicButtonStyle.Danger,
+        state = if (enabled) CosmicButtonState.Normal else CosmicButtonState.Locked,
+        compact = true,
+        generatedArtwork = true,
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
