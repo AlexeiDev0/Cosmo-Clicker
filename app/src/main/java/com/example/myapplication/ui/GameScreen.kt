@@ -202,7 +202,7 @@ fun GameScreen(
     val nextPlanetImageRes = nextPlanetIndex?.let { viewModel.planets["p$it"]?.imageRes }
 
     // Логика выбора фона в зависимости от активного ивента
-    val backgroundRes = R.drawable.background_cosmic_game_v2
+    val backgroundRes = R.drawable.background_salvage_command_v3
     val eventTint = when (state.activeEvent?.type) {
         GameEventType.STORM, GameEventType.BLACK_HOLE -> Color(0xFF5A3D8F)
         GameEventType.SOLAR_FLARE -> Color(0xFF9A512F)
@@ -261,7 +261,7 @@ fun GameScreen(
             painter = painterResource(id = backgroundRes),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Crop
         )
 
         if (!reducedMotion) CosmicParticleTrails(cosmicParticlePhase)
@@ -270,7 +270,7 @@ fun GameScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f))
+                .background(Color.Black.copy(alpha = 0.18f))
                 .background(eventTint.copy(alpha = if (eventTint == Color.Transparent) 0f else 0.10f))
         )
 
