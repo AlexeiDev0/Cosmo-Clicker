@@ -39,7 +39,11 @@ fun FleetIcon(item: FleetConfig, iconSize: Dp) {
     val rarityColor = remember(item.rarity) { item.rarity.color }
     
     Box(
-        modifier = Modifier.size(iconSize),
+        modifier = Modifier
+            .size(iconSize)
+            .shadow(4.dp, CircleShape, clip = false)
+            .background(rarityColor.copy(alpha = 0.10f), CircleShape)
+            .border(1.dp, rarityColor.copy(alpha = 0.62f), CircleShape),
         contentAlignment = Alignment.Center
     ) {
         if (item.spriteIndex >= 0) {
