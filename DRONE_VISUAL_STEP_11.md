@@ -11,3 +11,9 @@ legible at hangar-card and gameplay sizes.
 
 The active-fleet, discovery, cargo, infection, and repair states remain owned by
 the existing state/controller logic. This step changes only presentation.
+
+Generated asset: `drawable-nodpi/drone_fleet_showcase_v1.png`. It was created with
+the `imagegen` stylized-concept game-asset prompt using an existing drone as the
+style reference, then visually reviewed before being placed in the Hangar overview
+card. The generated image is intentionally used at large size; the compact drone
+icons remain the approved per-drone resources.
