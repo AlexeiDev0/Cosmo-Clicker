@@ -76,6 +76,15 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
             )
             Column(Modifier.fillMaxSize().padding(SpaceDesign.SheetPadding)) {
                 SpaceSheetHeader(stringResource(R.string.case_shop_title), stringResource(R.string.case_shop_subtitle), onClose)
+                Image(
+                    painter = painterResource(R.drawable.case_tier_showcase_v1),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(max = 108.dp)
+                        .clip(RoundedCornerShape(14.dp)),
+                    contentScale = ContentScale.Crop
+                )
                 Spacer(Modifier.height(12.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                     listOf(R.string.shop_tab_upgrades, R.string.shop_tab_cases, R.string.shop_tab_planets, R.string.shop_tab_systems).forEachIndexed { index, title ->
