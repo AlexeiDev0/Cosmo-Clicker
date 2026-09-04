@@ -140,6 +140,17 @@ private fun LegacyOperationsPanel(
                             }
                         }
                         2 -> {
+                            item {
+                                Image(
+                                    painter = painterResource(R.drawable.shop_upgrade_showcase_v1),
+                                    contentDescription = null,
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .heightIn(max = 92.dp)
+                                        .clip(RoundedCornerShape(14.dp)),
+                                    contentScale = ContentScale.Crop
+                                )
+                            }
                             items(viewModel.clickItems, key = { it.id }) { item ->
                                 val lvl = state.clickLevels[item.id] ?: 0
                                 val marketMultiplier = if (state.weeklyGalaxy.active && state.weeklyGalaxy.rule == com.example.myapplication.WeeklyRule.VOLATILE_MARKET) {
