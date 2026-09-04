@@ -265,7 +265,7 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
         stringResource(R.string.drone_hangar_subtitle),
         onClose,
         modifier,
-        backgroundRes = R.drawable.bg_hangar_command_v3
+        backgroundRes = R.drawable.bg_hangar_fleet_command_v1
     ) {
         item {
             Card(

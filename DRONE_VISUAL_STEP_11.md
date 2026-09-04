@@ -17,3 +17,8 @@ the `imagegen` stylized-concept game-asset prompt using an existing drone as the
 style reference, then visually reviewed before being placed in the Hangar overview
 card. The generated image is intentionally used at large size; the compact drone
 icons remain the approved per-drone resources.
+
+For the Hangar-specific pass, `drawable-nodpi/bg_hangar_fleet_command_v1.png` was
+generated with the existing Hangar scene as a style reference. It is now the
+Hangar panel backdrop; the previous `bg_hangar_command_v3` remains in the project
+for safe rollback and other screens.
