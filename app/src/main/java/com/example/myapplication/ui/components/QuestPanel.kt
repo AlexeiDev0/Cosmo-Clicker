@@ -3,6 +3,7 @@ package com.example.myapplication.ui.components
 import androidx.compose.animation.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
@@ -42,6 +44,13 @@ fun QuestPanel(
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var nowMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
+    LaunchedEffect(Unit) {
+        while (true) {
+            kotlinx.coroutines.delay(1_000L)
+            nowMillis = System.currentTimeMillis()
+        }
+    }
     Card(
         modifier = modifier
             .widthIn(max = 720.dp)
@@ -50,11 +59,20 @@ fun QuestPanel(
         shape = RoundedCornerShape(topStart = SpaceDesign.SheetRadius, topEnd = SpaceDesign.SheetRadius),
         colors = CardDefaults.cardColors(containerColor = AppColors.CardBackground)
     ) {
-        Column(
-            modifier = Modifier
-                .background(Brush.verticalGradient(listOf(Color(0xFF0B1A2C), Color(0xFF07101E))))
-                .padding(SpaceDesign.SheetPadding)
-        ) {
+        Box(Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(R.drawable.bg_goals_starchart_v1),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop,
+                alpha = .34f
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Brush.verticalGradient(listOf(Color(0xB30B1A2C), Color(0xF207101E))))
+                    .padding(SpaceDesign.SheetPadding)
+            ) {
             SpaceSheetHeader(
                 title = stringResource(R.string.goals),
                 subtitle = stringResource(R.string.missions_subtitle),
@@ -62,18 +80,13 @@ fun QuestPanel(
             )
             Spacer(Modifier.height(14.dp))
 
-            if (state.activeQuests.isEmpty()) {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(stringResource(R.string.no_active_quests), color = Color.Gray)
-                }
-            } else {
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     item(key = "daily_reward") {
-                        val reward = DailyRewardEngine.preview(state)
-                        val available = DailyRewardEngine.canClaim(state)
+                        val reward = DailyRewardEngine.preview(state, nowMillis)
+                        val available = DailyRewardEngine.canClaim(state, nowMillis)
                         Column(
                             Modifier.fillMaxWidth()
                                 .background(Brush.horizontalGradient(listOf(AppColors.Warning.copy(.18f), AppColors.Primary.copy(.10f))), RoundedCornerShape(16.dp))
@@ -82,10 +95,14 @@ fun QuestPanel(
                         ) {
                             Text(stringResource(R.string.daily_reward_title), color = Color.White, fontWeight = FontWeight.Bold)
                             Text(stringResource(R.string.daily_reward_day, reward.day, formatNum(reward.debris)), color = AppColors.TextMuted, fontSize = 11.sp)
+                            if (reward.prestigePoints > 0) {
+                                Text(stringResource(R.string.reward_prestige_points, reward.prestigePoints), color = AppColors.Warning, fontSize = 11.sp)
+                            }
                             Button(
                                 onClick = onClaimDailyReward,
                                 enabled = available,
-                                modifier = Modifier.fillMaxWidth().height(48.dp)
+                                modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp),
+                                style = CosmicButtonStyle.Reward
                             ) {
                                 Text(stringResource(if (available) R.string.daily_reward_claim else R.string.daily_reward_claimed))
                             }
@@ -97,13 +114,18 @@ fun QuestPanel(
                         QuestSectionHeader(R.string.daily_quests, QuestCadence.DAILY)
                     }
                     items(daily, key = { it.id }) { quest ->
-                        QuestItemRow(quest, onClaim)
+                        QuestItemRow(quest, onClaim, com.example.myapplication.EconomyBalance.questReward(state, quest))
                     }
                     item(key = "weekly_header") {
                         QuestSectionHeader(R.string.weekly_quests, QuestCadence.WEEKLY)
                     }
                     items(weekly, key = { it.id }) { quest ->
-                        QuestItemRow(quest, onClaim)
+                        QuestItemRow(quest, onClaim, com.example.myapplication.EconomyBalance.questReward(state, quest))
+                    }
+                    if (state.activeQuests.isEmpty()) {
+                        item(key = "empty_quests") {
+                            Text(stringResource(R.string.no_active_quests), color = AppColors.TextMuted)
+                        }
                     }
                 }
             }
@@ -209,7 +231,7 @@ private fun formatDuration(milliseconds: Long): String {
 }
 
 @Composable
-fun QuestItemRow(quest: Quest, onClaim: (String) -> Unit) {
+fun QuestItemRow(quest: Quest, onClaim: (String) -> Unit, debrisReward: Double = quest.rewardDebris) {
     val progress = (quest.progress / quest.target).toFloat().coerceIn(0f, 1f)
     
     Column(
@@ -255,7 +277,7 @@ fun QuestItemRow(quest: Quest, onClaim: (String) -> Unit) {
                 color = if (quest.isCompleted) AppColors.Primary else difficultyColor,
                 trackColor = Color.White.copy(alpha = 0.1f)
             )
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                 Text(
                     text = "${formatNum(quest.progress)} / ${formatNum(quest.target)}",
                     color = Color.Gray,
@@ -267,23 +289,31 @@ fun QuestItemRow(quest: Quest, onClaim: (String) -> Unit) {
                         color = AppColors.Warning,
                         fontSize = 10.sp
                     )
-                } else if (quest.rewardDebris > 0) {
+                }
+                if (debrisReward > 0) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(painterResource(R.drawable.ic_currency_debris_v2), null, Modifier.size(16.dp), tint = Color.Unspecified)
                         Spacer(Modifier.width(4.dp))
-                        Text(stringResource(R.string.reward_debris, formatNum(quest.rewardDebris)), color = AppColors.Primary, fontSize = 10.sp)
+                        Text(stringResource(R.string.reward_debris, formatNum(debrisReward)), color = AppColors.Primary, fontSize = 10.sp)
                     }
-                } else if (quest.rewardCases > 0) {
+                }
+                if (quest.rewardCases > 0) {
                     Text(
                         stringResource(R.string.reward_cases, quest.rewardCases),
                         color = AppColors.Secondary,
                         fontSize = 10.sp
                     )
                 }
+                quest.rewardDroneId?.removePrefix("drone_")?.toIntOrNull()?.let { number ->
+                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Image(painterResource(com.example.myapplication.GameResourceRegistry.drone(number)), null, Modifier.size(32.dp))
+                        Text(stringResource(R.string.reward_drone_number, number), color = AppColors.Secondary, fontSize = 10.sp)
+                    }
+                }
             }
         }
         
-        if (quest.isCompleted) {
+        if (quest.isCompleted && !quest.isClaimed) {
             Button(
                 onClick = { onClaim(quest.id) },
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.Primary, contentColor = Color.Black),

@@ -314,8 +314,8 @@ fun SolarFlareProtocol(event: GameEvent, sequence: List<Int>, progress: Int, pha
         delay((1_900L + sequence.size * 180L).coerceAtMost(3_000L))
         memorizing = false
     }
-    val pulseMotion = rememberInfiniteTransition(label = "solar_flare_pulse")
-    val pulse by pulseMotion.animateFloat(0.96f, 1.04f, infiniteRepeatable(tween(430), RepeatMode.Reverse), label = "solar_pulse")
+    val pulseMotion = if (!com.example.myapplication.ui.theme.LocalReducedMotion.current) rememberInfiniteTransition(label = "solar_flare_pulse") else null
+    val pulse = pulseMotion?.animateFloat(0.96f, 1.04f, infiniteRepeatable(tween(430), RepeatMode.Reverse), label = "solar_pulse")?.value ?: 1f
     Box(Modifier.offset(x = (gameAreaWidth - 260.dp) / 2, y = (gameAreaHeight - 260.dp) / 2).size(260.dp).graphicsLayer { scaleX = pulse; scaleY = pulse }, contentAlignment = Alignment.Center) {
         Box(Modifier.size(206.dp).background(Color(0xB8081020), CircleShape).border(1.dp, Color(0xFFFF7A38).copy(.35f), CircleShape))
         Box(Modifier.size(128.dp).border(1.dp, Color(0xFFFFC247).copy(.25f), CircleShape))
@@ -353,8 +353,8 @@ fun CyberVirusField(
     var entered by remember(event.startedAt) { mutableStateOf("") }
     var attempts by remember(event.startedAt) { mutableIntStateOf(0) }
     var feedback by remember(event.startedAt) { mutableStateOf("PIN LOCK // 4 DIGITS") }
-    val glitch = rememberInfiniteTransition(label = "cyber_glitch")
-    val alpha by glitch.animateFloat(.10f, .24f, infiniteRepeatable(tween(120), RepeatMode.Reverse), label = "glitch_alpha")
+    val glitch = if (!com.example.myapplication.ui.theme.LocalReducedMotion.current) rememberInfiniteTransition(label = "cyber_glitch") else null
+    val alpha = glitch?.animateFloat(.10f, .24f, infiniteRepeatable(tween(900), RepeatMode.Reverse), label = "glitch_alpha")?.value ?: .10f
     Canvas(Modifier.size(gameAreaWidth, gameAreaHeight)) {
         repeat(14) { line ->
             val y = size.height * ((line * 73 + event.startedAt.toInt()) % 1000) / 1000f
@@ -451,13 +451,13 @@ fun DistressSignalScanner(
     val accent = Color(0xFF72E4FF)
     val requiredLocks = if (event.isElite) 4 else 3
     val panelWidth = minOf(gameAreaWidth - 32.dp, 360.dp)
-    val scan = rememberInfiniteTransition(label = "distress_scan")
-    val pulse by scan.animateFloat(
+    val scan = if (!com.example.myapplication.ui.theme.LocalReducedMotion.current) rememberInfiniteTransition(label = "distress_scan") else null
+    val pulse = scan?.animateFloat(
         initialValue = 0.92f,
         targetValue = 1.08f,
         animationSpec = infiniteRepeatable(tween(700), RepeatMode.Reverse),
         label = "distress_pulse"
-    )
+    )?.value ?: 1f
 
     Column(
         modifier = Modifier
@@ -662,19 +662,19 @@ fun BlackHoleComponent(
     val fieldSize = minOf(gameAreaWidth - 36.dp, 252.dp)
     val blackHoleSize = 116.dp
     val nodeSize = 44.dp
-    val motion = rememberInfiniteTransition(label = "black_hole_motion")
-    val rotation by motion.animateFloat(
+    val motion = if (!com.example.myapplication.ui.theme.LocalReducedMotion.current) rememberInfiniteTransition(label = "black_hole_motion") else null
+    val rotation = motion?.animateFloat(
         initialValue = 0f,
         targetValue = 360f,
         animationSpec = infiniteRepeatable(tween(12_000, easing = LinearEasing)),
         label = "black_hole_rotation"
-    )
-    val pulse by motion.animateFloat(
+    )?.value ?: 0f
+    val pulse = motion?.animateFloat(
         initialValue = 0.96f,
         targetValue = 1.04f,
         animationSpec = infiniteRepeatable(tween(900), RepeatMode.Reverse),
         label = "black_hole_pulse"
-    )
+    )?.value ?: 1f
     Box(
         modifier = Modifier
             .offset(
@@ -831,19 +831,19 @@ fun PirateAmbushComponent(
     val accent = Color(0xFFFF536D)
     val scanner = Color(0xFF72E4FF)
     val requiredHits = if (event.isElite) 7 else 5
-    val transition = rememberInfiniteTransition(label = "pirate_pursuit")
-    val drift by transition.animateFloat(
+    val transition = if (!com.example.myapplication.ui.theme.LocalReducedMotion.current) rememberInfiniteTransition(label = "pirate_pursuit") else null
+    val drift = transition?.animateFloat(
         initialValue = -4f,
         targetValue = 4f,
         animationSpec = infiniteRepeatable(tween(900, easing = LinearEasing), RepeatMode.Reverse),
         label = "pirate_drift"
-    )
-    val idleFrame by transition.animateFloat(
+    )?.value ?: 0f
+    val idleFrame = transition?.animateFloat(
         initialValue = 0f,
         targetValue = 1.99f,
         animationSpec = infiniteRepeatable(tween(520, easing = LinearEasing), RepeatMode.Reverse),
         label = "pirate_engine_frames"
-    )
+    )?.value ?: 0f
     val combatFrame = if (progress <= 0) idleFrame.toInt() else (progress + 1).coerceIn(2, 6)
     val panelWidth = minOf(gameAreaWidth - 32.dp, 360.dp)
 

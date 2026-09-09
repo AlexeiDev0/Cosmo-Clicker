@@ -36,6 +36,7 @@ internal class TimedQuestFactory(private val description: (QuestType, Int) -> St
         target = target.toDouble(),
         progress = 0.0,
         rewardDebris = EconomyBalance.scaledReward(baseReward, planetId),
+        rewardPlanetId = planetId,
         cadence = cadence,
         difficulty = difficulty
     )

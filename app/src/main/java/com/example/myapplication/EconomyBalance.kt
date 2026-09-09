@@ -126,6 +126,30 @@ object EconomyBalance {
         return roundReward(base.coerceAtLeast(0.0) * progressionMultiplier * planetSalvageSpecial(planetId))
     }
 
+    /** The same quote is used by the mission card and the claim transaction. */
+    fun questReward(state: GameState, quest: Quest): Double {
+        if (quest.rewardDebris <= 0.0) return 0.0
+        val highest = state.ownedPlanets.maxOfOrNull(::planetIndex) ?: 1
+        val origin = quest.rewardPlanetId?.let(::planetIndex) ?: highest
+        val growth = 1.32.pow((highest - origin).coerceAtLeast(0).toDouble())
+        val share = when (quest.cadence) {
+            QuestCadence.DAILY -> when (quest.difficulty) {
+                QuestDifficulty.EASY -> .06
+                QuestDifficulty.MEDIUM -> .12
+                QuestDifficulty.HARD -> .20
+            }
+            QuestCadence.WEEKLY -> when (quest.difficulty) {
+                QuestDifficulty.EASY -> .25
+                QuestDifficulty.MEDIUM -> .40
+                QuestDifficulty.HARD -> .60
+            }
+        }
+        // Existing saves have no origin planet: the price floor upgrades their rewards
+        // without multiplying an already scaled legacy amount a second time.
+        val floor = if (highest > 1) planetPrice((highest + 1).coerceAtMost(MAX_PLANET_INDEX)) * share else 0.0
+        return maxOf(quest.rewardDebris, roundReward(maxOf(quest.rewardDebris * growth, floor)))
+    }
+
     fun roundReward(value: Double): Double {
         if (!value.isFinite() || value <= 0.0) return 0.0
         val magnitude = 10.0.pow(floor(log10(value)))

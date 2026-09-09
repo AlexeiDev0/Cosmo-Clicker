@@ -41,7 +41,7 @@ fun SpaceSheetHeader(title: String, subtitle: String? = null, onClose: () -> Uni
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                lineHeight = 22.sp
+                lineHeight = 27.sp
             )
             if (subtitle != null) Text(
                 subtitle,
@@ -52,12 +52,14 @@ fun SpaceSheetHeader(title: String, subtitle: String? = null, onClose: () -> Uni
                 lineHeight = 14.sp
             )
         }
-        Image(
-            painter = painterResource(R.drawable.ui_close_control_v2),
-            contentDescription = stringResource(R.string.close),
-            modifier = Modifier.size(48.dp).clickable(onClick = onClose),
-            contentScale = ContentScale.Fit
-        )
+        IconButton(onClick = onClose, modifier = Modifier.size(48.dp)) {
+            Icon(
+                painter = painterResource(R.drawable.ui_close_simple),
+                contentDescription = stringResource(R.string.close),
+                modifier = Modifier.size(22.dp),
+                tint = AppColors.TextMuted
+            )
+        }
     }
 }
 

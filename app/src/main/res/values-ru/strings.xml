@@ -480,4 +480,5 @@
     <string name="collection_events">События</string>
     <string name="collection_drones">Находки дронов</string>
     <string name="progress_count">%1$d / %2$d</string>
+    <string name="reward_drone_number">Награда: дрон №%1$d</string>
 </resources>

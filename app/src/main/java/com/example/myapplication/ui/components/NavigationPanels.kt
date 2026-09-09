@@ -76,15 +76,7 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
             )
             Column(Modifier.fillMaxSize().padding(SpaceDesign.SheetPadding)) {
                 SpaceSheetHeader(stringResource(R.string.case_shop_title), stringResource(R.string.case_shop_subtitle), onClose)
-                Image(
-                    painter = painterResource(R.drawable.case_tier_showcase_v1),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 108.dp)
-                        .clip(RoundedCornerShape(14.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                ArtworkStrip(listOf(R.drawable.case_common_1, R.drawable.case_rare_1, R.drawable.case_legendary_1), Modifier.height(88.dp))
                 Spacer(Modifier.height(12.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                     listOf(R.string.shop_tab_upgrades, R.string.shop_tab_cases, R.string.shop_tab_planets, R.string.shop_tab_systems).forEachIndexed { index, title ->
@@ -246,13 +238,13 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
     val discovered = viewModel.fleetItems.count { it.id in state.discoveredDroneIds || (state.fleetCounts[it.id] ?: 0) > 0 }
     // One clock drives the entire grid. A transition per card kept every off-screen
     // drone animating and scaled linearly with the collection size.
-    val hangarMotion = rememberInfiniteTransition(label = "hangar_hover")
-    val hangarHoverPhase by hangarMotion.animateFloat(
+    val hangarMotion = if (!com.example.myapplication.ui.theme.LocalReducedMotion.current) rememberInfiniteTransition(label = "hangar_hover") else null
+    val hangarHoverPhase = hangarMotion?.animateFloat(
         initialValue = 0f,
         targetValue = 1f,
         animationSpec = infiniteRepeatable(tween(1_600, easing = LinearEasing)),
         label = "hangar_hover_phase"
-    )
+    )?.value ?: 0f
     val visibleDrones = viewModel.fleetItems.filter { drone ->
         when (filter) {
             HangarFilter.ALL -> true
@@ -275,15 +267,7 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
                 border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Primary.copy(alpha = 0.24f))
             ) {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    Image(
-                        painter = painterResource(R.drawable.drone_fleet_showcase_v1),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .heightIn(max = 142.dp)
-                            .clip(RoundedCornerShape(12.dp)),
-                        contentScale = ContentScale.Crop
-                    )
+                    ArtworkStrip(listOf(R.drawable.drone_06_v2, R.drawable.drone_01_v2, R.drawable.drone_07_v2), Modifier.height(106.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Column {
                             Text(stringResource(R.string.hangar_overview), color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
@@ -376,13 +360,6 @@ internal fun CompactHangarDroneCard(
         border = androidx.compose.foundation.BorderStroke(1.dp, if (active > 0) AppColors.Primary.copy(alpha = .38f) else AppColors.Outline.copy(alpha = .7f))
     ) {
         Box {
-            Image(
-                painter = painterResource(R.drawable.ui_drone_bay_frame_v3),
-                contentDescription = null,
-                modifier = Modifier.matchParentSize(),
-                contentScale = ContentScale.FillBounds,
-                alpha = if (active > 0) .52f else .38f
-            )
         Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Surface(shape = RoundedCornerShape(8.dp), color = drone.rarity.color.copy(alpha = .14f)) {
@@ -406,10 +383,14 @@ internal fun CompactHangarDroneCard(
                     contentDescription = null,
                     modifier = Modifier.size(68.dp).offset(y = hoverOffset.dp),
                     contentScale = ContentScale.Fit,
+                    colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+                        androidx.compose.ui.graphics.Color(0xFFE4F1F7),
+                        androidx.compose.ui.graphics.BlendMode.Modulate
+                    ),
                     alpha = if (discovered) 1f else .18f
                 )
                 if (!discovered) Icon(
-                    painter = painterResource(R.drawable.ui_lock_control_v2),
+                    painter = painterResource(R.drawable.ui_lock_simple),
                     contentDescription = stringResource(R.string.locked),
                     tint = Color.White.copy(alpha = .85f),
                     modifier = Modifier.size(25.dp)
@@ -846,8 +827,7 @@ fun StatisticsPanel(viewModel: GameViewModel, state: GameState, onClose: () -> U
         title = stringResource(R.string.statistics_and_achievements),
         subtitle = stringResource(R.string.statistics_subtitle),
         onClose = onClose,
-        modifier = modifier,
-        backgroundRes = R.drawable.bg_statistics_observatory_v3
+        modifier = modifier
     ) {
         item(key = "completion") {
             Column(
@@ -897,11 +877,9 @@ private fun StatisticRow(label: String, value: String) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(painterResource(R.drawable.ic_nav_stats_minimal), null, Modifier.size(22.dp), tint = Color.Unspecified)
-        Spacer(Modifier.width(9.dp))
         Text(label, modifier = Modifier.weight(1f), color = Color.White.copy(alpha = .88f), fontSize = 12.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
         Spacer(Modifier.width(12.dp))
-        Text(value, color = AppColors.Primary, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, maxLines = 1)
+        Text(value, color = Color.White, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, maxLines = 1)
     }
 }
 

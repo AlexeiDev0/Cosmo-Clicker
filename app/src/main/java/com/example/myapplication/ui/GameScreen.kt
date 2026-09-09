@@ -289,7 +289,8 @@ fun GameScreen(
                 onAchievementsClick = { isAchievementsOpen = true },
                 onPrestigeShopClick = { isPrestigeShopOpen = true },
                 onRouteClick = { isGalaxyRouteOpen = true },
-                onSettingsClick = { showSettings = true }
+                onSettingsClick = { showSettings = true },
+                reducedMotion = reducedMotion
             )
             
             BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {

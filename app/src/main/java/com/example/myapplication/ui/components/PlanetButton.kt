@@ -57,10 +57,10 @@ fun PlanetButton(
         modifier = modifier
             .size(containerSize)
             .scale(animatedScale)
-            .pointerInput(isLocked) {
+            .pointerInput(isLocked, reducedMotion, planetId) {
                 detectTapGestures { position ->
                     if (!isLocked && size.width > 0 && size.height > 0) {
-                        scaleVal = 0.92f
+                        scaleVal = if (reducedMotion) 1f else 0.94f
                         onClick(
                             (position.x / size.width).coerceIn(0f, 1f),
                             (position.y / size.height).coerceIn(0f, 1f)
@@ -87,18 +87,18 @@ fun PlanetButton(
             modifier = Modifier.fillMaxSize().rotate(rotation * 0.35f)
         ) {
             drawOval(
-                color = planetConfig.color.copy(alpha = if (isLocked) 0.20f else 0.58f),
+                color = planetConfig.color.copy(alpha = if (isLocked) 0.12f else 0.26f),
                 topLeft = androidx.compose.ui.geometry.Offset(size.width * 0.06f, size.height * 0.31f),
                 size = androidx.compose.ui.geometry.Size(size.width * 0.88f, size.height * 0.38f),
                 style = Stroke(width = 1.5.dp.toPx())
             )
         }
 
-        // Обрезка
+        // Keep the illustrated key light fixed; only the orbital guide moves.
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .rotate(rotation)
+                .clip(androidx.compose.ui.graphics.RectangleShape)
         ) {
             if (planetConfig.spriteIndex >= 0) {
                 val columns = 5

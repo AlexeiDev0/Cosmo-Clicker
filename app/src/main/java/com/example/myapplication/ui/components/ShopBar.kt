@@ -190,12 +190,7 @@ private fun DroneCollectionHeader(state: GameState, viewModel: GameViewModel) {
         colors = CardDefaults.cardColors(containerColor = Color(0xFF071329))
     ) {
         Box(modifier = Modifier.fillMaxWidth().height(158.dp)) {
-            Image(
-                painter = painterResource(R.drawable.hangar_background),
-                contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.Crop
-            )
+            ArtworkStrip(listOf(R.drawable.drone_02_v2, R.drawable.drone_01_v2, R.drawable.drone_03_v2), Modifier.height(88.dp).align(Alignment.TopCenter))
             Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.28f)))
             Column(modifier = Modifier.align(Alignment.BottomStart).padding(14.dp)) {
                 Text(stringResource(R.string.drone_collection), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
@@ -303,7 +298,14 @@ private fun MetaProgressPanel(viewModel: GameViewModel, state: GameState) {
             Box(
                 modifier = Modifier.size(34.dp).background(AppColors.Warning.copy(alpha = 0.14f), CircleShape),
                 contentAlignment = Alignment.Center
-            ) { Text("★", color = AppColors.Warning, fontSize = 17.sp) }
+            ) {
+                Icon(
+                    painter = painterResource(R.drawable.ic_achievement_medal),
+                    contentDescription = null,
+                    modifier = Modifier.size(18.dp),
+                    tint = Color.Unspecified
+                )
+            }
             Spacer(Modifier.width(10.dp))
             Column {
                 Text(stringResource(R.string.achievements), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 17.sp)
@@ -330,7 +332,16 @@ private fun MetaProgressPanel(viewModel: GameViewModel, state: GameState) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text((if (unlocked) "◆  " else "◇  ") + stringResource(achievementNameResource(achievement.id)), color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_achievement_medal),
+                            contentDescription = null,
+                            modifier = Modifier.size(17.dp),
+                            tint = if (unlocked) Color.Unspecified else Color.White.copy(alpha = .35f)
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        Text(stringResource(achievementNameResource(achievement.id)), color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                    }
                     Text(rewardText, color = AppColors.Secondary, fontSize = 10.sp)
                 }
                 Button(
@@ -477,12 +488,7 @@ private fun CaseTypeRow(viewModel: GameViewModel, state: GameState, type: CaseTy
                     .background(AppColors.WhiteAlpha05, RoundedCornerShape(8.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                GeneratedSheetIcon(
-                    drawable = R.drawable.shop_case_ui_sheet_v1,
-                    index = when (type) { CaseType.COMMON -> 0; CaseType.RARE -> 1; CaseType.LEGENDARY -> 2 },
-                    size = 44.dp,
-                    modifier = Modifier.clip(RoundedCornerShape(7.dp))
-                )
+                Image(painterResource(com.example.myapplication.GameResourceRegistry.caseFrame(type, 1)), null, Modifier.size(44.dp), contentScale = ContentScale.Fit)
             }
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
@@ -833,7 +839,7 @@ fun PlanetRow(
                 }
                 if (showLock) {
                     Image(
-                        painter = painterResource(R.drawable.ui_lock_control_v2),
+                        painter = painterResource(R.drawable.ui_lock_simple),
                         contentDescription = stringResource(R.string.locked),
                         modifier = Modifier.align(Alignment.Center).size(30.dp)
                     )

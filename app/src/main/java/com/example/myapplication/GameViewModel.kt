@@ -186,7 +186,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             val progress = prefs.getFloat("quest_${id}_progress", 0f).toDouble()
                 .finiteOr(0.0)
                 .coerceIn(0.0, target)
-            val rewardDebris = prefs.getFloat("quest_${id}_rewardDebris", 0f).toDouble()
+            val rewardDebris = loadPreciseDouble("quest_${id}_rewardDebris", 0.0)
                 .finiteOr(0.0)
                 .coerceAtLeast(0.0)
             val rewardCases = prefs.getInt("quest_${id}_rewardCases", 0)
@@ -205,6 +205,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                     target = target,
                     progress = progress,
                     rewardDebris = rewardDebris,
+                    rewardPlanetId = prefs.getString("quest_${id}_rewardPlanetId", null),
+                    rewardDroneId = prefs.getString("quest_${id}_rewardDroneId", null),
                     rewardCases = rewardCases.coerceAtLeast(0),
                     isCompleted = isCompleted,
                     cadence = cadence,
@@ -241,6 +243,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             openingCaseType = prefs.getString("openingCaseType", null)
                 ?.let { storedType -> CaseType.entries.firstOrNull { it.name == storedType } },
             pendingCaseOpenings = prefs.getInt("pendingCaseOpenings", 0).coerceAtLeast(0),
+            isRewardCaseOpening = prefs.getBoolean("isRewardCaseOpening", false),
             caseBundleRewards = fleetItems.mapNotNull { item ->
                 prefs.getInt("caseBundleReward_${item.id}", 0).takeIf { it > 0 }?.let { item.id to it }
             }.toMap(),
@@ -331,6 +334,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             if (state.openingCaseType == null) remove("openingCaseType")
             else putString("openingCaseType", state.openingCaseType.name)
             putInt("pendingCaseOpenings", state.pendingCaseOpenings)
+            putBoolean("isRewardCaseOpening", state.isRewardCaseOpening)
             fleetItems.forEach { item -> putInt("caseBundleReward_${item.id}", state.caseBundleRewards[item.id] ?: 0) }
             putBoolean("showCaseBundleSummary", state.showCaseBundleSummary)
             putInt("casesPurchased", state.casesPurchased)
@@ -375,7 +379,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 putString("quest_${q.id}_desc", q.description)
                 putFloat("quest_${q.id}_target", q.target.toFloat())
                 putFloat("quest_${q.id}_progress", q.progress.toFloat())
-                putFloat("quest_${q.id}_rewardDebris", q.rewardDebris.toFloat())
+                putLong("quest_${q.id}_rewardDebrisBits", GameRules.encodeDouble(q.rewardDebris))
+                putString("quest_${q.id}_rewardPlanetId", q.rewardPlanetId)
+                putString("quest_${q.id}_rewardDroneId", q.rewardDroneId)
                 putInt("quest_${q.id}_rewardCases", q.rewardCases)
                 putBoolean("quest_${q.id}_completed", q.isCompleted)
                 putString("quest_${q.id}_cadence", q.cadence.name)
@@ -1328,8 +1334,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 activeQuests = updatedQuests,
                 sessionStats = state.sessionStats.copy(casesOpened = state.sessionStats.casesOpened + 1),
                 casesPurchased = state.casesPurchased + 1,
-                casePurchasesByType = state.casePurchasesByType +
-                    (caseType to ((state.casePurchasesByType[caseType] ?: 0) + 1)),
+                casePurchasesByType = CaseController.purchaseCountsAfterOpening(state, caseType),
                 lifetimeStats = state.lifetimeStats.copy(
                     casesOpened = state.lifetimeStats.casesOpened + 1
                 )
@@ -1369,59 +1374,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun claimQuestReward(questId: String) {
-        _gameState.update { state ->
-            val quest = state.activeQuests.find { it.id == questId } ?: return@update state
-            if (!quest.isCompleted || quest.isClaimed) return@update state
-
-            var newTotalDebris = state.totalDebris + quest.rewardDebris
-            var newCasesPurchased = state.casesPurchased
-            var triggeringCaseOpening = false
-            
-            if (quest.rewardCases > 0) {
-                val totalDrones = state.fleetCounts.values.sum()
-                if (totalDrones < EconomyBalance.MAX_DRONES) {
-                    triggeringCaseOpening = true
-                } else {
-                    // Reward debris instead if drone limit reached
-                    newTotalDebris += 25000.0 * quest.rewardCases
-                }
-            }
-            
-            var newFleetCounts = state.fleetCounts
-            if (quest.rewardDroneId != null) {
-                val totalDrones = state.fleetCounts.values.sum()
-                if (totalDrones < EconomyBalance.MAX_DRONES) {
-                    newFleetCounts = newFleetCounts + (quest.rewardDroneId to (newFleetCounts[quest.rewardDroneId] ?: 0) + 1)
-                } else {
-                    newTotalDebris += 50000.0
-                }
-            }
-
-            val newActiveQuests = state.activeQuests.filter { it.id != questId }
-            val newCompletedQuestIds = state.completedQuestIds + questId
-            val now = System.currentTimeMillis()
-            val dailyFinished = quest.cadence == QuestCadence.DAILY &&
-                newActiveQuests.none { it.cadence == QuestCadence.DAILY }
-            val weeklyFinished = quest.cadence == QuestCadence.WEEKLY &&
-                newActiveQuests.none { it.cadence == QuestCadence.WEEKLY }
-
-            state.copy(
-                totalDebris = newTotalDebris,
-                prestigePoints = state.prestigePoints + quest.rewardPrestigePoints,
-                fleetCounts = newFleetCounts,
-                activeQuests = newActiveQuests,
-                dailyQuestsCompletedAt = if (dailyFinished && state.dailyQuestsCompletedAt < 0L) now else state.dailyQuestsCompletedAt,
-                weeklyQuestsCompletedAt = if (weeklyFinished && state.weeklyQuestsCompletedAt < 0L) now else state.weeklyQuestsCompletedAt,
-                completedQuestIds = newCompletedQuestIds,
-                isOpeningCase = if (triggeringCaseOpening) true else state.isOpeningCase,
-                openingCaseType = if (triggeringCaseOpening) CaseType.COMMON else state.openingCaseType,
-                // Cases from quests don't increase price growth in shop, but we could make them.
-                // For now, let's keep them as a separate bonus.
-                lastDroppedDroneId = if (triggeringCaseOpening) null else state.lastDroppedDroneId
-            )
+        updateStoreState("quest:" + questId) { state ->
+            QuestEngine.claim(state, questId, fleetItems, System.currentTimeMillis())
         }
-        
-        saveGameState()
     }
 
     fun clearReward() {

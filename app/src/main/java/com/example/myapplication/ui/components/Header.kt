@@ -46,12 +46,13 @@ fun Header(
     onAchievementsClick: () -> Unit,
     onPrestigeShopClick: () -> Unit,
     onRouteClick: () -> Unit,
-    onSettingsClick: () -> Unit
+    onSettingsClick: () -> Unit,
+    reducedMotion: Boolean = false
 ) {
     var previousDebris by remember { mutableDoubleStateOf(state.totalDebris) }
     var currencyPulse by remember { mutableStateOf(false) }
     LaunchedEffect(state.totalDebris) {
-        if (state.totalDebris > previousDebris) {
+        if (!reducedMotion && state.totalDebris > previousDebris) {
             currencyPulse = true
             delay(150L)
             currencyPulse = false
@@ -59,7 +60,7 @@ fun Header(
         previousDebris = state.totalDebris
     }
     val currencyScale by animateFloatAsState(
-        targetValue = if (currencyPulse) 1.18f else 1f,
+        targetValue = if (currencyPulse && !reducedMotion) 1.08f else 1f,
         animationSpec = spring(dampingRatio = .48f, stiffness = 520f),
         label = "currencyPulse"
     )
@@ -84,7 +85,7 @@ fun Header(
             Row(
                 modifier = Modifier
                     .weight(1f)
-                    .height(40.dp)
+                    .height(48.dp)
                     .background(Color.Black.copy(alpha = .22f), RoundedCornerShape(SpaceDesign.ControlRadius))
                     .padding(horizontal = 9.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -92,17 +93,17 @@ fun Header(
                 Icon(
                     painterResource(R.drawable.ic_currency_debris_v2),
                     null,
-                    Modifier.size(21.dp).scale(currencyScale),
+                    Modifier.size(30.dp).scale(currencyScale),
                     tint = Color.Unspecified
                 )
                 Spacer(Modifier.width(6.dp))
                 Text(
                     text = formatNum(state.totalDebris),
                     modifier = Modifier.weight(1f),
-                    fontSize = 17.sp,
+                    fontSize = 23.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily.Monospace,
-                    color = AppColors.Primary,
+                    color = Color.White,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -134,14 +135,15 @@ fun Header(
             Spacer(Modifier.weight(1f))
             Column(
                 modifier = Modifier
-                    .width(44.dp)
+                    .width(60.dp)
+                    .heightIn(min = SpaceDesign.MinTouchSize)
                     .clickable(onClick = onPrestigeShopClick)
                     .padding(top = 1.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(Modifier.size(32.dp), contentAlignment = Alignment.Center) {
                     Icon(
-                        painterResource(R.drawable.ic_nav_prestige_minimal),
+                        painterResource(R.drawable.ic_prestige_hologram_v2),
                         stringResource(R.string.open_prestige_shop),
                         Modifier.size(26.dp),
                         tint = Color.Unspecified
@@ -190,8 +192,8 @@ fun Header(
                     .padding(horizontal = 9.dp, vertical = 7.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Surface(Modifier.size(32.dp), shape = CircleShape, color = AppColors.SurfaceRaised) {
-                    Icon(painterResource(R.drawable.ic_goal_route_minimal), null, Modifier.padding(6.dp), tint = Color.Unspecified)
+                Box(Modifier.size(44.dp), contentAlignment = Alignment.Center) {
+                    Image(painterResource(nextPlanetImageRes ?: R.drawable.ic_goal_route_minimal), null, Modifier.fillMaxSize(), contentScale = ContentScale.Fit)
                 }
                 Spacer(Modifier.width(8.dp))
                 Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {

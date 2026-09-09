@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
@@ -32,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.AppColors
@@ -45,14 +47,14 @@ fun Button(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    shape: Shape = ButtonDefaults.shape,
+    shape: Shape = RoundedCornerShape(SpaceDesign.ControlRadius),
     colors: ButtonColors = ButtonDefaults.buttonColors(),
     border: BorderStroke? = null,
     contentPadding: PaddingValues = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
     style: CosmicButtonStyle = CosmicButtonStyle.Primary,
     state: CosmicButtonState = CosmicButtonState.Normal,
     compact: Boolean = false,
-    generatedArtwork: Boolean = true,
+    generatedArtwork: Boolean = style != CosmicButtonStyle.Secondary,
     content: @Composable RowScope.() -> Unit
 ) {
     // Draw the resting state with Compose primitives. The former full-size PNG frame
@@ -69,7 +71,8 @@ fun Button(
     val effectiveAccent = if (enabled) accent else AppColors.Disabled
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
-    val pressScale by animateFloatAsState(if (pressed) .965f else 1f, label = "cosmic_button_press")
+    val reduceMotion = com.example.myapplication.ui.theme.LocalReducedMotion.current
+    val pressScale by animateFloatAsState(if (pressed && !reduceMotion) .965f else 1f, label = "cosmic_button_press")
     val artworkRes = when {
         !enabled -> R.drawable.ui_button_disabled_v6
         state == CosmicButtonState.Locked -> R.drawable.ui_button_locked_v6
@@ -109,6 +112,7 @@ fun Button(
             )
             .clickable(
                 enabled = enabled,
+                role = Role.Button,
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = onClick
@@ -119,13 +123,13 @@ fun Button(
             Image(
                 painter = painterResource(artworkRes),
                 contentDescription = null,
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.matchParentSize(),
                 contentScale = ContentScale.FillBounds,
                 alpha = .72f
             )
         }
         CompositionLocalProvider(
-            LocalContentColor provides if (style == CosmicButtonStyle.Primary) requestedContent else Color.White
+            LocalContentColor provides if (enabled) Color.White else AppColors.TextDisabled
         ) {
             Row(
                 modifier = Modifier.padding(contentPadding),
