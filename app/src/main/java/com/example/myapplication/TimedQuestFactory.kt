@@ -11,6 +11,7 @@ internal class TimedQuestFactory(private val description: (QuestType, Int) -> St
         val collectEasy = 40 + tier * 10
         val collectMedium = 150 + tier * 30
         return listOf(
+            quest("${DAILY_ID_PREFIX}types_$key", QuestType.COLLECT_DEBRIS_TYPES, 10, 35_000.0, planetId, QuestCadence.DAILY, QuestDifficulty.MEDIUM),
             quest("${DAILY_ID_PREFIX}collect_easy_$key", QuestType.COLLECT_DEBRIS, collectEasy, 8_000.0, planetId, QuestCadence.DAILY, QuestDifficulty.EASY),
             quest("${DAILY_ID_PREFIX}click_100_$key", QuestType.CLICK_PLANET, 100, 10_000.0, planetId, QuestCadence.DAILY, QuestDifficulty.EASY),
             quest("${DAILY_ID_PREFIX}collect_medium_$key", QuestType.COLLECT_DEBRIS, collectMedium, 30_000.0, planetId, QuestCadence.DAILY, QuestDifficulty.MEDIUM),
@@ -25,6 +26,7 @@ internal class TimedQuestFactory(private val description: (QuestType, Int) -> St
         return listOf(
             quest("${WEEKLY_ID_PREFIX}click_2500_$key", QuestType.CLICK_PLANET, 2_500, 500_000.0, planetId, QuestCadence.WEEKLY, QuestDifficulty.HARD),
             quest("${WEEKLY_ID_PREFIX}rare_drone_$key", QuestType.OBTAIN_RARE_DRONE, 1, 750_000.0, planetId, QuestCadence.WEEKLY, QuestDifficulty.HARD),
+            quest("${WEEKLY_ID_PREFIX}types_$key", QuestType.COLLECT_DEBRIS_TYPES, 15, 750_000.0, planetId, QuestCadence.WEEKLY, QuestDifficulty.HARD),
             quest("${WEEKLY_ID_PREFIX}debris_$key", QuestType.COLLECT_DEBRIS, debrisTarget, 900_000.0, planetId, QuestCadence.WEEKLY, QuestDifficulty.HARD)
         )
     }

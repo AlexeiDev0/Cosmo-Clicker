@@ -1,5 +1,16 @@
 # Drona Salvage visual replacement
 
+2026-09-11 continuation:
+- Finished wiring the existing 28 debris sprites (14 replacements and 14 additions) into collection/quest UI; collection is available in achievements and goals.
+- Collection milestones: 10 / 15 / 20 / 28. Daily unique-type goal: 10; weekly: 15. Discoveries persist across prestige; timed quests track their own unique IDs.
+- Fixed compilation failure from missing cosmic_navigation/events/controls_atlas_v1 resources. CosmicIconPainter now uses the existing metal-and-light vectors, including aliases for currency, energy, and prestige.
+- Updated resource/spawn tests to 28 types; added full-collection reward/progress and generic-counter regression coverage.
+- Built-in image generation replaced drone_12_v2.png and drone_13_v2.png (512px, verified transparent alpha) in app/src/main/res/drawable-nodpi. Masters and prompts are retained here. Drone 12 uses its saved prompt plus a background-removal correction; drone 13 has its own prompt file.
+- Drones 01–13 now have recorded replacements. Drones 14–29 remain for a later art pass; this continuation covers the requested small additional batch.
+- No Android devices/emulators were connected (`adb devices`); on-device tests were unavailable.
+- Final unit test run: 157 tests, zero failures (`testDebugUnitTest`, 2026-09-11).
+- `assembleDebug` and `lintDebug` succeeded on 2026-09-11. APK: app/build/outputs/apk/debug/app-debug.apk. Lint report: app/build/reports/lint-results-debug.html.
+
 User requested a full redesign and explicitly asked to replace every game image.
 Direction is derived from inspected existing art: working salvage drones, unusual colorful planets, navy worn metal, ivory armor, cyan optics, amber industry and violet space.
 

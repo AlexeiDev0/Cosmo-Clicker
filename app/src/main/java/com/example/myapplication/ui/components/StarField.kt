@@ -16,7 +16,7 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
@@ -40,7 +40,9 @@ fun Star(index: Int, twinklePhase: Float, reduceMotion: Boolean = false) {
         modifier = Modifier
             .offset { IntOffset((x * windowSize.width).toInt(), (y * windowSize.height).toInt()) }
             .size(size.dp)
-            .background(Color.White.copy(alpha = alpha), CircleShape)
+            .background(
+                listOf(Color(0xFFD3EEFF), Color(0xFFFFD9AD), Color(0xFFE4D4FF), Color(0xFFC5F5E2), Color(0xFFFFCEDC))[index % 5]
+                    .copy(alpha = alpha), CircleShape)
     )
 }
 
@@ -82,19 +84,33 @@ fun DebrisTarget(target: ScavengeTarget, gameAreaWidth: Dp, gameAreaHeight: Dp, 
 }
 
 internal fun debrisDrawable(index: Int): Int = when (index) {
-    1 -> R.drawable.debris_01
-    2 -> R.drawable.debris_02
-    3 -> R.drawable.debris_03
-    4 -> R.drawable.debris_04
-    5 -> R.drawable.debris_05
-    6 -> R.drawable.debris_06
-    7 -> R.drawable.debris_07
-    8 -> R.drawable.debris_08
-    9 -> R.drawable.debris_09
-    10 -> R.drawable.debris_10
-    11 -> R.drawable.debris_11
-    12 -> R.drawable.debris_12
-    13 -> R.drawable.debris_13
-    14 -> R.drawable.debris_14
-    else -> R.drawable.debris_01
+    1 -> R.drawable.debris_01_v2
+    2 -> R.drawable.debris_02_v2
+    3 -> R.drawable.debris_03_v2
+    4 -> R.drawable.debris_04_v2
+    5 -> R.drawable.debris_05_v2
+    6 -> R.drawable.debris_06_v2
+    7 -> R.drawable.debris_07_v2
+    8 -> R.drawable.debris_08_v2
+    9 -> R.drawable.debris_09_v2
+    10 -> R.drawable.debris_10_v2
+    11 -> R.drawable.debris_11_v2
+    12 -> R.drawable.debris_12_v2
+    13 -> R.drawable.debris_13_v2
+    14 -> R.drawable.debris_14_v2
+    15 -> R.drawable.debris_15_v2
+    16 -> R.drawable.debris_16_v2
+    17 -> R.drawable.debris_17_v2
+    18 -> R.drawable.debris_18_v2
+    19 -> R.drawable.debris_19_v2
+    20 -> R.drawable.debris_20_v2
+    21 -> R.drawable.debris_21_v2
+    22 -> R.drawable.debris_22_v2
+    23 -> R.drawable.debris_23_v2
+    24 -> R.drawable.debris_24_v2
+    25 -> R.drawable.debris_25_v2
+    26 -> R.drawable.debris_26_v2
+    27 -> R.drawable.debris_27_v2
+    28 -> R.drawable.debris_28_v2
+    else -> R.drawable.debris_01_v2
 }

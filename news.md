@@ -140,11 +140,11 @@
   black hole, golden asteroid, pirate raid, and trading ship.
 - Reworked the trading-ship market composition so its title leads the screen and
   the ship is centered directly below the introductory text.
-- Added validated transparent edges to the new game atlases and kept existing save
-  identifiers compatible with the updated resources.
+- Added validated transparent edgece shrinking, signing, and release APK packaging.
+  s to the new game atlases and kept existing save
+  identifiers compatible with the 1updated resources.
 - Verified debug compilation, all 86 unit tests, Android lint, release lint, R8
-  minification, resource shrinking, signing, and release APK packaging.
-
+  minification, resour
 ## 1.12.0 - 2026-08-08
 - Prepared the first store-ready release: added release signing, code and resource
   shrinking, and the permanent `com.orbitsalvagers.droneclicker` application ID.
@@ -160,7 +160,8 @@
   fleet-damage reduction, dragon regeneration, minion waves, and temporary drone
   shutdowns during boss battles.
   - Moved challenge battles from the Command Center dialog into the main game field,
-    where bosses replace thewc  planet and fight alongside the visible player drone fleet.
+    where bosses replace thewc стоzsdxdferRHhttdYGQA  2 tjhyda  WQWdfsdcdbaSXfdeeg
+    -  VXNG bdsa <AaSXRQplanet and fight alongside the visible player drone fleet.
 - Replaced rectangular boss illustrations with four transparent full-body boss
   renders and added entrance, hovering, breathing, tilt, and hit-reaction animations.
 - Added clear victory and timeout results, floating damage values, boss ability

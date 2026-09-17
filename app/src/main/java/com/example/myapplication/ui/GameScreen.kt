@@ -34,7 +34,7 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -76,6 +76,14 @@ fun GameScreen(
     val combo by viewModel.combo.collectAsState()
     val autoClickBlockSeconds by viewModel.autoClickBlockSeconds.collectAsState()
     val lifecycleOwner = LocalLifecycleOwner.current
+    var sceneActive by remember { mutableStateOf(lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) }
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, _ ->
+            sceneActive = lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val soundManager = remember(context) { SoundManager(context) }
@@ -202,7 +210,7 @@ fun GameScreen(
     val nextPlanetImageRes = nextPlanetIndex?.let { viewModel.planets["p$it"]?.imageRes }
 
     // Логика выбора фона в зависимости от активного ивента
-    val backgroundRes = R.drawable.background_salvage_command_v3
+    val backgroundRes = R.drawable.background_space_main_v4
     val eventTint = when (state.activeEvent?.type) {
         GameEventType.STORM, GameEventType.BLACK_HOLE -> Color(0xFF5A3D8F)
         GameEventType.SOLAR_FLARE -> Color(0xFF9A512F)
@@ -224,7 +232,12 @@ fun GameScreen(
         }
     }
 
-    val spaceMotion = if (!reducedMotion) rememberInfiniteTransition(label = "space_background") else null
+    val spaceMotion = if (!reducedMotion && sceneActive) rememberInfiniteTransition(label = "space_background") else null
+    val galaxyPhase = spaceMotion?.animateFloat(
+        initialValue = 0f, targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(60_000, easing = LinearEasing)),
+        label = "galaxy_phase"
+    )?.value ?: 0f
     val starTwinklePhase = spaceMotion?.animateFloat(
         initialValue = 0f,
         targetValue = (Math.PI * 2.0).toFloat(),
@@ -265,6 +278,8 @@ fun GameScreen(
         )
 
         if (!reducedMotion) CosmicParticleTrails(cosmicParticlePhase)
+        val planetColors = com.example.myapplication.ui.theme.PlanetPalette.forPlanet(state.currentPlanetId)
+        LivingGalaxy(galaxyPhase, reducedMotion, primary = planetColors.primary, secondary = planetColors.secondary)
 
         // Затемнение для читаемости элементов
         Box(
@@ -294,6 +309,7 @@ fun GameScreen(
             )
             
             BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
+                val planetDiameter = minOf(maxWidth * .88f, maxHeight * .78f, 390.dp)
                 state.scavengeTargets.forEach { target ->
                     key(target.id) {
                         DebrisTarget(
@@ -328,13 +344,15 @@ fun GameScreen(
                         planetId = state.currentPlanetId,
                         planetConfig = viewModel.planets[state.currentPlanetId] ?: viewModel.planets.values.first(),
                         modifier = Modifier.align(Alignment.Center),
-                        reducedMotion = reducedMotion
+                        reducedMotion = reducedMotion,
+                        diameter = planetDiameter,
+                        atmospherePhase = galaxyPhase
                     ) { x, y ->
                         val value = viewModel.onPlanetClick(x, y)
                         if (value > 0.0) {
                             if (soundEnabled) soundManager.playClick()
-                            val planetWidthFraction = GameConstants.PlanetSize.value / maxWidth.value
-                            val planetHeightFraction = GameConstants.PlanetSize.value / maxHeight.value
+                            val planetWidthFraction = planetDiameter.value / maxWidth.value
+                            val planetHeightFraction = planetDiameter.value / maxHeight.value
                             addFloatingText(
                                 "+${formatNum(value)}",
                                 (0.5f + (x - 0.5f) * planetWidthFraction).coerceIn(0f, 1f),
@@ -479,6 +497,7 @@ fun GameScreen(
                     .align(Alignment.BottomCenter)
                     .fillMaxWidth()
                     .background(Color(0xB80A1322))
+                    .navigationBarsPadding()
                     .padding(horizontal = 8.dp, vertical = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(2.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -718,7 +737,7 @@ fun GameScreen(
                     }
             ) {
                 Image(
-                    painter = painterResource(id = R.drawable.play_fon_game_v2),
+                    painter = painterResource(id = R.drawable.background_space_start_v4),
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxSize()
@@ -755,11 +774,11 @@ fun GameScreen(
                         letterSpacing = 1.4.sp
                     )
                     Box(modifier = Modifier.fillMaxWidth().height(86.dp), contentAlignment = Alignment.Center) {
-                        Image(
-                            painter = painterResource(R.drawable.ui_start_button_v2),
-                            contentDescription = null,
-                            modifier = Modifier.fillMaxSize(),
-                            contentScale = ContentScale.FillBounds
+                        Box(
+                            Modifier.fillMaxSize()
+                                .clip(RoundedCornerShape(16.dp))
+                                .background(Brush.verticalGradient(listOf(Color(0xFF30465D), Color(0xFF142337), Color(0xFF1C3546))))
+                                .border(1.dp, Color(0xFF7899B4), RoundedCornerShape(16.dp))
                         )
                         Text(
                             text = stringResource(R.string.tap_to_continue),
@@ -779,13 +798,9 @@ fun GameScreen(
 
 @Composable
 fun QuestLauncherButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier
-            .size(52.dp)
-            .clickable(onClick = onClick),
-        shape = CircleShape,
-        color = AppColors.SurfaceRaised,
-        border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Primary.copy(alpha = .24f))
+    com.example.myapplication.ui.components.IconButton(
+        onClick = onClick,
+        modifier = modifier.size(52.dp)
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_nav_quests_minimal),
@@ -804,18 +819,29 @@ private fun GameNavigationButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(
+    val accent = when (icon) {
+        R.drawable.ic_nav_shop_minimal -> Color(0xFFE8AB65)
+        R.drawable.ic_nav_quests_minimal -> Color(0xFF83CDA7)
+        R.drawable.ic_nav_hangar_minimal -> Color(0xFFF0A278)
+        else -> Color(0xFF93B9EB)
+    }
+    Button(
+        onClick = onClick,
         modifier = modifier
-            .height(66.dp)
-            .clip(RoundedCornerShape(14.dp))
-            .clickable(onClick = onClick),
+            .heightIn(min = 64.dp, max = 76.dp),
+        colors = androidx.compose.material3.ButtonDefaults.buttonColors(containerColor = accent),
+        compact = true,
+        generatedArtwork = false,
+        contentPadding = PaddingValues(horizontal = 3.dp, vertical = 4.dp)
+    ) {
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
             painter = painterResource(icon),
             contentDescription = stringResource(description),
-            modifier = Modifier.size(38.dp),
+            modifier = Modifier.size(30.dp),
             tint = Color.Unspecified
         )
         Spacer(Modifier.height(3.dp))
@@ -825,9 +851,11 @@ private fun GameNavigationButton(
             fontSize = 10.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
-            maxLines = 1,
+            maxLines = 2,
+            lineHeight = 11.sp,
             overflow = TextOverflow.Ellipsis
         )
+    }
     }
 }
 

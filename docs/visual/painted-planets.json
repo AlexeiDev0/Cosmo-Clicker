@@ -1,0 +1,353 @@
+[
+    {
+        "id":  "p1",
+        "label":  "1. Azurea",
+        "resource":  "planet_1_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#C3D592",
+        "secondary":  "#A2C493"
+    },
+    {
+        "id":  "p2",
+        "label":  "2. Canyon Prime",
+        "resource":  "planet_2_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#DAE9D5",
+        "secondary":  "#D1EDDA"
+    },
+    {
+        "id":  "p3",
+        "label":  "3. Nebula Echo",
+        "resource":  "planet_3_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#9686D7",
+        "secondary":  "#7F85D1"
+    },
+    {
+        "id":  "p4",
+        "label":  "4. Crystal Hearth",
+        "resource":  "planet_4_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#CDE8D6",
+        "secondary":  "#AFE3DD"
+    },
+    {
+        "id":  "p5",
+        "label":  "5. Dune Horizon",
+        "resource":  "planet_5_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#A7E1FD",
+        "secondary":  "#7F8CC6"
+    },
+    {
+        "id":  "p6",
+        "label":  "6. Volt Nova",
+        "resource":  "planet_6_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#CAF8F7",
+        "secondary":  "#81C7EE"
+    },
+    {
+        "id":  "p7",
+        "label":  "7. Gas Giant G-7",
+        "resource":  "planet_7_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#CDDBA2",
+        "secondary":  "#ABCC9C"
+    },
+    {
+        "id":  "p8",
+        "label":  "8. Jungle Core",
+        "resource":  "planet_8_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#A0C690",
+        "secondary":  "#CADC93"
+    },
+    {
+        "id":  "p9",
+        "label":  "9. Magma S-15",
+        "resource":  "planet_9_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#FDFDAF",
+        "secondary":  "#A5A7E0"
+    },
+    {
+        "id":  "p10",
+        "label":  "10. Red Dust",
+        "resource":  "planet_10_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#97A3EB",
+        "secondary":  "#FCDCAF"
+    },
+    {
+        "id":  "p11",
+        "label":  "11. Mech World X",
+        "resource":  "planet_11_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#D6DFBB",
+        "secondary":  "#C7DEBE"
+    },
+    {
+        "id":  "p12",
+        "label":  "12. Luna Silvis",
+        "resource":  "planet_12_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#E9DAD2",
+        "secondary":  "#97ABD8"
+    },
+    {
+        "id":  "p13",
+        "label":  "13. Abyss Ocean",
+        "resource":  "planet_13_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#C9DA99",
+        "secondary":  "#A1C491"
+    },
+    {
+        "id":  "p14",
+        "label":  "14. Ring Oasis",
+        "resource":  "planet_14_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#D6E8D0",
+        "secondary":  "#C4E4CE"
+    },
+    {
+        "id":  "p15",
+        "label":  "15. Sky Haven",
+        "resource":  "planet_15_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#78C0EA",
+        "secondary":  "#96B0DD"
+    },
+    {
+        "id":  "p16",
+        "label":  "16. Toxic Waste",
+        "resource":  "planet_16_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#A2CD8E",
+        "secondary":  "#8AC59A"
+    },
+    {
+        "id":  "p17",
+        "label":  "17. Pink Nebula",
+        "resource":  "planet_17_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#998CCC",
+        "secondary":  "#848DD2"
+    },
+    {
+        "id":  "p18",
+        "label":  "18. Cloud City",
+        "resource":  "planet_18_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#E0E3B7",
+        "secondary":  "#F0E1B0"
+    },
+    {
+        "id":  "p19",
+        "label":  "19. Rocky Bastion",
+        "resource":  "planet_19_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#E2E6D1",
+        "secondary":  "#E0EBDC"
+    },
+    {
+        "id":  "p20",
+        "label":  "20. Foggy Void",
+        "resource":  "planet_20_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#B1CCDF",
+        "secondary":  "#8F9CC8"
+    },
+    {
+        "id":  "p21",
+        "label":  "21. Chronos Rift",
+        "resource":  "planet_21_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#CEDDC5",
+        "secondary":  "#B1DBD8"
+    },
+    {
+        "id":  "p22",
+        "label":  "22. Aurora Forge",
+        "resource":  "planet_22_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#C9CFA4",
+        "secondary":  "#D1E2C7"
+    },
+    {
+        "id":  "p23",
+        "label":  "23. Prism Sanctuary",
+        "resource":  "planet_23_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#D0EDD9",
+        "secondary":  "#BAE8E3"
+    },
+    {
+        "id":  "p24",
+        "label":  "24. Eventide Crown",
+        "resource":  "planet_24_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#C5E2E1",
+        "secondary":  "#89C1E5"
+    },
+    {
+        "id":  "p25",
+        "label":  "25. Emberglass",
+        "resource":  "planet_25_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#FDFEC8",
+        "secondary":  "#B2DFFE"
+    },
+    {
+        "id":  "p26",
+        "label":  "26. Verdant Halo",
+        "resource":  "planet_26_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#CDDD9B",
+        "secondary":  "#A3C894"
+    },
+    {
+        "id":  "p27",
+        "label":  "27. Iron Tempest",
+        "resource":  "planet_27_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#C8D8BC",
+        "secondary":  "#D1D8B7"
+    },
+    {
+        "id":  "p28",
+        "label":  "28. Frozen Reliquary",
+        "resource":  "planet_28_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#82A0CE",
+        "secondary":  "#D4EBE9"
+    },
+    {
+        "id":  "p29",
+        "label":  "29. Celestial Bloom",
+        "resource":  "planet_29_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#BAD5AD",
+        "secondary":  "#B0D6BC"
+    },
+    {
+        "id":  "p30",
+        "label":  "30. Binary Grave",
+        "resource":  "planet_30_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#EDE5D7",
+        "secondary":  "#8895BE"
+    },
+    {
+        "id":  "p31",
+        "label":  "31. Mirage Engine",
+        "resource":  "planet_31_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#9DCEED",
+        "secondary":  "#8A9DE0"
+    },
+    {
+        "id":  "p32",
+        "label":  "32. Leviathan Deep",
+        "resource":  "planet_32_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#C6D599",
+        "secondary":  "#A7C597"
+    },
+    {
+        "id":  "p33",
+        "label":  "33. Solar Archive",
+        "resource":  "planet_33_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#DBEBD5",
+        "secondary":  "#CFE8D8"
+    },
+    {
+        "id":  "p34",
+        "label":  "34. Shattered Meridian",
+        "resource":  "planet_34_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#88C5E3",
+        "secondary":  "#7B91D1"
+    },
+    {
+        "id":  "p35",
+        "label":  "35. Clockwork Eden",
+        "resource":  "planet_35_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#BFD182",
+        "secondary":  "#93B784"
+    },
+    {
+        "id":  "p36",
+        "label":  "36. Phantom Orchard",
+        "resource":  "planet_36_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#BED8D4",
+        "secondary":  "#ACD6EC"
+    },
+    {
+        "id":  "p37",
+        "label":  "37. Cinder Cathedral",
+        "resource":  "planet_37_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#FDFEAA",
+        "secondary":  "#9699F4"
+    },
+    {
+        "id":  "p38",
+        "label":  "38. Null Beacon",
+        "resource":  "planet_38_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#D6D9BB",
+        "secondary":  "#E9E4CC"
+    },
+    {
+        "id":  "p39",
+        "label":  "39. Origin Vault",
+        "resource":  "planet_39_painted_v3",
+        "width":  768,
+        "height":  768,
+        "primary":  "#B6D0A5",
+        "secondary":  "#C4F4D8"
+    }
+]

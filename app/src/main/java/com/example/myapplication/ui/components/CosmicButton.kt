@@ -1,18 +1,17 @@
 package com.example.myapplication.ui.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonColors
@@ -31,16 +30,34 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.graphics.lerp
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.selected
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.R
 import com.example.myapplication.ui.theme.AppColors
 import com.example.myapplication.ui.theme.SpaceDesign
 
 enum class CosmicButtonStyle { Primary, Secondary, Reward, Danger }
 enum class CosmicButtonState { Normal, Selected, Active, Locked }
+
+@Composable
+fun IconButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    content: @Composable () -> Unit
+) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.sizeIn(minWidth = 48.dp, minHeight = 48.dp),
+        enabled = enabled,
+        compact = true,
+        style = CosmicButtonStyle.Secondary,
+        contentPadding = PaddingValues(0.dp),
+        generatedArtwork = false
+    ) { content() }
+}
 
 @Composable
 fun Button(
@@ -57,34 +74,37 @@ fun Button(
     generatedArtwork: Boolean = style != CosmicButtonStyle.Secondary,
     content: @Composable RowScope.() -> Unit
 ) {
-    // Draw the resting state with Compose primitives. The former full-size PNG frame
-    // could be skipped by the renderer until the first pointer invalidation, leaving
-    // an invisible but clickable button on some devices.
+    // Bold flat surfaces; accents communicate state without material reflections.
     val requestedAccent = if (enabled) colors.containerColor else colors.disabledContainerColor
-    val requestedContent = if (enabled) colors.contentColor else colors.disabledContentColor
     val accent = when (style) {
         CosmicButtonStyle.Primary -> requestedAccent
-        CosmicButtonStyle.Secondary -> AppColors.Secondary
+        CosmicButtonStyle.Secondary -> Color(0xFF9AAFC4)
         CosmicButtonStyle.Reward -> AppColors.Reward
         CosmicButtonStyle.Danger -> AppColors.Danger
     }
-    val effectiveAccent = if (enabled) accent else AppColors.Disabled
+    val effectiveAccent = when {
+        !enabled -> AppColors.Disabled
+        state == CosmicButtonState.Locked -> AppColors.Locked
+        else -> accent
+    }
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
     val reduceMotion = com.example.myapplication.ui.theme.LocalReducedMotion.current
     val pressScale by animateFloatAsState(if (pressed && !reduceMotion) .965f else 1f, label = "cosmic_button_press")
-    val artworkRes = when {
-        !enabled -> R.drawable.ui_button_disabled_v6
-        state == CosmicButtonState.Locked -> R.drawable.ui_button_locked_v6
-        pressed -> R.drawable.ui_button_pressed_v6
-        state == CosmicButtonState.Active -> R.drawable.ui_button_active_v6
-        state == CosmicButtonState.Selected -> R.drawable.ui_button_selected_v6
-        else -> R.drawable.ui_button_normal_v6
-    }
+    val emphasized = state == CosmicButtonState.Active || state == CosmicButtonState.Selected
+    val richSurface = style != CosmicButtonStyle.Secondary || emphasized
+    val depth = if (pressed) .16f else if (emphasized) .38f else .29f
+    val surface = if (richSurface) Brush.verticalGradient(
+        listOf(
+            lerp(Color(0xFF233253), effectiveAccent, depth),
+            lerp(Color(0xFF17213C), effectiveAccent, depth * .72f),
+            lerp(Color(0xFF111A30), effectiveAccent, depth * .42f)
+        )
+    ) else Brush.verticalGradient(listOf(Color(0xFF29344E), Color(0xFF1D283F)))
     Box(
         modifier = modifier
             .defaultMinSize(
-                minWidth = if (compact) 72.dp else 96.dp,
+                minWidth = if (compact) 48.dp else 96.dp,
                 minHeight = 48.dp
             )
             .alpha(if (enabled) 1f else SpaceDesign.DisabledAlpha)
@@ -93,23 +113,16 @@ fun Button(
                 scaleY = pressScale
             }
             .clip(shape)
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        effectiveAccent.copy(alpha = if (enabled) .30f else .16f),
-                        AppColors.Surface,
-                        effectiveAccent.copy(alpha = if (enabled) .13f else .08f)
-                    )
-                )
-            )
+            .background(surface)
             .then(
                 if (border != null) Modifier.border(border.width, border.brush, shape)
                 else Modifier.border(
                     width = 1.dp,
-                    color = effectiveAccent.copy(alpha = if (generatedArtwork) .58f else .38f),
+                    color = effectiveAccent.copy(alpha = if (pressed || emphasized) .8f else if (richSurface) .5f else .20f),
                     shape = shape
                 )
             )
+            .semantics { selected = emphasized }
             .clickable(
                 enabled = enabled,
                 role = Role.Button,
@@ -119,17 +132,8 @@ fun Button(
             ),
         contentAlignment = Alignment.Center
     ) {
-        if (generatedArtwork) {
-            Image(
-                painter = painterResource(artworkRes),
-                contentDescription = null,
-                modifier = Modifier.matchParentSize(),
-                contentScale = ContentScale.FillBounds,
-                alpha = .72f
-            )
-        }
         CompositionLocalProvider(
-            LocalContentColor provides if (enabled) Color.White else AppColors.TextDisabled
+            LocalContentColor provides if (enabled) Color(0xFFF0F5F7) else AppColors.TextDisabled
         ) {
             Row(
                 modifier = Modifier.padding(contentPadding),

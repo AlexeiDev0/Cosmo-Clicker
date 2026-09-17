@@ -23,7 +23,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
@@ -52,7 +52,11 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
     val tabColors = listOf(Color(0xFF48DFFC), Color(0xFFAA77FF), Color(0xFFFFC857), Color(0xFF50D890))
     val accent = tabColors[selectedTab]
     Card(
-        modifier = modifier.widthIn(max = 720.dp).fillMaxWidth().fillMaxHeight(0.80f),
+        modifier = modifier
+            .widthIn(max = 720.dp)
+            .fillMaxWidth()
+            .fillMaxHeight(0.80f)
+            .navigationBarsPadding(),
         shape = RoundedCornerShape(topStart = SpaceDesign.SheetRadius, topEnd = SpaceDesign.SheetRadius),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF07111F)),
         border = null
@@ -76,7 +80,6 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
             )
             Column(Modifier.fillMaxSize().padding(SpaceDesign.SheetPadding)) {
                 SpaceSheetHeader(stringResource(R.string.case_shop_title), stringResource(R.string.case_shop_subtitle), onClose)
-                ArtworkStrip(listOf(R.drawable.case_common_1, R.drawable.case_rare_1, R.drawable.case_legendary_1), Modifier.height(88.dp))
                 Spacer(Modifier.height(12.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
                     listOf(R.string.shop_tab_upgrades, R.string.shop_tab_cases, R.string.shop_tab_planets, R.string.shop_tab_systems).forEachIndexed { index, title ->
@@ -208,18 +211,12 @@ private fun ClickUpgradeRow(
             )
         }
         Spacer(Modifier.width(8.dp))
-        Box(
-            modifier = Modifier.width(124.dp).height(48.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(
-                    Brush.verticalGradient(
-                        listOf(accent.copy(alpha = .28f), Color(0xFF101B2C), accent.copy(alpha = .12f))
-                    )
-                )
-                .border(1.dp, accent.copy(alpha = .68f), RoundedCornerShape(12.dp))
-                .alpha(if (enabled) 1f else .38f)
-                .clickable(enabled = enabled, onClick = onBuy),
-            contentAlignment = Alignment.Center
+        Button(
+            modifier = Modifier.width(124.dp).height(48.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = accent),
+            enabled = enabled,
+            onClick = onBuy,
+            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 GeneratedSheetIcon(R.drawable.shop_ui_minimal_sheet_v1, 4, 16.dp, columns = 4, rows = 4)
@@ -267,7 +264,6 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
                 border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Primary.copy(alpha = 0.24f))
             ) {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    ArtworkStrip(listOf(R.drawable.drone_06_v2, R.drawable.drone_01_v2, R.drawable.drone_07_v2), Modifier.height(106.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Column {
                             Text(stringResource(R.string.hangar_overview), color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
@@ -315,11 +311,14 @@ private fun HangarFilterChip(filter: HangarFilter, selected: Boolean, onClick: (
         HangarFilter.OWNED -> R.string.hangar_filter_owned
         HangarFilter.ACTIVE -> R.string.hangar_filter_active
     }
-    Surface(
-        modifier = modifier.height(48.dp).clickable(onClick = onClick),
+    Button(
+        modifier = modifier.height(48.dp),
+        onClick = onClick,
         shape = RoundedCornerShape(10.dp),
-        color = if (selected) AppColors.Primary.copy(alpha = .18f) else Color.White.copy(alpha = .04f),
-        border = androidx.compose.foundation.BorderStroke(1.dp, if (selected) AppColors.Primary.copy(alpha = .55f) else AppColors.Outline)
+        style = if (selected) CosmicButtonStyle.Primary else CosmicButtonStyle.Secondary,
+        state = if (selected) CosmicButtonState.Selected else CosmicButtonState.Normal,
+        compact = true,
+        contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
             Text(stringResource(label), color = if (selected) AppColors.Primary else AppColors.TextMuted, fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
@@ -549,6 +548,7 @@ fun AchievementsPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
             item(key = "galactic_collection") {
                 GalacticCollectionCard(collection)
             }
+            item(key = "debris_collection") { DebrisCollectionCard(state) }
                 items(AchievementEngine.definitions, key = { it.id }) { achievement ->
             val unlocked = achievement.id in state.unlockedAchievementIds
             val claimed = achievement.id in state.claimedAchievementIds
@@ -709,6 +709,7 @@ private fun GalacticCollectionCard(collection: GalacticCollectionProgress) {
             CollectionMetric(R.string.progress_achievements, collection.achievements, collection.totalAchievements, Modifier.weight(1f))
             CollectionMetric(R.string.collection_drones, collection.droneDiscoveries, collection.totalDrones, Modifier.weight(1f))
         }
+        CollectionMetric(R.string.debris_collection, collection.debrisTypes, collection.totalDebrisTypes, Modifier.fillMaxWidth())
     }
 }
 
@@ -912,7 +913,11 @@ private fun SpacePanel(
             Column(Modifier.fillMaxSize().padding(SpaceDesign.SheetPadding)) {
                 SpaceSheetHeader(title, subtitle, onClose)
                 Spacer(Modifier.height(14.dp))
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(9.dp), content = content)
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(9.dp),
+                contentPadding = PaddingValues(bottom = 14.dp),
+                content = content
+            )
             }
         }
     }
@@ -923,11 +928,9 @@ private fun SpacePanel(
 
 @Composable
 private fun LauncherIcon(icon: Int, description: Int, onClick: () -> Unit) {
-    Surface(
-        modifier = Modifier.size(48.dp).clickable(onClick = onClick),
-        shape = CircleShape,
-        color = AppColors.SurfaceRaised,
-        border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Primary.copy(alpha = .24f))
+    IconButton(
+        onClick = onClick,
+        modifier = Modifier.size(48.dp)
     ) {
         Icon(
             painter = painterResource(icon),
@@ -946,6 +949,10 @@ private fun achievementTitle(id: String): Int = when (id) {
     "fleet_5" -> R.string.achievement_fleet_5
     "fleet_12" -> R.string.achievement_fleet_12
     "fleet_50" -> R.string.achievement_fleet_50
+    "salvage_10" -> R.string.achievement_salvage_10
+    "salvage_15" -> R.string.achievement_salvage_15
+    "salvage_20" -> R.string.achievement_salvage_20
+    "salvage_28" -> R.string.achievement_salvage_28
     "collection_15" -> R.string.achievement_collection_15
     "collection_29" -> R.string.achievement_collection_29
     "planets_5" -> R.string.achievement_planets_5

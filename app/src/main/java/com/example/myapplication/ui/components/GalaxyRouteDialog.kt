@@ -21,7 +21,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -125,8 +125,8 @@ private fun PlanetRouteNode(
     onClick: () -> Unit
 ) {
     val accent = when {
-        current -> Color(0xFF65E6FF)
-        owned -> Color(0xFF41D6A3)
+        current -> com.example.myapplication.ui.theme.PlanetPalette.forPlanet(id).primary
+        owned -> com.example.myapplication.ui.theme.PlanetPalette.forPlanet(id).secondary
         isNext -> Color(0xFFFFC857)
         else -> Color(0xFF465069)
     }

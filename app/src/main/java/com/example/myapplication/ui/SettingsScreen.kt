@@ -39,7 +39,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -357,7 +357,7 @@ private fun CosmicSwitch(checked: Boolean) {
         modifier = Modifier
             .size(width = 52.dp, height = 30.dp)
             .clip(RoundedCornerShape(15.dp))
-            .background(if (checked) AppColors.Primary.copy(alpha = .34f) else Color(0xFF172438))
+            .background(Brush.verticalGradient(listOf(Color(0xFF0B1523), if (checked) Color(0xFF28554C) else Color(0xFF25364A))))
             .border(
                 1.dp,
                 if (checked) AppColors.Primary.copy(alpha = .72f) else AppColors.Outline,
@@ -370,7 +370,7 @@ private fun CosmicSwitch(checked: Boolean) {
             Modifier
                 .size(22.dp)
                 .background(
-                    if (checked) AppColors.Primary else AppColors.TextMuted,
+                    Brush.verticalGradient(listOf(Color(0xFFDCE7EE), Color(0xFF778CA3))),
                     androidx.compose.foundation.shape.CircleShape
                 )
         )
@@ -419,7 +419,7 @@ private fun SettingsImageButton(label: String, value: String, icon: Int, onClick
                 Text(value, color = AppColors.TextMuted, fontSize = 12.sp)
             }
             Spacer(Modifier.width(8.dp))
-            Text("›", color = AppColors.Primary, fontSize = 22.sp)
+            Image(painterResource(R.drawable.ui_chevron_right_v2), null, Modifier.size(18.dp))
         }
     }
 }
@@ -459,7 +459,7 @@ private fun SettingsRow(label: String, value: String, badge: String? = null, sho
         Text(value, color = AppColors.TextMuted, fontSize = 11.sp)
         if (showChevron) {
             Spacer(Modifier.width(7.dp))
-            Text("›", color = AppColors.Primary, fontSize = 20.sp)
+            Image(painterResource(R.drawable.ui_chevron_right_v2), null, Modifier.size(18.dp))
         }
     }
 }

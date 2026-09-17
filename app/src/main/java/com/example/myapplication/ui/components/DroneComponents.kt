@@ -27,10 +27,14 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import com.example.myapplication.DroneData
 import com.example.myapplication.DroneState
 import com.example.myapplication.FleetConfig
@@ -59,7 +63,6 @@ fun FleetIcon(item: FleetConfig, iconSize: Dp) {
                     painter = painterResource(id = item.iconRes),
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
-                    colorFilter = ColorFilter.tint(Color(0xFFE4F1F7), BlendMode.Modulate),
                     modifier = Modifier
                         .requiredSize(iconSize * columns, iconSize * rows)
                         .graphicsLayer {
@@ -74,7 +77,6 @@ fun FleetIcon(item: FleetConfig, iconSize: Dp) {
                 painter = painterResource(id = item.iconRes),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
-                colorFilter = ColorFilter.tint(Color(0xFFE4F1F7), BlendMode.Modulate),
                 modifier = Modifier.size(iconSize)
             )
         }
@@ -91,6 +93,9 @@ fun ScavengingDrone(
     onDroneClick: (Long) -> Unit = {}
 ) {
     val fleetItem = fleetItems[drone.type]
+    val reducedMotion = com.example.myapplication.ui.theme.LocalReducedMotion.current
+    val displayX = if (reducedMotion) .12f + (drone.id % 7).toFloat() * .12f else drone.x
+    val displayY = if (reducedMotion) .18f + (drone.id % 5).toFloat() * .14f else drone.y
     val isInfected = drone.state == DroneState.INFECTED
     
     val droneSize = remember(drone.type, fleetItem) {
@@ -107,8 +112,8 @@ fun ScavengingDrone(
     Box(
         modifier = Modifier
             .offset(
-                x = gameAreaWidth * drone.x - (droneSize / 2),
-                y = gameAreaHeight * drone.y - (droneSize / 2)
+                x = gameAreaWidth * displayX - (droneSize / 2),
+                y = gameAreaHeight * displayY - (droneSize / 2)
             )
             .size(droneSize)
             .let { 
@@ -117,6 +122,10 @@ fun ScavengingDrone(
                     .border(2.dp, Color.Red, CircleShape)
                     .shadow(12.dp, CircleShape, spotColor = Color.Red)
                 else it
+            }
+            .semantics {
+                role = Role.Button
+                contentDescription = fleetItem?.name ?: drone.type
             }
             .clickable { onDroneClick(drone.id) },
         contentAlignment = Alignment.Center

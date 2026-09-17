@@ -18,6 +18,10 @@ data class AchievementDefinition(
 
 object AchievementEngine {
     val definitions = listOf(
+        AchievementDefinition("salvage_10", rewardDebris = 100_000.0) { it.discoveredDebrisIds.size >= 10 },
+        AchievementDefinition("salvage_15", rewardDebris = 300_000.0) { it.discoveredDebrisIds.size >= 15 },
+        AchievementDefinition("salvage_20", rewardPrestigePoints = 2) { it.discoveredDebrisIds.size >= 20 },
+        AchievementDefinition("salvage_28", rewardPrestigePoints = 5) { it.discoveredDebrisIds.size >= 28 },
         AchievementDefinition("click_100", rewardDebris = 5_000.0) { it.lifetimeStats.clicks >= 100 },
         AchievementDefinition("click_1000", rewardDebris = 35_000.0) { it.lifetimeStats.clicks >= 1_000 },
         AchievementDefinition("click_10000", rewardDebris = 250_000.0) { it.lifetimeStats.clicks >= 10_000 },

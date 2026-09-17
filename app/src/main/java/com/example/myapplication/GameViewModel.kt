@@ -200,6 +200,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             activeQuests.add(
                 Quest(
                     id = id,
+                    collectedDebrisIds = prefs.getStringSet("quest_${id}_debrisTypes", emptySet()).orEmpty()
+                        .mapNotNull { it.toIntOrNull()?.takeIf { value -> value in 1..28 } }.toSet(),
                     type = type,
                     description = desc,
                     target = target,
@@ -233,6 +235,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 item.id to prefs.getInt("damagedFleet_${item.id}", 0).coerceIn(0, fleetCounts[item.id] ?: 0)
             },
             discoveredDroneIds = discoveredDroneIds,
+            discoveredDebrisIds = prefs.getStringSet("discoveredDebrisIds", emptySet()).orEmpty()
+                .mapNotNull { it.toIntOrNull()?.takeIf { value -> value in 1..28 } }.toSet(),
             droneParts = droneParts,
             claimedCollectionMilestones = prefs.getStringSet("claimedCollectionMilestones", emptySet()).orEmpty(),
             currentPlanetId = currentPlanetId,
@@ -342,6 +346,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 putInt("casesPurchased_${type.name}", state.casePurchasesByType[type] ?: 0)
             }
             putInt("prestigePoints", state.prestigePoints)
+            putStringSet("discoveredDebrisIds", state.discoveredDebrisIds.map { it.toString() }.toSet())
             putStringSet("technologies", state.technologies.map { it.name }.toSet())
             putLong("dailyQuestDay", state.dailyQuestDay)
             putLong("weeklyQuestWeek", state.weeklyQuestWeek)
@@ -376,6 +381,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             putStringSet("activeQuestIds", activeQuestIds)
             state.activeQuests.forEach { q ->
                 putString("quest_${q.id}_type", q.type.name)
+                putStringSet("quest_${q.id}_debrisTypes", q.collectedDebrisIds.map { it.toString() }.toSet())
                 putString("quest_${q.id}_desc", q.description)
                 putFloat("quest_${q.id}_target", q.target.toFloat())
                 putFloat("quest_${q.id}_progress", q.progress.toFloat())
@@ -733,17 +739,24 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             }.toMutableList()
             var debrisGained = 0.0
             var debrisCollectedCount = 0
+            val collectedTypes = mutableSetOf<Int>()
             val magnetLevel = (state.clickLevels["utility_magnet"] ?: 0).coerceIn(0, 5)
             if (magnetLevel > 0) {
                 val radius = 0.06f + magnetLevel * 0.035f
                 val attracted = targets.filter { distanceSquared(it.x, it.y, DRONE_HOME_POSITION, DRONE_HOME_POSITION) <= radius * radius }
                 debrisGained += attracted.sumOf { it.reward }
                 debrisCollectedCount += attracted.size
+                collectedTypes += attracted.filterNot { it.isMeteor }.map { it.imageIndex }
                 targets.removeAll(attracted.toSet())
             }
             if (drones.isEmpty()) return@update state.copy(
                 scavengeTargets = targets,
                 totalDebris = state.totalDebris + debrisGained,
+                discoveredDebrisIds = state.discoveredDebrisIds + collectedTypes,
+                activeQuests = QuestEngine.collectTypes(
+                    QuestEngine.advance(state.activeQuests, QuestType.COLLECT_DEBRIS, debrisCollectedCount.toDouble()), collectedTypes),
+                lifetimeStats = state.lifetimeStats.copy(debrisCollected = state.lifetimeStats.debrisCollected + debrisCollectedCount),
+                sessionStats = state.sessionStats.copy(debrisEarned = state.sessionStats.debrisEarned + debrisGained),
                 activeEffects = state.activeEffects
             )
 
@@ -790,6 +803,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 var nHasCargo = drone.hasCargo
                 var nCargoRarity = drone.cargoRarity
                 var nCargoReward = drone.cargoReward
+                var nCargoDebrisId = drone.cargoDebrisId
                 var nPatrolTargetX = drone.patrolTargetX
                 var nPatrolTargetY = drone.patrolTargetY
                 var nDisabledUntil = 0L
@@ -856,7 +870,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                         }
                         DroneState.MOVING_TO_DEBRIS -> {
                             val target = targetsById[drone.targetId]
-                            if (target != null) {
+                            if (target != null && targets.any { it.id == target.id }) {
                                 val dx = target.x - nx
                                 val dy = target.y - ny
                                 val distSq = dx * dx + dy * dy
@@ -865,6 +879,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                                     ny = target.y
                                     
                                     if (target.isMeteor) {
+                                        nCargoDebrisId = null
                                         // Rocky Bastion (p19): Immune to meteors
                                         if (planetId == "p19") {
                                             nState = DroneState.RETURNING
@@ -894,6 +909,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                                         nHasCargo = true
                                         nCargoRarity = target.rarity
                                         nCargoReward = target.reward
+                                        nCargoDebrisId = target.imageIndex
                                     }
                                     targets.removeAll { it.id == target.id }
                                     nTargetId = null
@@ -917,12 +933,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                                 if (nHasCargo) {
                                     debrisGained += nCargoReward
                                     debrisCollectedCount++
+                                    nCargoDebrisId?.let { collectedTypes += it }
                                 }
                                 nState = DroneState.IDLE
                                 nTargetId = null
                                 nHasCargo = false
                                 nCargoRarity = null
                                 nCargoReward = 0.0
+                                nCargoDebrisId = null
                             } else {
                                 val dist = sqrt(distSq.toDouble()).toFloat()
                                 nx += (dx / dist) * moveStep
@@ -940,6 +958,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                     hasCargo = nHasCargo,
                     cargoRarity = nCargoRarity,
                     cargoReward = nCargoReward,
+                    cargoDebrisId = nCargoDebrisId,
                     patrolTargetX = nPatrolTargetX,
                     patrolTargetY = nPatrolTargetY,
                     disabledUntil = nDisabledUntil
@@ -969,7 +988,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 damagedFleetCounts = updatedDamagedFleet,
                 scavengeTargets = targets,
                 totalDebris = (state.totalDebris + debrisGained).coerceAtLeast(0.0),
-                activeQuests = updatedQuests,
+                activeQuests = QuestEngine.collectTypes(updatedQuests, collectedTypes),
+                discoveredDebrisIds = state.discoveredDebrisIds + collectedTypes,
                 sessionStats = state.sessionStats.copy(
                     debrisEarned = state.sessionStats.debrisEarned + debrisGained.coerceAtLeast(0.0)
                 ),
@@ -1452,6 +1472,14 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 quests = quests.filterNot { it.cadence == QuestCadence.WEEKLY } +
                     createWeeklyQuests(TimedQuestSchedule.retainedKey(state.weeklyQuestWeek, weekKey), state.currentPlanetId)
                 weeklyCompletedAt = -1L
+            }
+            // Add the new objectives to an ongoing cycle without resetting existing progress.
+            val collectionQuests = createDailyQuests(TimedQuestSchedule.retainedKey(state.dailyQuestDay, dayKey), state.currentPlanetId) +
+                createWeeklyQuests(TimedQuestSchedule.retainedKey(state.weeklyQuestWeek, weekKey), state.currentPlanetId)
+            quests = quests + collectionQuests.filter { candidate ->
+                candidate.type == QuestType.COLLECT_DEBRIS_TYPES &&
+                    candidate.id !in state.completedQuestIds && quests.none { it.id == candidate.id } &&
+                    (if (candidate.cadence == QuestCadence.DAILY) dailyCompletedAt else weeklyCompletedAt) < 0L
             }
             state.copy(
                 activeQuests = quests,

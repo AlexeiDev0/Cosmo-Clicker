@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="debris_collection_show">View collection</string>
+    <string name="debris_collection_hide">Collapse collection</string>
+    <string name="debris_collection">Debris collection</string>
+    <string name="quest_collect_debris_types">Collect %1$d different debris types during this quest</string>
+    <string name="debris_collection_count">Discovered: %1$d / %2$d</string>
+    <string name="debris_collection_goal">Next goal: discover %1$d debris types</string>
+    <string name="debris_collection_complete">Collection complete</string>
+    <string name="debris_unknown">Unknown salvage</string>
+    <string name="salvage_achievement">Discover %1$d debris types</string>
+    <string name="debris_name_01">Crushed can</string>
+    <string name="debris_name_02">Hull plate</string>
+    <string name="debris_name_03">Broken satellite dish</string>
+    <string name="debris_name_04">Severed wires</string>
+    <string name="debris_name_05">Coolant canister</string>
+    <string name="debris_name_06">Ion power cell</string>
+    <string name="debris_name_07">Abandoned satellite</string>
+    <string name="debris_name_08">Signal dish</string>
+    <string name="debris_name_09">Broken robot head</string>
+    <string name="debris_name_10">Circuit board</string>
+    <string name="debris_name_11">Solar panel</string>
+    <string name="debris_name_12">Twin batteries</string>
+    <string name="debris_name_13">Power pack</string>
+    <string name="debris_name_14">Reactor coil</string>
+    <string name="debris_name_15">Cable bundle</string>
+    <string name="debris_name_16">Air filter</string>
+    <string name="debris_name_17">Broken antenna</string>
+    <string name="debris_name_18">Cargo latch</string>
+    <string name="debris_name_19">Oxygen tank</string>
+    <string name="debris_name_20">Cooling fan</string>
+    <string name="debris_name_21">Magnetic clamp</string>
+    <string name="debris_name_22">Data recorder</string>
+    <string name="debris_name_23">Gyroscope</string>
+    <string name="debris_name_24">Ion nozzle</string>
+    <string name="debris_name_25">Quantum prism</string>
+    <string name="debris_name_26">Warp capacitor</string>
+    <string name="debris_name_27">Stellar compass</string>
+    <string name="debris_name_28">Singularity vessel</string>
+    <string name="achievement_salvage_10">Discover 10 debris types</string>
+    <string name="achievement_salvage_15">Discover 15 debris types</string>
+    <string name="achievement_salvage_20">Discover 20 debris types</string>
+    <string name="achievement_salvage_28">Discover 28 debris types</string>
+</resources>

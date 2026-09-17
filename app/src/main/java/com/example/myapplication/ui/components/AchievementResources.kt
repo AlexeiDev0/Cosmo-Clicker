@@ -10,6 +10,10 @@ internal fun achievementNameResource(id: String): Int = when (id) {
     "fleet_5" -> R.string.achievement_fleet_5
     "fleet_12" -> R.string.achievement_fleet_12
     "fleet_50" -> R.string.achievement_fleet_50
+    "salvage_10" -> R.string.achievement_salvage_10
+    "salvage_15" -> R.string.achievement_salvage_15
+    "salvage_20" -> R.string.achievement_salvage_20
+    "salvage_28" -> R.string.achievement_salvage_28
     "collection_15" -> R.string.achievement_collection_15
     "collection_29" -> R.string.achievement_collection_29
     "planets_5" -> R.string.achievement_planets_5

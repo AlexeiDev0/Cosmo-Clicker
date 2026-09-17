@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -84,6 +84,7 @@ fun QuestPanel(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
+                    item(key = "debris_collection") { DebrisCollectionCard(state) }
                     item(key = "daily_reward") {
                         val reward = DailyRewardEngine.preview(state, nowMillis)
                         val available = DailyRewardEngine.canClaim(state, nowMillis)

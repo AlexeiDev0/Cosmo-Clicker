@@ -108,13 +108,15 @@ data class GalacticCollectionProgress(
     val achievements: Int,
     val totalAchievements: Int,
     val droneDiscoveries: Int,
-    val totalDrones: Int
+    val totalDrones: Int,
+    val debrisTypes: Int = 0,
+    val totalDebrisTypes: Int = 28
 ) {
     val discoveredEntries: Int
-        get() = planets + eventTypes + achievements + droneDiscoveries
+        get() = planets + eventTypes + achievements + droneDiscoveries + debrisTypes
 
     val totalEntries: Int
-        get() = totalPlanets + totalEventTypes + totalAchievements + totalDrones
+        get() = totalPlanets + totalEventTypes + totalAchievements + totalDrones + totalDebrisTypes
 
     val fraction: Float
         get() = (discoveredEntries.toFloat() / totalEntries.coerceAtLeast(1)).coerceIn(0f, 1f)
@@ -132,6 +134,7 @@ object GalacticCollectionEngine {
             achievements = state.claimedAchievementIds.size,
             totalAchievements = AchievementEngine.definitions.size,
             droneDiscoveries = state.discoveredDroneIds.size.coerceAtMost(totalDrones),
-            totalDrones = totalDrones
+            totalDrones = totalDrones,
+            debrisTypes = state.discoveredDebrisIds.size
         )
 }

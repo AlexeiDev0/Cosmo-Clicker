@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="debris_collection_show">Ver colección</string>
+    <string name="debris_collection_hide">Contraer colección</string>
+    <string name="debris_collection">Colección de chatarra</string>
+    <string name="quest_collect_debris_types">Recoge %1$d tipos distintos de chatarra durante esta misión</string>
+    <string name="debris_collection_count">Descubiertos: %1$d / %2$d</string>
+    <string name="debris_collection_goal">Siguiente meta: descubrir %1$d tipos</string>
+    <string name="debris_collection_complete">Colección completa</string>
+    <string name="debris_unknown">Hallazgo desconocido</string>
+    <string name="salvage_achievement">Descubre %1$d tipos de chatarra</string>
+    <string name="debris_name_01">Lata aplastada</string>
+    <string name="debris_name_02">Placa de casco</string>
+    <string name="debris_name_03">Antena parabólica rota</string>
+    <string name="debris_name_04">Cables cortados</string>
+    <string name="debris_name_05">Refrigerante</string>
+    <string name="debris_name_06">Celda de energía iónica</string>
+    <string name="debris_name_07">Satélite abandonado</string>
+    <string name="debris_name_08">Antena de señal</string>
+    <string name="debris_name_09">Cabeza de robot rota</string>
+    <string name="debris_name_10">Circuito impreso</string>
+    <string name="debris_name_11">Panel solar</string>
+    <string name="debris_name_12">Baterías gemelas</string>
+    <string name="debris_name_13">Bloque de energía</string>
+    <string name="debris_name_14">Bobina de reactor</string>
+    <string name="debris_name_15">Cables</string>
+    <string name="debris_name_16">Filtro de aire</string>
+    <string name="debris_name_17">Antena rota</string>
+    <string name="debris_name_18">Cierre de carga</string>
+    <string name="debris_name_19">Tanque de oxígeno</string>
+    <string name="debris_name_20">Ventilador</string>
+    <string name="debris_name_21">Pinza magnética</string>
+    <string name="debris_name_22">Registrador de datos</string>
+    <string name="debris_name_23">Giroscopio</string>
+    <string name="debris_name_24">Tobera iónica</string>
+    <string name="debris_name_25">Prisma cuántico</string>
+    <string name="debris_name_26">Condensador de salto</string>
+    <string name="debris_name_27">Brújula estelar</string>
+    <string name="debris_name_28">Recipiente de singularidad</string>
+    <string name="achievement_salvage_10">Descubre 10 tipos de chatarra</string>
+    <string name="achievement_salvage_15">Descubre 15 tipos de chatarra</string>
+    <string name="achievement_salvage_20">Descubre 20 tipos de chatarra</string>
+    <string name="achievement_salvage_28">Descubre 28 tipos de chatarra</string>
+</resources>

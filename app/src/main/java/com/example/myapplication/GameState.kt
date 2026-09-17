@@ -29,6 +29,7 @@ enum class SkillType(val id: String) {
 }
 
 enum class QuestType {
+    COLLECT_DEBRIS_TYPES,
     COLLECT_DEBRIS, // Collect X debris
     CLICK_PLANET,  // Click planet X times
     BUY_UPGRADE,   // Buy X click upgrades
@@ -74,7 +75,8 @@ data class Quest(
     val cadence: QuestCadence = QuestCadence.DAILY,
     val difficulty: QuestDifficulty = QuestDifficulty.EASY,
     val rewardPrestigePoints: Int = 0,
-    val rewardPlanetId: String? = null
+    val rewardPlanetId: String? = null,
+    val collectedDebrisIds: Set<Int> = emptySet()
 )
 
 data class GameState(
@@ -84,6 +86,7 @@ data class GameState(
     val activeFleetCounts: Map<String, Int> = emptyMap(),
     val damagedFleetCounts: Map<String, Int> = emptyMap(),
     val discoveredDroneIds: Set<String> = emptySet(),
+    val discoveredDebrisIds: Set<Int> = emptySet(),
     val droneParts: Map<String, Int> = emptyMap(),
     val claimedCollectionMilestones: Set<String> = emptySet(),
     val currentPlanetId: String = "p1",
@@ -144,6 +147,7 @@ data class DroneData(
     val type: String = "drone",
     val cargoRarity: Rarity? = null,
     val cargoReward: Double = 0.0,
+    val cargoDebrisId: Int? = null,
     val patrolTargetX: Float? = null,
     val patrolTargetY: Float? = null,
     val disabledUntil: Long = 0L

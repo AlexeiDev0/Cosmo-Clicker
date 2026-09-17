@@ -2,24 +2,27 @@ package com.example.myapplication.ui.components
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Canvas
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import com.example.myapplication.ui.theme.PlanetPalette
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.disabled
+import androidx.compose.ui.semantics.role
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.draw.scale
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.PlanetConfig
 import com.example.myapplication.ui.GameConstants
@@ -31,6 +34,8 @@ fun PlanetButton(
     planetConfig: PlanetConfig,
     modifier: Modifier,
     reducedMotion: Boolean = false,
+    diameter: Dp = GameConstants.PlanetSize,
+    atmospherePhase: Float = 0f,
     onClick: (Float, Float) -> Unit
 ) {
     var scaleVal by remember { mutableFloatStateOf(1f) }
@@ -40,23 +45,16 @@ fun PlanetButton(
         label = "planet_press"
     )
     val isLocked = planetConfig.price < 0
-    val containerSize = GameConstants.PlanetSize
-
-    val infiniteTransition = if (!reducedMotion) rememberInfiniteTransition(label = "planet_rotation") else null
-    val rotation = infiniteTransition?.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(90_000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart
-        ),
-        label = "rotation"
-    )?.value ?: 0f
+    val containerSize = diameter
 
     Box(
         modifier = modifier
             .size(containerSize)
             .scale(animatedScale)
+            .semantics {
+                role = Role.Button
+                if (isLocked) disabled()
+            }
             .pointerInput(isLocked, reducedMotion, planetId) {
                 detectTapGestures { position ->
                     if (!isLocked && size.width > 0 && size.height > 0) {
@@ -72,29 +70,23 @@ fun PlanetButton(
     ) {
         LaunchedEffect(scaleVal) { if (scaleVal < 1f) { delay(90); scaleVal = 1f } }
 
-        Box(
-            modifier = Modifier
-                .size(containerSize * 0.92f)
-                .shadow(10.dp, CircleShape, clip = false)
-                .background(
-                    Brush.radialGradient(
-                        listOf(planetConfig.color.copy(alpha = 0.28f), Color.Transparent)
-                    ),
-                    CircleShape
-                )
-        )
-        androidx.compose.foundation.Canvas(
-            modifier = Modifier.fillMaxSize().rotate(rotation * 0.35f)
-        ) {
-            drawOval(
-                color = planetConfig.color.copy(alpha = if (isLocked) 0.12f else 0.26f),
-                topLeft = androidx.compose.ui.geometry.Offset(size.width * 0.06f, size.height * 0.31f),
-                size = androidx.compose.ui.geometry.Size(size.width * 0.88f, size.height * 0.38f),
-                style = Stroke(width = 1.5.dp.toPx())
+        val palette = remember(planetId) { PlanetPalette.forPlanet(planetId) }
+        Canvas(Modifier.fillMaxSize()) {
+            val radius = size.minDimension * .49f
+            drawCircle(
+                brush = Brush.radialGradient(
+                    0f to Color.Transparent,
+                    .65f to palette.secondary.copy(alpha = if (isLocked) .025f else .07f),
+                    .83f to palette.primary.copy(alpha = if (isLocked) .025f else .10f),
+                    1f to Color.Transparent,
+                    center = center,
+                    radius = radius
+                ),
+                radius = radius
             )
         }
 
-        // Keep the illustrated key light fixed; only the orbital guide moves.
+        // Gentle graphic motion; all forms stay inside the artwork viewport.
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -121,6 +113,7 @@ fun PlanetButton(
                     contentScale = ContentScale.Fit,
                     modifier = Modifier
                         .fillMaxSize()
+                        .rotate(if (reducedMotion) 0f else kotlin.math.sin(atmospherePhase * 6.283185f) * 2f)
                         .let { if (isLocked) it.alpha(0.5f) else it }
                 )
             }

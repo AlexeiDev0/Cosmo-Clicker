@@ -43,7 +43,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
@@ -220,7 +220,11 @@ fun EventChallengeComponent(
             .eventClickable(onClick),
         contentAlignment = Alignment.Center
     ) {
-        Image(painterResource(icon), contentDescription = null, modifier = Modifier.fillMaxSize())
+        Image(
+            painterResource(icon),
+            contentDescription = stringResource(eventTitleResource(event.type)),
+            modifier = Modifier.fillMaxSize()
+        )
     }
 }
 
@@ -260,7 +264,7 @@ fun MeteorInterceptChallenge(
             ) {
                 Image(
                     painterResource(R.drawable.event_meteor_minimal_v3),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.meteor_intercept_title),
                     modifier = Modifier.fillMaxSize().padding(if (active) 5.dp else 9.dp),
                     alpha = if (active) 1f else .34f
                 )
@@ -1141,7 +1145,7 @@ private fun tradeOfferIcon(offer: TradeOffer): Int = when (offer) {
     TradeOffer.POWER_CORE, TradeOffer.CLICK_AMPLIFIER -> R.drawable.event_reactor_core
     TradeOffer.LUCK_SCANNER -> R.drawable.upgrade_signal_beacon_v2
     TradeOffer.FLEET_OVERDRIVE -> R.drawable.drone_20
-    TradeOffer.DEBRIS_CARGO -> R.drawable.debris_01
+    TradeOffer.DEBRIS_CARGO -> R.drawable.debris_01_v2
     TradeOffer.COMMON_CASE -> GameResourceRegistry.caseFrame(CaseType.COMMON, 1)
     TradeOffer.RARE_CASE -> GameResourceRegistry.caseFrame(CaseType.RARE, 1)
     TradeOffer.LEGENDARY_CASE -> GameResourceRegistry.caseFrame(CaseType.LEGENDARY, 1)

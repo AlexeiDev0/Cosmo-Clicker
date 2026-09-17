@@ -10,18 +10,18 @@ object AppColors {
     val Warning = Color(0xFFFFCA62)
 
     val SpaceBlack = Color(0xFF030817)
-    val BackgroundStart = Color(0xFF071A35)
-    val BackgroundMid = Color(0xFF0A2A4D)
-    val BackgroundEnd = Color(0xFF051126)
+    val BackgroundStart = Color(0xFF17213D)
+    val BackgroundMid = Color(0xFF202A4C)
+    val BackgroundEnd = Color(0xFF10172E)
 
-    val CardBackground = Color(0xFF0C1422)
-    val Surface = Color(0xFF111C2C)
-    val SurfaceRaised = Color(0xFF172334)
-    val Outline = Color(0xFF293748)
+    val CardBackground = Color(0xFF141D34)
+    val Surface = Color(0xFF1A2540)
+    val SurfaceRaised = Color(0xFF253250)
+    val Outline = Color(0xFF3B4C6A)
     val OutlineActive = Primary
-    val TextMuted = Color(0xFF91A0B2)
-    val TextDisabled = Color(0xFF667487)
-    val CargoColor = Color(0xFFB7773E)
+    val TextMuted = Color(0xFFB0BFD5)
+    val TextDisabled = Color(0xFF7F90AC)
+    val CargoColor = Color(0xFFE7B679)
 
     val RarityCommon = Color(0xFFB8C5D1)
     val RarityRare = Color(0xFF55D9E8)

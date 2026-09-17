@@ -5,6 +5,7 @@ import android.content.Context
 class QuestDescriptionProvider(private val context: Context) {
     fun describe(type: QuestType, target: Int): String = context.getString(
         when (type) {
+            QuestType.COLLECT_DEBRIS_TYPES -> R.string.quest_collect_debris_types
             QuestType.COLLECT_DEBRIS -> R.string.quest_collect_debris
             QuestType.CLICK_PLANET -> R.string.quest_click_planet
             QuestType.BUY_UPGRADE -> R.string.quest_buy_upgrade

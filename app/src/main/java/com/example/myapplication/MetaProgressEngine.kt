@@ -40,6 +40,7 @@ object MetaProgressEngine {
         val reward = EconomyBalance.prestigeReward(state)
         return QuestEngine.reset(
             GameState(
+                discoveredDebrisIds = state.discoveredDebrisIds,
                 prestigePoints = state.prestigePoints + reward,
                 technologies = state.technologies,
                 lastDailyRewardDay = state.lastDailyRewardDay,

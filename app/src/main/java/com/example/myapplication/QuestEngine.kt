@@ -1,6 +1,15 @@
 package com.example.myapplication
 
 object QuestEngine {
+    fun collectTypes(quests: List<Quest>, ids: Set<Int>): List<Quest> = quests.map { quest ->
+        if (quest.type != QuestType.COLLECT_DEBRIS_TYPES || quest.isCompleted || quest.isClaimed) quest
+        else {
+            val collected = quest.collectedDebrisIds + ids.filter { it in 1..28 }
+            val progress = collected.size.toDouble().coerceAtMost(quest.target)
+            quest.copy(collectedDebrisIds = collected, progress = progress, isCompleted = progress >= quest.target)
+        }
+    }
+
     fun claim(state: GameState, questId: String, fleet: List<FleetConfig>, now: Long): GameState? {
         val quest = state.activeQuests.find { it.id == questId } ?: return null
         if (!quest.isCompleted || quest.isClaimed) return null
@@ -59,6 +68,8 @@ object QuestEngine {
         droneRarity: Rarity? = null
     ): List<Quest> =
         quests.map { quest ->
+            // Unique types can only advance with actual item identities through collectTypes.
+            if (type == QuestType.COLLECT_DEBRIS_TYPES) return@map quest
             if (quest.type != type || quest.isCompleted || quest.isClaimed) return@map quest
             if (type == QuestType.OBTAIN_DRONE && quest.targetDroneId != droneId) return@map quest
             if (type == QuestType.OBTAIN_RARE_DRONE && (droneRarity == null || droneRarity.ordinal < Rarity.RARE.ordinal)) return@map quest

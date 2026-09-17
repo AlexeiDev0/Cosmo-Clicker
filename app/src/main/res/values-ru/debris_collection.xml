@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="debris_collection_show">Открыть коллекцию</string>
+    <string name="debris_collection_hide">Свернуть коллекцию</string>
+    <string name="debris_collection">Коллекция мусора</string>
+    <string name="quest_collect_debris_types">Собрать %1$d разных видов мусора за время задания</string>
+    <string name="debris_collection_count">Открыто: %1$d / %2$d</string>
+    <string name="debris_collection_goal">Следующая цель: открыть %1$d видов мусора</string>
+    <string name="debris_collection_complete">Коллекция собрана</string>
+    <string name="debris_unknown">Неизвестная находка</string>
+    <string name="salvage_achievement">Открыть %1$d видов мусора</string>
+    <string name="debris_name_01">Мятая банка</string>
+    <string name="debris_name_02">Обшивка корпуса</string>
+    <string name="debris_name_03">Сломанная спутниковая тарелка</string>
+    <string name="debris_name_04">Оборванные провода</string>
+    <string name="debris_name_05">Канистра хладагента</string>
+    <string name="debris_name_06">Ионная энергоячейка</string>
+    <string name="debris_name_07">Заброшенный спутник</string>
+    <string name="debris_name_08">Сигнальная тарелка</string>
+    <string name="debris_name_09">Голова сломанного робота</string>
+    <string name="debris_name_10">Печатная плата</string>
+    <string name="debris_name_11">Солнечная панель</string>
+    <string name="debris_name_12">Парные батареи</string>
+    <string name="debris_name_13">Силовой блок</string>
+    <string name="debris_name_14">Катушка реактора</string>
+    <string name="debris_name_15">Связка кабелей</string>
+    <string name="debris_name_16">Воздушный фильтр</string>
+    <string name="debris_name_17">Сломанная антенна</string>
+    <string name="debris_name_18">Грузовой замок</string>
+    <string name="debris_name_19">Кислородный баллон</string>
+    <string name="debris_name_20">Вентилятор охлаждения</string>
+    <string name="debris_name_21">Магнитный захват</string>
+    <string name="debris_name_22">Бортовой самописец</string>
+    <string name="debris_name_23">Гироскоп</string>
+    <string name="debris_name_24">Ионное сопло</string>
+    <string name="debris_name_25">Квантовая призма</string>
+    <string name="debris_name_26">Варп-конденсатор</string>
+    <string name="debris_name_27">Звёздный компас</string>
+    <string name="debris_name_28">Сосуд сингулярности</string>
+    <string name="achievement_salvage_10">Открыть 10 видов мусора</string>
+    <string name="achievement_salvage_15">Открыть 15 видов мусора</string>
+    <string name="achievement_salvage_20">Открыть 20 видов мусора</string>
+    <string name="achievement_salvage_28">Открыть 28 видов мусора</string>
+</resources>

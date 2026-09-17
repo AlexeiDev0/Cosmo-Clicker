@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontFamily
@@ -57,7 +57,8 @@ private fun LegacyOperationsPanel(
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .fillMaxHeight(0.80f),
+            .fillMaxHeight(0.80f)
+            .navigationBarsPadding(),
         shape = RoundedCornerShape(topStart = SpaceDesign.SheetRadius, topEnd = SpaceDesign.SheetRadius),
         colors = CardDefaults.cardColors(containerColor = AppColors.CardBackground)
     ) {
@@ -83,7 +84,10 @@ private fun LegacyOperationsPanel(
                 
                 Spacer(modifier = Modifier.height(16.dp))
 
-                LazyColumn(modifier = Modifier.fillMaxSize()) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    contentPadding = PaddingValues(bottom = 14.dp)
+                ) {
                     when (selectedTab) {
                         0 -> {
                             item { LateGalaxyPreview(viewModel) }
@@ -189,8 +193,7 @@ private fun DroneCollectionHeader(state: GameState, viewModel: GameViewModel) {
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFF071329))
     ) {
-        Box(modifier = Modifier.fillMaxWidth().height(158.dp)) {
-            ArtworkStrip(listOf(R.drawable.drone_02_v2, R.drawable.drone_01_v2, R.drawable.drone_03_v2), Modifier.height(88.dp).align(Alignment.TopCenter))
+        Box(modifier = Modifier.fillMaxWidth().height(112.dp)) {
             Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.28f)))
             Column(modifier = Modifier.align(Alignment.BottomStart).padding(14.dp)) {
                 Text(stringResource(R.string.drone_collection), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
@@ -440,8 +443,8 @@ private fun MetaProgressPanel(viewModel: GameViewModel, state: GameState) {
 
 @Composable
 fun ShopLauncherButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
-    Surface(modifier = modifier.size(56.dp).clickable(onClick = onClick), shape = RoundedCornerShape(16.dp), color = Color(0xFF0B1728)) {
-        MinimalShopIcon(1, AppColors.Primary, Modifier.padding(10.dp))
+    IconButton(onClick = onClick, modifier = modifier.size(56.dp)) {
+        Icon(painterResource(R.drawable.ic_nav_shop_minimal), stringResource(R.string.open_shop), Modifier.size(34.dp), tint = Color.Unspecified)
     }
 }
 
@@ -498,19 +501,17 @@ private fun CaseTypeRow(viewModel: GameViewModel, state: GameState, type: CaseTy
             }
         }
         val caseEnabled = state.totalDebris >= caseCost
-        Box(
-            modifier = Modifier.fillMaxWidth().height(48.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(Brush.horizontalGradient(listOf(accent.copy(.30f), Color(0xFF111D30))))
-                .alpha(if (caseEnabled) 1f else .38f)
-                .clickable(enabled = caseEnabled) {
+        Button(
+            modifier = Modifier.fillMaxWidth().height(48.dp),
+            enabled = caseEnabled,
+            colors = ButtonDefaults.buttonColors(containerColor = accent),
+            onClick = {
                 if (maxAffordable >= 2) {
                     selectedCaseCount = 1
                     showBundleDialog = true
                 }
                 else viewModel.startOpeningCase(type)
-            },
-            contentAlignment = Alignment.Center
+            }
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 GeneratedSheetIcon(R.drawable.shop_ui_minimal_sheet_v1, 4, 17.dp, columns = 4, rows = 4)
@@ -697,7 +698,7 @@ fun ShopRow(
                         )
                     }
                 } else {
-                    MinimalShopIcon(iconRes, AppColors.Primary, Modifier.size(34.dp))
+                    Image(painterResource(iconRes), null, Modifier.size(34.dp), contentScale = ContentScale.Fit)
                 }
                 if (showLock) {
                     GeneratedSheetIcon(R.drawable.shop_ui_minimal_sheet_v1, 6, 28.dp, columns = 4, rows = 4)

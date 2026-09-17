@@ -19,3 +19,4 @@ keystore.properties
 *.jks
 *.keystore
 *.mcpr
+/.artifacts/flat-review-browser/

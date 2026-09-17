@@ -8,6 +8,7 @@ import com.example.myapplication.R
 
 @Composable
 fun localizedQuestDescription(quest: Quest): String = when (quest.type) {
+    QuestType.COLLECT_DEBRIS_TYPES -> stringResource(R.string.quest_collect_debris_types, quest.target.toInt())
     QuestType.COLLECT_DEBRIS -> stringResource(R.string.quest_collect_debris, quest.target.toInt())
     QuestType.CLICK_PLANET -> stringResource(R.string.quest_click_planet, quest.target.toInt())
     QuestType.BUY_UPGRADE -> stringResource(R.string.quest_buy_upgrade, quest.target.toInt())

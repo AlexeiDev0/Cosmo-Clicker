@@ -19,7 +19,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.painterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -57,7 +57,7 @@ fun SpaceSheetHeader(title: String, subtitle: String? = null, onClose: () -> Uni
                 painter = painterResource(R.drawable.ui_close_simple),
                 contentDescription = stringResource(R.string.close),
                 modifier = Modifier.size(22.dp),
-                tint = AppColors.TextMuted
+                tint = Color.Unspecified
             )
         }
     }
@@ -73,12 +73,15 @@ fun SpaceTab(
     accent: Color = AppColors.Primary,
     iconSheetIndex: Int? = null
 ) {
-    Surface(
-        modifier = modifier.height(48.dp).clickable(onClick = onClick),
-        shape = RoundedCornerShape(12.dp),
-        color = if (selected) accent.copy(alpha = .14f) else Color.White.copy(alpha = .035f),
-        border = if (selected) BorderStroke(1.dp, accent.copy(alpha = .46f)) else null,
-        shadowElevation = 0.dp
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(48.dp),
+        colors = ButtonDefaults.buttonColors(containerColor = accent),
+        state = if (selected) CosmicButtonState.Selected else CosmicButtonState.Normal,
+        style = if (selected) CosmicButtonStyle.Primary else CosmicButtonStyle.Secondary,
+        compact = true,
+        generatedArtwork = selected,
+        contentPadding = PaddingValues(horizontal = 2.dp, vertical = 4.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
@@ -87,7 +90,7 @@ fun SpaceTab(
                 Spacer(Modifier.width(5.dp))
             } else if (iconRes != null) {
                 Icon(
-                    painter = androidx.compose.ui.res.painterResource(iconRes),
+                    painter = painterResource(iconRes),
                     contentDescription = null,
                     tint = Color.Unspecified,
                     modifier = Modifier.size(18.dp)
