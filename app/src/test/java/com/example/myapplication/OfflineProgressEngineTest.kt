@@ -5,6 +5,16 @@ import org.junit.Test
 
 class OfflineProgressEngineTest {
     @Test
+    fun applyingAcknowledgedOfflineWindowDoesNotAddRewardTwice() {
+        val initial = GameState(totalDebris = 100.0)
+        val rewarded = OfflineProgressEngine.apply(initial, OfflineProgressEngine.Result(60L, 25.0))
+        val unchanged = OfflineProgressEngine.apply(rewarded, OfflineProgressEngine.Result(0L, 0.0))
+
+        assertEquals(125.0, rewarded.totalDebris, 0.0)
+        assertEquals(rewarded, unchanged)
+    }
+
+    @Test
     fun rewardDependsOnFleetRarityAndElapsedTime() {
         val result = OfflineProgressEngine.calculate(
             lastActiveAtMillis = 1_000L,

@@ -42,6 +42,8 @@ object MetaProgressEngine {
             GameState(
                 prestigePoints = state.prestigePoints + reward,
                 technologies = state.technologies,
+                lastDailyRewardDay = state.lastDailyRewardDay,
+                dailyRewardStreak = state.dailyRewardStreak,
                 lifetimeStats = state.lifetimeStats.copy(prestiges = state.lifetimeStats.prestiges + 1),
                 unlockedAchievementIds = state.unlockedAchievementIds,
                 claimedAchievementIds = state.claimedAchievementIds

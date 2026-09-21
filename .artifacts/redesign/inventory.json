@@ -1,0 +1,1986 @@
+﻿[
+    {
+        "name":  "background_cosmic_game.png",
+        "folder":  "drawable-nodpi",
+        "width":  864,
+        "height":  1821,
+        "page":  0,
+        "active":  false
+    },
+    {
+        "name":  "background_cosmic_game_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  941,
+        "height":  1672,
+        "page":  0,
+        "active":  false
+    },
+    {
+        "name":  "background_salvage_command_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  1024,
+        "height":  1536,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "bg_achievements_archive_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  941,
+        "height":  1672,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "bg_case_vault_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  720,
+        "height":  1440,
+        "page":  0,
+        "active":  false
+    },
+    {
+        "name":  "bg_case_vault_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  887,
+        "height":  1774,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "bg_event_operations_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  941,
+        "height":  1672,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "bg_events_minimal_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  887,
+        "height":  1774,
+        "page":  0,
+        "active":  false
+    },
+    {
+        "name":  "bg_goals_starchart_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  853,
+        "height":  1844,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "bg_hangar_command_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  864,
+        "height":  1821,
+        "page":  0,
+        "active":  false
+    },
+    {
+        "name":  "bg_hangar_fleet_command_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1672,
+        "height":  941,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "bg_hangar_minimal_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  941,
+        "height":  1672,
+        "page":  0,
+        "active":  false
+    },
+    {
+        "name":  "bg_offline_reward_space_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1024,
+        "height":  1536,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "bg_prestige_core_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  941,
+        "height":  1672,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "bg_prestige_shop_minimal_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  1024,
+        "height":  1536,
+        "page":  0,
+        "active":  false
+    },
+    {
+        "name":  "bg_settings_control_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  864,
+        "height":  1821,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "bg_settings_space_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  864,
+        "height":  1821,
+        "page":  0,
+        "active":  false
+    },
+    {
+        "name":  "bg_shop_orbital_market_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  720,
+        "height":  1440,
+        "page":  0,
+        "active":  false
+    },
+    {
+        "name":  "bg_shop_salvage_market_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  864,
+        "height":  1821,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "bg_statistics_observatory_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  864,
+        "height":  1821,
+        "page":  0,
+        "active":  false
+    },
+    {
+        "name":  "bg_statistics_observatory_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  946,
+        "height":  1663,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "cargo_crate_space_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  128,
+        "height":  128,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_01.png",
+        "folder":  "drawable-nodpi",
+        "width":  197,
+        "height":  180,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_02.png",
+        "folder":  "drawable-nodpi",
+        "width":  189,
+        "height":  181,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_03.png",
+        "folder":  "drawable-nodpi",
+        "width":  190,
+        "height":  182,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_04.png",
+        "folder":  "drawable-nodpi",
+        "width":  263,
+        "height":  240,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_05.png",
+        "folder":  "drawable-nodpi",
+        "width":  265,
+        "height":  304,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_06.png",
+        "folder":  "drawable-nodpi",
+        "width":  262,
+        "height":  312,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_08.png",
+        "folder":  "drawable-nodpi",
+        "width":  268,
+        "height":  307,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_common_1.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_common_2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_common_3.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_common_4.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_common_5.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_common_6.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_common_7.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_common_8.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_legendary_1.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_legendary_2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_legendary_3.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_legendary_4.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_legendary_5.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_legendary_6.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_legendary_7.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_legendary_8.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_rare_1.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_rare_2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_rare_3.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  0,
+        "active":  true
+    },
+    {
+        "name":  "case_rare_4.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "case_rare_5.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "case_rare_6.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "case_rare_7.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "case_rare_8.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "case_tier_showcase_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1536,
+        "height":  1024,
+        "page":  1,
+        "active":  false
+    },
+    {
+        "name":  "case_tier_showcase_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  2081,
+        "height":  756,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_01.png",
+        "folder":  "drawable-nodpi",
+        "width":  255,
+        "height":  333,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_02.png",
+        "folder":  "drawable-nodpi",
+        "width":  255,
+        "height":  333,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_03.png",
+        "folder":  "drawable-nodpi",
+        "width":  255,
+        "height":  333,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_04.png",
+        "folder":  "drawable-nodpi",
+        "width":  255,
+        "height":  333,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_05.png",
+        "folder":  "drawable-nodpi",
+        "width":  255,
+        "height":  333,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_06.png",
+        "folder":  "drawable-nodpi",
+        "width":  255,
+        "height":  333,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_07.png",
+        "folder":  "drawable-nodpi",
+        "width":  310,
+        "height":  215,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_08.png",
+        "folder":  "drawable-nodpi",
+        "width":  200,
+        "height":  215,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_09.png",
+        "folder":  "drawable-nodpi",
+        "width":  150,
+        "height":  150,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_10.png",
+        "folder":  "drawable-nodpi",
+        "width":  205,
+        "height":  140,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_11.png",
+        "folder":  "drawable-nodpi",
+        "width":  200,
+        "height":  130,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_12.png",
+        "folder":  "drawable-nodpi",
+        "width":  200,
+        "height":  130,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_13.png",
+        "folder":  "drawable-nodpi",
+        "width":  200,
+        "height":  130,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "debris_14.png",
+        "folder":  "drawable-nodpi",
+        "width":  200,
+        "height":  130,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_01_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_02_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_03_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_04_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_05_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_06_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_07_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_08_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_09_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_10_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_11_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_12_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_13_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_14_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_15_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_16_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_17_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_18_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_19_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_20.png",
+        "folder":  "drawable-nodpi",
+        "width":  140,
+        "height":  120,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_20_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_21_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_22_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_23_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_24_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_25_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_26_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  1,
+        "active":  true
+    },
+    {
+        "name":  "drone_27_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "drone_28_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "drone_29.png",
+        "folder":  "drawable-nodpi",
+        "width":  140,
+        "height":  120,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "drone_29_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "drone_collection_art.png",
+        "folder":  "drawable-nodpi",
+        "width":  512,
+        "height":  512,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "drone_collection_art_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  1145,
+        "height":  1374,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "drone_fleet_showcase_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1536,
+        "height":  1024,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_abandoned_station_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  512,
+        "height":  512,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_black_hole_minimal_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  418,
+        "height":  418,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_black_hole_minimal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_black_hole_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_cyber_minimal_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  418,
+        "height":  418,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_cyber_minimal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_cyber_module_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  512,
+        "height":  512,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_cyber_terminal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  960,
+        "height":  540,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_distress_background_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  512,
+        "height":  910,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_distress_minimal_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  418,
+        "height":  418,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_distress_minimal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_meteor_hazard_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  512,
+        "height":  512,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_meteor_minimal_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  418,
+        "height":  418,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_meteor_minimal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_minimal_sheet_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  1254,
+        "height":  1254,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_pirate_interceptor_v4.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_pirate_minimal_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  418,
+        "height":  418,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_pirate_minimal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_pirate_raider_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  512,
+        "height":  512,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_pirate_ship_sheet_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1536,
+        "height":  1024,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_reactor_core.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_rescue_capsule.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_solar_cooler_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  512,
+        "height":  512,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_solar_minimal_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  418,
+        "height":  418,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_solar_minimal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_station_minimal_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  418,
+        "height":  418,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_station_minimal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_storm_minimal_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  418,
+        "height":  418,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_storm_minimal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_storm_node_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  512,
+        "height":  512,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_trade_minimal_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  418,
+        "height":  418,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "event_trade_minimal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "event_trading_ship_game.png",
+        "folder":  "drawable-nodpi",
+        "width":  512,
+        "height":  512,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "fleet_ufo_alien.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "hangar_background.png",
+        "folder":  "drawable-nodpi",
+        "width":  1024,
+        "height":  683,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "ic_currency_debris_v2.png",
+        "folder":  "drawable",
+        "width":  1254,
+        "height":  1254,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "ic_drone_energy_cell_v2.png",
+        "folder":  "drawable",
+        "width":  1254,
+        "height":  1254,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "ic_nav_hangar_generated_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "ic_nav_shop_cosmic_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  1337,
+        "height":  1176,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "ic_nav_shop_generated_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  2,
+        "active":  false
+    },
+    {
+        "name":  "ic_prestige_hologram_v2.png",
+        "folder":  "drawable",
+        "width":  1254,
+        "height":  1254,
+        "page":  2,
+        "active":  true
+    },
+    {
+        "name":  "icon_game.png",
+        "folder":  "drawable-nodpi",
+        "width":  512,
+        "height":  512,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "icon_game.png",
+        "folder":  "drawable",
+        "width":  432,
+        "height":  432,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "icon_prestige_galaxy_core_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  1254,
+        "height":  1254,
+        "page":  3,
+        "active":  false
+    },
+    {
+        "name":  "icon_prestige_minimal_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  1254,
+        "height":  1254,
+        "page":  3,
+        "active":  false
+    },
+    {
+        "name":  "icon_settings_language_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "icon_settings_reduced_motion_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "icon_settings_reset_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "icon_settings_sound_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "offline_drone_reward_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1254,
+        "height":  1254,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_1_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_10_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_11_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_12_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_13_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_14_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_15_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_16_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_17_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_18_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_19_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_2_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_20_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_21_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_22_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_23_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_24_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_25_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_26_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_27_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_28_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_29_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_3_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_30_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_31_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_32_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_33_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_34_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_35_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_36_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_37_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_38_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_39_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  384,
+        "height":  384,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_4_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_5_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_6_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_7_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_8_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "planet_9_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  3,
+        "active":  true
+    },
+    {
+        "name":  "play_fon_game.png",
+        "folder":  "drawable-nodpi",
+        "width":  941,
+        "height":  1672,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "play_fon_game_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  941,
+        "height":  1672,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "prestige_click_amplifier.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "prestige_offline_collector.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "prestige_rare_signal.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "settings_header.png",
+        "folder":  "drawable-nodpi",
+        "width":  1024,
+        "height":  488,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "shop_case_ui_sheet_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1254,
+        "height":  1254,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "shop_cases_minimal_sheet_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1254,
+        "height":  1254,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "shop_command_header.png",
+        "folder":  "drawable-nodpi",
+        "width":  1024,
+        "height":  490,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "shop_ui_minimal_sheet_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1254,
+        "height":  1254,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "shop_upgrade_showcase_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  2172,
+        "height":  724,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "shop_upgrades_expansion_sheet_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1254,
+        "height":  1254,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "shop_upgrades_minimal_sheet_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1254,
+        "height":  1254,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_autoclick_warning_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  2172,
+        "height":  724,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "ui_autoclick_warning_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  2172,
+        "height":  724,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_button_achievements_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "ui_button_active_v6.png",
+        "folder":  "drawable-nodpi",
+        "width":  2172,
+        "height":  724,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_button_disabled_v6.png",
+        "folder":  "drawable-nodpi",
+        "width":  2172,
+        "height":  724,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_button_hangar_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "ui_button_lock.png",
+        "folder":  "drawable-nodpi",
+        "width":  222,
+        "height":  175,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "ui_button_locked_v6.png",
+        "folder":  "drawable-nodpi",
+        "width":  2172,
+        "height":  724,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_button_normal_v6.png",
+        "folder":  "drawable-nodpi",
+        "width":  2172,
+        "height":  724,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_button_pressed_v6.png",
+        "folder":  "drawable-nodpi",
+        "width":  2172,
+        "height":  724,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_button_quest_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "ui_button_selected_v6.png",
+        "folder":  "drawable-nodpi",
+        "width":  2172,
+        "height":  724,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_button_settings_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "ui_button_shop_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "ui_button_statistics_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  false
+    },
+    {
+        "name":  "ui_close_control_v2.png",
+        "folder":  "drawable",
+        "width":  1254,
+        "height":  1254,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_drone_bay_frame_v3.png",
+        "folder":  "drawable-nodpi",
+        "width":  1024,
+        "height":  1536,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_lock_control_v2.png",
+        "folder":  "drawable",
+        "width":  1254,
+        "height":  1254,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_meteor_repair_sheet_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  1536,
+        "height":  1024,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_new_badge_v2.png",
+        "folder":  "drawable",
+        "width":  1254,
+        "height":  1254,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "ui_start_button_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  900,
+        "height":  300,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_antimatter_lens_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_dark_matter_forge_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_debris_harvester_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_entropy_engine_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_flight_slots_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_graviton_press_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_magnet.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_magnet_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_nanite_swarm_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_neural_matrix_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_omega_core_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_pulsar_battery_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_quantum_amplifier_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_quantum_wrench_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  4,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_reality_anchor_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  5,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_signal_beacon_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  5,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_singularity_tap_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  5,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_spawn_speed_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  5,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_stellar_resonator_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  5,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_temporal_relay_v1.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  5,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_void_compressor_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  5,
+        "active":  true
+    },
+    {
+        "name":  "upgrade_weld_torch_v2.png",
+        "folder":  "drawable-nodpi",
+        "width":  256,
+        "height":  256,
+        "page":  5,
+        "active":  true
+    }
+]

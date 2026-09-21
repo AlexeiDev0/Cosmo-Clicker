@@ -22,6 +22,7 @@ import androidx.compose.material3.*
 import com.example.myapplication.ui.components.Button
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
@@ -78,6 +79,7 @@ fun GameScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val soundManager = remember(context) { SoundManager(context) }
+    val currentSoundEnabled by rememberUpdatedState(soundEnabled)
     LaunchedEffect(soundManager, soundEnabled) {
         if (soundEnabled) soundManager.resumeBackgroundMusic() else soundManager.pauseBackgroundMusic()
     }
@@ -173,7 +175,7 @@ fun GameScreen(
             when (event) {
                 Lifecycle.Event.ON_START -> {
                     viewModel.resumeSimulation()
-                    if (soundEnabled) soundManager.resumeBackgroundMusic()
+                    if (currentSoundEnabled) soundManager.resumeBackgroundMusic()
                 }
                 Lifecycle.Event.ON_STOP -> {
                     viewModel.pauseSimulation()
@@ -185,7 +187,7 @@ fun GameScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             viewModel.resumeSimulation()
-            if (soundEnabled) soundManager.resumeBackgroundMusic()
+            if (currentSoundEnabled) soundManager.resumeBackgroundMusic()
         }
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
@@ -200,7 +202,7 @@ fun GameScreen(
     val nextPlanetImageRes = nextPlanetIndex?.let { viewModel.planets["p$it"]?.imageRes }
 
     // Логика выбора фона в зависимости от активного ивента
-    val backgroundRes = R.drawable.background_cosmic_game_v2
+    val backgroundRes = R.drawable.background_salvage_command_v3
     val eventTint = when (state.activeEvent?.type) {
         GameEventType.STORM, GameEventType.BLACK_HOLE -> Color(0xFF5A3D8F)
         GameEventType.SOLAR_FLARE -> Color(0xFF9A512F)
@@ -259,7 +261,7 @@ fun GameScreen(
             painter = painterResource(id = backgroundRes),
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.Crop
         )
 
         if (!reducedMotion) CosmicParticleTrails(cosmicParticlePhase)
@@ -268,7 +270,7 @@ fun GameScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.3f))
+                .background(Color.Black.copy(alpha = 0.18f))
                 .background(eventTint.copy(alpha = if (eventTint == Color.Transparent) 0f else 0.10f))
         )
 
@@ -287,7 +289,8 @@ fun GameScreen(
                 onAchievementsClick = { isAchievementsOpen = true },
                 onPrestigeShopClick = { isPrestigeShopOpen = true },
                 onRouteClick = { isGalaxyRouteOpen = true },
-                onSettingsClick = { showSettings = true }
+                onSettingsClick = { showSettings = true },
+                reducedMotion = reducedMotion
             )
             
             BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
@@ -350,7 +353,7 @@ fun GameScreen(
 
                 state.activeEvent?.let { event ->
                     Image(
-                        painter = painterResource(R.drawable.bg_events_minimal_v2),
+                        painter = painterResource(R.drawable.bg_event_operations_v3),
                         contentDescription = null,
                         modifier = Modifier.fillMaxSize().zIndex(-1f),
                         contentScale = ContentScale.Crop
@@ -521,7 +524,7 @@ fun GameScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Image(
-                    painter = painterResource(R.drawable.ui_autoclick_warning_v1),
+                    painter = painterResource(R.drawable.ui_autoclick_warning_v2),
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillBounds

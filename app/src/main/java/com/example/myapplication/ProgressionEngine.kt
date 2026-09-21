@@ -11,15 +11,21 @@ object DailyRewardEngine {
     }
 
     fun canClaim(state: GameState, now: Long = System.currentTimeMillis()): Boolean =
-        state.lastDailyRewardDay != dayKey(now)
+        dayKey(now) > state.lastDailyRewardDay
 
     fun preview(state: GameState, now: Long = System.currentTimeMillis()): DailyReward {
         val today = dayKey(now)
         val continued = state.lastDailyRewardDay == previousDayKey(now)
-        val day = if (continued) state.dailyRewardStreak % 7 + 1 else 1
+        val day = when {
+            today <= state.lastDailyRewardDay -> state.dailyRewardStreak.coerceIn(1, 7)
+            continued -> state.dailyRewardStreak % 7 + 1
+            else -> 1
+        }
+        val highest = state.ownedPlanets.maxOfOrNull(EconomyBalance::planetIndex) ?: 1
+        val priceFloor = if (highest > 1) EconomyBalance.planetPrice((highest + 1).coerceAtMost(39)) * .015 * day else 0.0
         return DailyReward(
             day = day,
-            debris = EconomyBalance.scaledReward(2_500.0 * day * day, state.currentPlanetId),
+            debris = maxOf(EconomyBalance.scaledReward(2_500.0 * day * day, "p$highest"), EconomyBalance.roundReward(priceFloor)),
             prestigePoints = if (day == 7) 1 else 0
         )
     }
@@ -35,7 +41,11 @@ object DailyRewardEngine {
         )
     }
 
-    private fun previousDayKey(now: Long): Long = dayKey(now - 86_400_000L)
+    private fun previousDayKey(now: Long): Long = Calendar.getInstance().run {
+        timeInMillis = now
+        add(Calendar.DAY_OF_YEAR, -1)
+        dayKey(timeInMillis)
+    }
 }
 
 object OverallProgressEngine {

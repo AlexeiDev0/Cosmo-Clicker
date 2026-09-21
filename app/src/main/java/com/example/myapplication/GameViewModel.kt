@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong
 class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private val prefs = GameRepository(application)
+    private val saveCoordinator = StateSaveCoordinator<GameState>()
     private val storeActionLock = Any()
     private val lastStoreActionNanos = mutableMapOf<String, Long>()
     private val debrisId = AtomicLong(System.currentTimeMillis())
@@ -128,6 +129,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     val gameState: StateFlow<GameState> = _gameState.asStateFlow()
 
     init {
+        // Acknowledge any startup offline reward immediately so a process crash cannot replay it.
+        saveGameState()
         resumeSimulation()
         
         refreshTimedQuests()
@@ -183,7 +186,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             val progress = prefs.getFloat("quest_${id}_progress", 0f).toDouble()
                 .finiteOr(0.0)
                 .coerceIn(0.0, target)
-            val rewardDebris = prefs.getFloat("quest_${id}_rewardDebris", 0f).toDouble()
+            val rewardDebris = loadPreciseDouble("quest_${id}_rewardDebris", 0.0)
                 .finiteOr(0.0)
                 .coerceAtLeast(0.0)
             val rewardCases = prefs.getInt("quest_${id}_rewardCases", 0)
@@ -202,6 +205,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                     target = target,
                     progress = progress,
                     rewardDebris = rewardDebris,
+                    rewardPlanetId = prefs.getString("quest_${id}_rewardPlanetId", null),
+                    rewardDroneId = prefs.getString("quest_${id}_rewardDroneId", null),
                     rewardCases = rewardCases.coerceAtLeast(0),
                     isCompleted = isCompleted,
                     cadence = cadence,
@@ -238,6 +243,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             openingCaseType = prefs.getString("openingCaseType", null)
                 ?.let { storedType -> CaseType.entries.firstOrNull { it.name == storedType } },
             pendingCaseOpenings = prefs.getInt("pendingCaseOpenings", 0).coerceAtLeast(0),
+            isRewardCaseOpening = prefs.getBoolean("isRewardCaseOpening", false),
             caseBundleRewards = fleetItems.mapNotNull { item ->
                 prefs.getInt("caseBundleReward_${item.id}", 0).takeIf { it > 0 }?.let { item.id to it }
             }.toMap(),
@@ -290,25 +296,25 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 prefs.getInt("station_${module.name}", 0).coerceIn(0, 5)
             }
         )
+        val restoredState = EventStateCodec.restoreActive(
+            loadedState.copy(
+                pendingEventChain = EventStateCodec.decodePending(prefs.getString(PENDING_EVENT_KEY, null))
+            ),
+            prefs.getString(ACTIVE_EVENT_KEY, null)
+        )
         val offline = OfflineProgressEngine.calculate(
             lastActiveAtMillis = prefs.getLong(LAST_ACTIVE_AT_KEY, 0L),
             nowMillis = System.currentTimeMillis(),
-            fleetCounts = loadedState.activeFleetCounts,
+            fleetCounts = restoredState.activeFleetCounts,
             fleetRarities = fleetById.mapValues { it.value.rarity },
-            rewardMultiplier = (if (Technology.OFFLINE_AI in loadedState.technologies) 1.35 else 1.0) *
-                EconomyBalance.planetIncomeMultiplier(loadedState.currentPlanetId) *
-                EconomyBalance.planetSalvageSpecial(loadedState.currentPlanetId)
+            rewardMultiplier = offlineRewardMultiplier(restoredState)
         )
-        return FeatureEngine.refreshWeekly(loadedState).copy(
-            totalDebris = loadedState.totalDebris + offline.reward,
-            lastOfflineReward = offline.reward,
-            lastOfflineSeconds = offline.elapsedSeconds
-        )
+        return OfflineProgressEngine.apply(FeatureEngine.refreshWeekly(restoredState), offline)
     }
 
     private fun saveGameState() {
-        val state = _gameState.value
-        prefs.edit {
+        saveCoordinator.save({ _gameState.value }) { state ->
+            prefs.edit {
             putInt(SAVE_VERSION_KEY, CURRENT_SAVE_VERSION)
             putLong(LAST_ACTIVE_AT_KEY, System.currentTimeMillis())
             putLong("totalDebrisBits", GameRules.encodeDouble(state.totalDebris))
@@ -328,6 +334,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             if (state.openingCaseType == null) remove("openingCaseType")
             else putString("openingCaseType", state.openingCaseType.name)
             putInt("pendingCaseOpenings", state.pendingCaseOpenings)
+            putBoolean("isRewardCaseOpening", state.isRewardCaseOpening)
             fleetItems.forEach { item -> putInt("caseBundleReward_${item.id}", state.caseBundleRewards[item.id] ?: 0) }
             putBoolean("showCaseBundleSummary", state.showCaseBundleSummary)
             putInt("casesPurchased", state.casesPurchased)
@@ -352,6 +359,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             putStringSet("claimedAchievementIds", state.claimedAchievementIds)
             putString("eventLog", EventLogCodec.encode(state.eventLog))
             putStringSet("encounteredEventTypes", state.encounteredEventTypes.map { it.name }.toSet())
+            EventStateCodec.encodeActive(state)?.let { putString(ACTIVE_EVENT_KEY, it) }
+                ?: remove(ACTIVE_EVENT_KEY)
+            EventStateCodec.encodePending(state.pendingEventChain)?.let { putString(PENDING_EVENT_KEY, it) }
+                ?: remove(PENDING_EVENT_KEY)
             putLong("galaxyWeekKey", state.weeklyGalaxy.weekKey)
             putString("galaxyRule", state.weeklyGalaxy.rule.name)
             putBoolean("galaxyActive", state.weeklyGalaxy.active)
@@ -368,7 +379,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 putString("quest_${q.id}_desc", q.description)
                 putFloat("quest_${q.id}_target", q.target.toFloat())
                 putFloat("quest_${q.id}_progress", q.progress.toFloat())
-                putFloat("quest_${q.id}_rewardDebris", q.rewardDebris.toFloat())
+                putLong("quest_${q.id}_rewardDebrisBits", GameRules.encodeDouble(q.rewardDebris))
+                putString("quest_${q.id}_rewardPlanetId", q.rewardPlanetId)
+                putString("quest_${q.id}_rewardDroneId", q.rewardDroneId)
                 putInt("quest_${q.id}_rewardCases", q.rewardCases)
                 putBoolean("quest_${q.id}_completed", q.isCompleted)
                 putString("quest_${q.id}_cadence", q.cadence.name)
@@ -382,6 +395,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             }
             
         }
+    }
     }
 
     private fun loadPreciseDouble(key: String, defaultValue: Double): Double {
@@ -398,6 +412,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun resumeSimulation() {
         if (simulationJobs.isRunning()) return
         val now = System.currentTimeMillis()
+        applyOfflineProgress(now)
         _gameState.update { EventEngine.expireEventIfNeeded(it, now) }
         startGameLoop()
         startEventLoop()
@@ -557,6 +572,25 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         val now = System.currentTimeMillis()
         _gameState.update { EventEngine.onChallengeClick(it, now, randomProvider) }
     }
+
+    private fun applyOfflineProgress(now: Long) {
+        val state = _gameState.value
+        val offline = OfflineProgressEngine.calculate(
+            lastActiveAtMillis = prefs.getLong(LAST_ACTIVE_AT_KEY, 0L),
+            nowMillis = now,
+            fleetCounts = state.activeFleetCounts,
+            fleetRarities = fleetById.mapValues { it.value.rarity },
+            rewardMultiplier = offlineRewardMultiplier(state)
+        )
+        if (offline.elapsedSeconds <= 0L) return
+        _gameState.update { OfflineProgressEngine.apply(it, offline) }
+        saveGameState()
+    }
+
+    private fun offlineRewardMultiplier(state: GameState): Double =
+        (if (Technology.OFFLINE_AI in state.technologies) 1.35 else 1.0) *
+            EconomyBalance.planetIncomeMultiplier(state.currentPlanetId) *
+            EconomyBalance.planetSalvageSpecial(state.currentPlanetId)
 
     fun onStormNodeClick(node: Int) {
         val now = System.currentTimeMillis()
@@ -1300,8 +1334,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 activeQuests = updatedQuests,
                 sessionStats = state.sessionStats.copy(casesOpened = state.sessionStats.casesOpened + 1),
                 casesPurchased = state.casesPurchased + 1,
-                casePurchasesByType = state.casePurchasesByType +
-                    (caseType to ((state.casePurchasesByType[caseType] ?: 0) + 1)),
+                casePurchasesByType = CaseController.purchaseCountsAfterOpening(state, caseType),
                 lifetimeStats = state.lifetimeStats.copy(
                     casesOpened = state.lifetimeStats.casesOpened + 1
                 )
@@ -1341,76 +1374,13 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun claimQuestReward(questId: String) {
-        _gameState.update { state ->
-            val quest = state.activeQuests.find { it.id == questId } ?: return@update state
-            if (!quest.isCompleted || quest.isClaimed) return@update state
-
-            var newTotalDebris = state.totalDebris + quest.rewardDebris
-            var newCasesPurchased = state.casesPurchased
-            var triggeringCaseOpening = false
-            
-            if (quest.rewardCases > 0) {
-                val totalDrones = state.fleetCounts.values.sum()
-                if (totalDrones < EconomyBalance.MAX_DRONES) {
-                    triggeringCaseOpening = true
-                } else {
-                    // Reward debris instead if drone limit reached
-                    newTotalDebris += 25000.0 * quest.rewardCases
-                }
-            }
-            
-            var newFleetCounts = state.fleetCounts
-            if (quest.rewardDroneId != null) {
-                val totalDrones = state.fleetCounts.values.sum()
-                if (totalDrones < EconomyBalance.MAX_DRONES) {
-                    newFleetCounts = newFleetCounts + (quest.rewardDroneId to (newFleetCounts[quest.rewardDroneId] ?: 0) + 1)
-                } else {
-                    newTotalDebris += 50000.0
-                }
-            }
-
-            val newActiveQuests = state.activeQuests.filter { it.id != questId }
-            val newCompletedQuestIds = state.completedQuestIds + questId
-            val now = System.currentTimeMillis()
-            val dailyFinished = quest.cadence == QuestCadence.DAILY &&
-                newActiveQuests.none { it.cadence == QuestCadence.DAILY }
-            val weeklyFinished = quest.cadence == QuestCadence.WEEKLY &&
-                newActiveQuests.none { it.cadence == QuestCadence.WEEKLY }
-
-            state.copy(
-                totalDebris = newTotalDebris,
-                prestigePoints = state.prestigePoints + quest.rewardPrestigePoints,
-                fleetCounts = newFleetCounts,
-                activeQuests = newActiveQuests,
-                dailyQuestsCompletedAt = if (dailyFinished && state.dailyQuestsCompletedAt < 0L) now else state.dailyQuestsCompletedAt,
-                weeklyQuestsCompletedAt = if (weeklyFinished && state.weeklyQuestsCompletedAt < 0L) now else state.weeklyQuestsCompletedAt,
-                completedQuestIds = newCompletedQuestIds,
-                isOpeningCase = if (triggeringCaseOpening) true else state.isOpeningCase,
-                openingCaseType = if (triggeringCaseOpening) CaseType.COMMON else state.openingCaseType,
-                // Cases from quests don't increase price growth in shop, but we could make them.
-                // For now, let's keep them as a separate bonus.
-                lastDroppedDroneId = if (triggeringCaseOpening) null else state.lastDroppedDroneId
-            )
+        updateStoreState("quest:" + questId) { state ->
+            QuestEngine.claim(state, questId, fleetItems, System.currentTimeMillis())
         }
-        
-        saveGameState()
     }
 
     fun clearReward() {
-        _gameState.update { state ->
-            if (state.pendingCaseOpenings > 0 && state.openingCaseType != null) {
-                state.copy(lastDroppedDroneId = null, isOpeningCase = true, pendingCaseOpenings = state.pendingCaseOpenings - 1)
-            } else {
-                val isBundle = state.caseBundleRewards.values.sum() >= 2
-                state.copy(
-                    lastDroppedDroneId = null,
-                    openingCaseType = null,
-                    pendingCaseOpenings = 0,
-                    showCaseBundleSummary = isBundle,
-                    caseBundleRewards = if (isBundle) state.caseBundleRewards else emptyMap()
-                )
-            }
-        }
+        _gameState.update { state -> CaseController.collectDisplayedReward(state) ?: state }
         saveGameState()
     }
 
@@ -1455,36 +1425,38 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun refreshTimedQuests(now: Long = System.currentTimeMillis()) {
-        val calendar = java.util.Calendar.getInstance()
-        val dayKey = calendar.get(java.util.Calendar.YEAR) * 1_000L +
-            calendar.get(java.util.Calendar.DAY_OF_YEAR)
-        val weekKey = calendar.getWeekYear() * 100L + calendar.get(java.util.Calendar.WEEK_OF_YEAR)
+        val dayKey = TimedQuestSchedule.dayKey(now)
+        val weekKey = TimedQuestSchedule.weekKey(now)
         _gameState.update { state ->
             var quests = state.activeQuests
             var dailyCompletedAt = state.dailyQuestsCompletedAt
             var weeklyCompletedAt = state.weeklyQuestsCompletedAt
             val hasDaily = quests.any { it.cadence == QuestCadence.DAILY }
             val hasWeekly = quests.any { it.cadence == QuestCadence.WEEKLY }
-            if (state.dailyQuestDay != dayKey ||
-                (!hasDaily && dailyCompletedAt < 0L) ||
-                quests.any { it.cadence == QuestCadence.DAILY && !it.id.startsWith(TimedQuestFactory.DAILY_ID_PREFIX) }
-            ) {
+            val hasLegacyDaily = quests.any {
+                it.cadence == QuestCadence.DAILY && !it.id.startsWith(TimedQuestFactory.DAILY_ID_PREFIX)
+            }
+            if (TimedQuestSchedule.shouldRefresh(
+                    state.dailyQuestDay, dayKey, hasDaily, dailyCompletedAt, hasLegacyDaily
+                )) {
                 quests = quests.filterNot { it.cadence == QuestCadence.DAILY } +
-                    createDailyQuests(dayKey, state.currentPlanetId)
+                    createDailyQuests(TimedQuestSchedule.retainedKey(state.dailyQuestDay, dayKey), state.currentPlanetId)
                 dailyCompletedAt = -1L
             }
-            if (state.weeklyQuestWeek != weekKey ||
-                (!hasWeekly && weeklyCompletedAt < 0L) ||
-                quests.any { it.cadence == QuestCadence.WEEKLY && !it.id.startsWith(TimedQuestFactory.WEEKLY_ID_PREFIX) }
-            ) {
+            val hasLegacyWeekly = quests.any {
+                it.cadence == QuestCadence.WEEKLY && !it.id.startsWith(TimedQuestFactory.WEEKLY_ID_PREFIX)
+            }
+            if (TimedQuestSchedule.shouldRefresh(
+                    state.weeklyQuestWeek, weekKey, hasWeekly, weeklyCompletedAt, hasLegacyWeekly
+                )) {
                 quests = quests.filterNot { it.cadence == QuestCadence.WEEKLY } +
-                    createWeeklyQuests(weekKey, state.currentPlanetId)
+                    createWeeklyQuests(TimedQuestSchedule.retainedKey(state.weeklyQuestWeek, weekKey), state.currentPlanetId)
                 weeklyCompletedAt = -1L
             }
             state.copy(
                 activeQuests = quests,
-                dailyQuestDay = dayKey,
-                weeklyQuestWeek = weekKey,
+                dailyQuestDay = TimedQuestSchedule.retainedKey(state.dailyQuestDay, dayKey),
+                weeklyQuestWeek = TimedQuestSchedule.retainedKey(state.weeklyQuestWeek, weekKey),
                 dailyQuestsCompletedAt = dailyCompletedAt,
                 weeklyQuestsCompletedAt = weeklyCompletedAt
             )
@@ -1567,5 +1539,7 @@ private const val SAVE_VERSION_KEY = "saveVersion"
 private const val CURRENT_SAVE_VERSION = 1
 private const val SAVE_INTERVAL_SECONDS = 15
 private const val LAST_ACTIVE_AT_KEY = "lastActiveAt"
+private const val ACTIVE_EVENT_KEY = "activeEventState"
+private const val PENDING_EVENT_KEY = "pendingEventChainState"
 private const val MAX_COMBO = 10
 private const val COMBO_BONUS_PER_LEVEL = 0.05

@@ -265,11 +265,39 @@ class EngineTest {
 
     @Test
     fun planetEventModifiersDriveTimingAndProtectionRules() {
-        assertEquals(34_615L, EventEngine.nextIntervalMillis("p3", FixedRandom(0)))
+        assertEquals(92_307L, EventEngine.nextIntervalMillis("p3", FixedRandom(0)))
+        assertEquals(120_000L, EventEngine.nextIntervalMillis("p1", FixedRandom(0)))
         assertEquals(40_000L, EventEngine.nextDurationMillis("p8", FixedRandom(0)))
         assertEquals(0.25, PlanetEventModifiers.forPlanet("p12").negativeEventResistance, 0.0)
         assertEquals(NegativeEventResistanceOutcome.CANCEL, PlanetEventModifiers.forPlanet("p16").resistanceOutcome)
         assertTrue(GameEventType.CYBER_VIRUS in PlanetEventModifiers.forPlanet("p7").blockedEvents)
+    }
+
+    @Test
+    fun eventRewardsRemainValuableWithoutSkippingTheCoreEconomy() {
+        val wealthyState = GameState(totalDebris = 1_000_000_000.0)
+
+        val station = EventEngine.startEvent(
+            wealthyState,
+            GameEventType.ABANDONED_STATION,
+            durationMillis = 30_000L,
+            nowMillis = 1_000L,
+            random = FixedRandom(0),
+            clickValue = 1_000_000.0
+        )
+        val pirate = EventEngine.startEvent(
+            wealthyState,
+            GameEventType.PIRATE_RAID,
+            durationMillis = 30_000L,
+            nowMillis = 1_000L,
+            random = FixedRandom(0),
+            clickValue = 1_000_000.0
+        )
+
+        assertEquals(40_000_000.0, station.activeEvent?.reward ?: 0.0, 0.0)
+        assertEquals(36_000_000.0, pirate.activeEvent?.reward ?: 0.0, 0.0)
+        assertTrue((station.activeEvent?.reward ?: Double.MAX_VALUE) <= wealthyState.totalDebris * 0.04)
+        assertTrue((pirate.activeEvent?.reward ?: Double.MAX_VALUE) <= wealthyState.totalDebris * 0.04)
     }
 
     @Test

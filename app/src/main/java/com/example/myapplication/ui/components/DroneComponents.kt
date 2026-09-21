@@ -23,6 +23,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.BlendMode
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -39,7 +41,11 @@ fun FleetIcon(item: FleetConfig, iconSize: Dp) {
     val rarityColor = remember(item.rarity) { item.rarity.color }
     
     Box(
-        modifier = Modifier.size(iconSize),
+        modifier = Modifier
+            .size(iconSize)
+            .shadow(4.dp, CircleShape, clip = false)
+            .background(rarityColor.copy(alpha = 0.10f), CircleShape)
+            .border(1.dp, rarityColor.copy(alpha = 0.62f), CircleShape),
         contentAlignment = Alignment.Center
     ) {
         if (item.spriteIndex >= 0) {
@@ -53,6 +59,7 @@ fun FleetIcon(item: FleetConfig, iconSize: Dp) {
                     painter = painterResource(id = item.iconRes),
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
+                    colorFilter = ColorFilter.tint(Color(0xFFE4F1F7), BlendMode.Modulate),
                     modifier = Modifier
                         .requiredSize(iconSize * columns, iconSize * rows)
                         .graphicsLayer {
@@ -67,6 +74,7 @@ fun FleetIcon(item: FleetConfig, iconSize: Dp) {
                 painter = painterResource(id = item.iconRes),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
+                colorFilter = ColorFilter.tint(Color(0xFFE4F1F7), BlendMode.Modulate),
                 modifier = Modifier.size(iconSize)
             )
         }

@@ -35,7 +35,7 @@ object EconomyController {
     }
 
     fun utilityUpgradeMaxLevel(id: String): Int = when (id) {
-        "flight" -> 2
+        "flight" -> 4
         "autoclick" -> 10
         else -> 5
     }

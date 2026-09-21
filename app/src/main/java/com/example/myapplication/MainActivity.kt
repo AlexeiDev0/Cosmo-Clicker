@@ -52,7 +52,7 @@ class MainActivity : ComponentActivity() {
                 LocalContext provides localizedContext,
                 LocalConfiguration provides localizedConfiguration
             ) {
-                MyApplicationTheme {
+                MyApplicationTheme(reducedMotion = reducedMotion) {
                     GameScreen(
                         selectedLanguage = selectedLanguage,
                         onLanguageSelected = { language ->

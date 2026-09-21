@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import com.example.myapplication.ui.components.Button
 import com.example.myapplication.ui.components.CosmicButtonStyle
+import com.example.myapplication.ui.components.CosmicButtonState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -87,21 +88,15 @@ fun SettingsScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
-        Image(
-            painter = painterResource(R.drawable.bg_settings_space_v1),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            AppColors.BackgroundStart.copy(alpha = .44f),
-                            Color(0xFF020817).copy(alpha = .62f),
-                            AppColors.BackgroundStart.copy(alpha = .50f)
+                            AppColors.BackgroundStart.copy(alpha = .90f),
+                            Color(0xFF020817).copy(alpha = .96f),
+                            AppColors.BackgroundStart.copy(alpha = .92f)
                         )
                     )
                 )
@@ -148,7 +143,7 @@ fun SettingsScreen(
             SettingsImageButton(
                 label = stringResource(R.string.language),
                 value = stringResource(languageLabel),
-                icon = R.drawable.icon_settings_language_v2,
+                icon = R.drawable.ui_language_simple,
                 onClick = { showLanguageDialog = true }
             )
 
@@ -156,7 +151,7 @@ fun SettingsScreen(
             SettingsToggleRow(
                 title = stringResource(R.string.sound),
                 description = stringResource(R.string.sound_description),
-                icon = R.drawable.icon_settings_sound_v2,
+                icon = R.drawable.ui_sound_simple,
                 checked = soundEnabled,
                 onCheckedChange = onSoundEnabledChanged
             )
@@ -165,7 +160,7 @@ fun SettingsScreen(
             SettingsToggleRow(
                 title = stringResource(R.string.reduced_motion),
                 description = stringResource(R.string.reduced_motion_description),
-                icon = R.drawable.icon_settings_reduced_motion_v2,
+                icon = R.drawable.ui_motion_simple,
                 checked = reducedMotion,
                 onCheckedChange = onReducedMotionChanged
             )
@@ -175,7 +170,7 @@ fun SettingsScreen(
                 onClick = onAchievements,
                 modifier = Modifier.fillMaxWidth().height(68.dp),
                 style = CosmicButtonStyle.Primary,
-                generatedArtwork = true,
+                generatedArtwork = false,
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 8.dp)
             ) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -235,12 +230,12 @@ fun SettingsScreen(
                 onClick = { showResetDialog = true },
                 modifier = Modifier.fillMaxWidth().height(68.dp),
                 style = CosmicButtonStyle.Danger,
-                generatedArtwork = true,
+                generatedArtwork = false,
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 14.dp, vertical = 8.dp)
             ) {
                 Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
                     Image(
-                        painter = painterResource(R.drawable.icon_settings_reset_v2),
+                        painter = painterResource(R.drawable.ui_reset_simple),
                         contentDescription = null,
                         modifier = Modifier.size(32.dp)
                     )
@@ -264,14 +259,16 @@ fun SettingsScreen(
             content = {
                 languages.forEach { option ->
                     val selected = selectedLanguage == option.tag
-                    Surface(
-                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp).clickable {
+                    Button(
+                        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                        onClick = {
                             showLanguageDialog = false
                             onLanguageSelected(option.tag)
                         },
                         shape = RoundedCornerShape(12.dp),
-                        color = if (selected) AppColors.Primary.copy(alpha = 0.14f) else Color.White.copy(alpha = 0.04f),
-                        border = androidx.compose.foundation.BorderStroke(1.dp, if (selected) AppColors.Primary else Color.White.copy(alpha = 0.08f))
+                        style = CosmicButtonStyle.Secondary,
+                        state = if (selected) CosmicButtonState.Selected else CosmicButtonState.Normal,
+                        generatedArtwork = false
                     ) {
                         Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
                             CosmicSelectionIndicator(selected)
@@ -298,7 +295,7 @@ fun SettingsScreen(
                     onClick = { showResetDialog = false },
                     style = CosmicButtonStyle.Secondary,
                     compact = true,
-                    generatedArtwork = true
+                    generatedArtwork = false
                 ) {
                     Text(stringResource(R.string.cancel), fontSize = 11.sp, maxLines = 1)
                 }
@@ -310,7 +307,7 @@ fun SettingsScreen(
                     modifier = Modifier.weight(1f).height(SpaceDesign.MinTouchSize),
                     style = CosmicButtonStyle.Danger,
                     compact = true,
-                    generatedArtwork = true,
+                    generatedArtwork = false,
                     contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 0.dp)
                 ) {
                     Text(stringResource(R.string.reset_game_confirm), fontSize = 11.sp, maxLines = 1)
@@ -404,28 +401,23 @@ private fun CosmicSelectionIndicator(selected: Boolean) {
 
 @Composable
 private fun SettingsImageButton(label: String, value: String, icon: Int, onClick: () -> Unit) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(74.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(
-                Brush.horizontalGradient(
-                    listOf(AppColors.Primary.copy(alpha = .16f), AppColors.Surface.copy(alpha = .96f))
-                )
-            )
-            .border(1.dp, AppColors.Primary.copy(alpha = .34f), RoundedCornerShape(16.dp))
-            .clickable(onClick = onClick),
-        contentAlignment = Alignment.Center
+    Button(
+        onClick = onClick,
+        modifier = Modifier.fillMaxWidth().heightIn(min = 74.dp),
+        style = CosmicButtonStyle.Secondary,
+        generatedArtwork = false,
+        contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 8.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(start = 16.dp, end = 28.dp),
+            modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Image(painterResource(icon), null, Modifier.size(46.dp))
+            Image(painterResource(icon), null, Modifier.size(32.dp))
             Spacer(Modifier.width(14.dp))
-            Text(label, modifier = Modifier.weight(1f), color = Color.White, fontWeight = FontWeight.Bold)
-            Text(value, color = AppColors.Primary, fontSize = 12.sp, fontWeight = FontWeight.SemiBold)
+            Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Text(label, color = Color.White, fontWeight = FontWeight.SemiBold)
+                Text(value, color = AppColors.TextMuted, fontSize = 12.sp)
+            }
             Spacer(Modifier.width(8.dp))
             Text("›", color = AppColors.Primary, fontSize = 22.sp)
         }

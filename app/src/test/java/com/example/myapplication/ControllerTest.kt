@@ -33,6 +33,21 @@ class ControllerTest {
     }
 
     @Test
+    fun collectingCaseRewardTwiceAdvancesOnlyOnePendingCase() {
+        val reward = GameState(
+            openingCaseType = CaseType.COMMON,
+            pendingCaseOpenings = 2,
+            lastDroppedDroneId = "drone_1"
+        )
+
+        val advanced = CaseController.collectDisplayedReward(reward)!!
+
+        assertEquals(1, advanced.pendingCaseOpenings)
+        assertTrue(advanced.isOpeningCase)
+        assertNull(CaseController.collectDisplayedReward(advanced))
+    }
+
+    @Test
     fun economyControllerPurchasesUpgrade() {
         val item = ItemConfig("magnet", "", 15.0, 1.0, 0)
         val state = GameState(totalDebris = 200.0)

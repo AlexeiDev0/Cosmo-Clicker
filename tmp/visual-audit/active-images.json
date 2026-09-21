@@ -1,0 +1,778 @@
+﻿[
+    {
+        "Name":  "icon_game.png",
+        "Folder":  "drawable"
+    },
+    {
+        "Name":  "ic_currency_debris_v2.png",
+        "Folder":  "drawable"
+    },
+    {
+        "Name":  "ic_drone_energy_cell_v2.png",
+        "Folder":  "drawable"
+    },
+    {
+        "Name":  "ic_prestige_hologram_v2.png",
+        "Folder":  "drawable"
+    },
+    {
+        "Name":  "ui_close_control_v2.png",
+        "Folder":  "drawable"
+    },
+    {
+        "Name":  "ui_lock_control_v2.png",
+        "Folder":  "drawable"
+    },
+    {
+        "Name":  "ui_new_badge_v2.png",
+        "Folder":  "drawable"
+    },
+    {
+        "Name":  "background_salvage_command_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "bg_achievements_archive_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "bg_case_vault_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "bg_event_operations_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "bg_goals_starchart_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "bg_hangar_fleet_command_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "bg_offline_reward_space_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "bg_prestige_core_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "bg_settings_control_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "bg_shop_salvage_market_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "bg_statistics_observatory_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "cargo_crate_space_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_01.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_02.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_03.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_04.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_05.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_06.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_08.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_common_1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_common_2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_common_3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_common_4.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_common_5.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_common_6.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_common_7.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_common_8.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_legendary_1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_legendary_2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_legendary_3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_legendary_4.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_legendary_5.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_legendary_6.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_legendary_7.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_legendary_8.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_rare_1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_rare_2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_rare_3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_rare_4.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_rare_5.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_rare_6.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_rare_7.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_rare_8.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "case_tier_showcase_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_01.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_02.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_03.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_04.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_05.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_06.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_07.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_08.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_09.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_10.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_11.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_12.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_13.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "debris_14.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_01_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_02_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_03_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_04_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_05_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_06_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_07_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_08_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_09_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_10_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_11_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_12_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_13_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_14_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_15_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_16_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_17_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_18_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_19_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_20.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_20_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_21_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_22_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_23_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_24_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_25_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_26_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_27_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_28_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_29.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_29_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_collection_art_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "drone_fleet_showcase_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_black_hole_minimal_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_cyber_minimal_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_distress_background_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_distress_minimal_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_meteor_minimal_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_pirate_minimal_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_pirate_ship_sheet_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_reactor_core.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_solar_minimal_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_station_minimal_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_storm_minimal_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "event_trade_minimal_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "icon_game.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "icon_settings_language_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "icon_settings_reduced_motion_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "icon_settings_reset_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "icon_settings_sound_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "offline_drone_reward_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_10_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_11_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_12_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_13_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_14_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_15_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_16_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_17_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_18_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_19_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_1_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_20_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_21_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_22_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_23_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_24_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_25_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_26_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_27_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_28_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_29_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_2_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_30_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_31_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_32_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_33_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_34_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_35_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_36_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_37_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_38_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_39_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_3_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_4_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_5_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_6_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_7_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_8_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "planet_9_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "play_fon_game_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "shop_case_ui_sheet_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "shop_command_header.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "shop_ui_minimal_sheet_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "shop_upgrades_expansion_sheet_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "shop_upgrades_minimal_sheet_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "shop_upgrade_showcase_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "ui_autoclick_warning_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "ui_button_active_v6.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "ui_button_disabled_v6.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "ui_button_locked_v6.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "ui_button_normal_v6.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "ui_button_pressed_v6.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "ui_button_selected_v6.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "ui_drone_bay_frame_v3.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "ui_meteor_repair_sheet_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "ui_start_button_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_antimatter_lens_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_dark_matter_forge_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_debris_harvester_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_entropy_engine_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_flight_slots_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_graviton_press_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_magnet.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_magnet_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_nanite_swarm_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_neural_matrix_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_omega_core_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_pulsar_battery_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_quantum_amplifier_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_quantum_wrench_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_reality_anchor_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_signal_beacon_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_singularity_tap_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_spawn_speed_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_stellar_resonator_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_temporal_relay_v1.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_void_compressor_v2.png",
+        "Folder":  "drawable-nodpi"
+    },
+    {
+        "Name":  "upgrade_weld_torch_v2.png",
+        "Folder":  "drawable-nodpi"
+    }
+]

@@ -17,6 +17,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
@@ -56,10 +57,10 @@ fun PlanetButton(
         modifier = modifier
             .size(containerSize)
             .scale(animatedScale)
-            .pointerInput(isLocked) {
+            .pointerInput(isLocked, reducedMotion, planetId) {
                 detectTapGestures { position ->
                     if (!isLocked && size.width > 0 && size.height > 0) {
-                        scaleVal = 0.92f
+                        scaleVal = if (reducedMotion) 1f else 0.94f
                         onClick(
                             (position.x / size.width).coerceIn(0f, 1f),
                             (position.y / size.height).coerceIn(0f, 1f)
@@ -71,11 +72,33 @@ fun PlanetButton(
     ) {
         LaunchedEffect(scaleVal) { if (scaleVal < 1f) { delay(90); scaleVal = 1f } }
 
-        // Обрезка
+        Box(
+            modifier = Modifier
+                .size(containerSize * 0.92f)
+                .shadow(10.dp, CircleShape, clip = false)
+                .background(
+                    Brush.radialGradient(
+                        listOf(planetConfig.color.copy(alpha = 0.28f), Color.Transparent)
+                    ),
+                    CircleShape
+                )
+        )
+        androidx.compose.foundation.Canvas(
+            modifier = Modifier.fillMaxSize().rotate(rotation * 0.35f)
+        ) {
+            drawOval(
+                color = planetConfig.color.copy(alpha = if (isLocked) 0.12f else 0.26f),
+                topLeft = androidx.compose.ui.geometry.Offset(size.width * 0.06f, size.height * 0.31f),
+                size = androidx.compose.ui.geometry.Size(size.width * 0.88f, size.height * 0.38f),
+                style = Stroke(width = 1.5.dp.toPx())
+            )
+        }
+
+        // Keep the illustrated key light fixed; only the orbital guide moves.
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .rotate(rotation)
+                .clip(androidx.compose.ui.graphics.RectangleShape)
         ) {
             if (planetConfig.spriteIndex >= 0) {
                 val columns = 5

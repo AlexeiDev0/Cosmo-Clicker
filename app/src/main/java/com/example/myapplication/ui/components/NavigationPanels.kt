@@ -57,21 +57,35 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
         colors = CardDefaults.cardColors(containerColor = Color(0xFF07111F)),
         border = null
     ) {
-        Column(
-            Modifier
-                .background(Brush.verticalGradient(listOf(accent.copy(alpha = .12f), Color(0xFF07111F), Color(0xFF090D1A))))
-                .padding(SpaceDesign.SheetPadding)
-        ) {
-            SpaceSheetHeader(stringResource(R.string.case_shop_title), stringResource(R.string.case_shop_subtitle), onClose)
-            Spacer(Modifier.height(12.dp))
-            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                listOf(R.string.shop_tab_upgrades, R.string.shop_tab_cases, R.string.shop_tab_planets, R.string.shop_tab_systems).forEachIndexed { index, title ->
-                    SpaceTab(stringResource(title), selectedTab == index, { selectedTab = index }, Modifier.weight(1f), accent = tabColors[index], iconSheetIndex = index)
+        Box(Modifier.fillMaxSize()) {
+            Image(
+                painter = painterResource(R.drawable.bg_shop_salvage_market_v3),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.FillBounds,
+                alpha = .42f
+            )
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(
+                        Brush.verticalGradient(
+                            listOf(accent.copy(alpha = .13f), Color(0xD907111F), Color(0xF2090D1A))
+                        )
+                    )
+            )
+            Column(Modifier.fillMaxSize().padding(SpaceDesign.SheetPadding)) {
+                SpaceSheetHeader(stringResource(R.string.case_shop_title), stringResource(R.string.case_shop_subtitle), onClose)
+                ArtworkStrip(listOf(R.drawable.case_common_1, R.drawable.case_rare_1, R.drawable.case_legendary_1), Modifier.height(88.dp))
+                Spacer(Modifier.height(12.dp))
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
+                    listOf(R.string.shop_tab_upgrades, R.string.shop_tab_cases, R.string.shop_tab_planets, R.string.shop_tab_systems).forEachIndexed { index, title ->
+                        SpaceTab(stringResource(title), selectedTab == index, { selectedTab = index }, Modifier.weight(1f), accent = tabColors[index], iconSheetIndex = index)
+                    }
                 }
-            }
-            Spacer(Modifier.height(12.dp))
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(7.dp)) {
-                when (selectedTab) {
+                Spacer(Modifier.height(12.dp))
+                LazyColumn(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(7.dp)) {
+                    when (selectedTab) {
                     0 -> items(viewModel.clickItems, key = { it.id }) { upgrade ->
                         val level = state.clickLevels[upgrade.id] ?: 0
                         val marketMultiplier = if (state.weeklyGalaxy.active && state.weeklyGalaxy.rule == com.example.myapplication.WeeklyRule.VOLATILE_MARKET) {
@@ -115,7 +129,7 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
                             onClick = { viewModel.buyPlanet(id) }
                         )
                     }
-                    else -> items(listOf("autoclick", "flight", "spawn", "magnet")) { id ->
+                        else -> items(listOf("autoclick", "flight", "spawn", "magnet")) { id ->
                         val level = viewModel.utilityUpgradeLevel(id)
                         val max = viewModel.utilityUpgradeMaxLevel(id)
                         val cost = viewModel.utilityUpgradeCost(id, level)
@@ -137,6 +151,7 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
                             accent = tabColors[3],
                             onBuy = { viewModel.buyUtilityUpgrade(id) }
                         )
+                        }
                     }
                 }
             }
@@ -221,6 +236,15 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
     val active = state.activeFleetCounts.values.sum()
     val owned = state.fleetCounts.values.sum()
     val discovered = viewModel.fleetItems.count { it.id in state.discoveredDroneIds || (state.fleetCounts[it.id] ?: 0) > 0 }
+    // One clock drives the entire grid. A transition per card kept every off-screen
+    // drone animating and scaled linearly with the collection size.
+    val hangarMotion = if (!com.example.myapplication.ui.theme.LocalReducedMotion.current) rememberInfiniteTransition(label = "hangar_hover") else null
+    val hangarHoverPhase = hangarMotion?.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(tween(1_600, easing = LinearEasing)),
+        label = "hangar_hover_phase"
+    )?.value ?: 0f
     val visibleDrones = viewModel.fleetItems.filter { drone ->
         when (filter) {
             HangarFilter.ALL -> true
@@ -233,7 +257,7 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
         stringResource(R.string.drone_hangar_subtitle),
         onClose,
         modifier,
-        backgroundRes = R.drawable.bg_hangar_minimal_v1
+        backgroundRes = R.drawable.bg_hangar_fleet_command_v1
     ) {
         item {
             Card(
@@ -243,6 +267,7 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
                 border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Primary.copy(alpha = 0.24f))
             ) {
                 Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    ArtworkStrip(listOf(R.drawable.drone_06_v2, R.drawable.drone_01_v2, R.drawable.drone_07_v2), Modifier.height(106.dp))
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Column {
                             Text(stringResource(R.string.hangar_overview), color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
@@ -273,7 +298,7 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
         items(visibleDrones.chunked(2), key = { row -> row.first().id }) { row ->
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 row.forEach { drone ->
-                    CompactHangarDroneCard(drone, viewModel, state, Modifier.weight(1f))
+                    CompactHangarDroneCard(drone, viewModel, state, Modifier.weight(1f), hangarHoverPhase)
                 }
                 repeat(2 - row.size) { Spacer(Modifier.weight(1f)) }
             }
@@ -317,7 +342,8 @@ internal fun CompactHangarDroneCard(
     drone: com.example.myapplication.FleetConfig,
     viewModel: GameViewModel,
     state: GameState,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hoverPhase: Float = 0f
 ) {
     val count = state.fleetCounts[drone.id] ?: 0
     val active = state.activeFleetCounts[drone.id] ?: 0
@@ -325,23 +351,15 @@ internal fun CompactHangarDroneCard(
     val repairCost = if (damaged > 0) EconomyBalance.droneRepairCost(state.totalDebris, drone.rarity) else 0.0
     val discovered = drone.id in state.discoveredDroneIds || count > 0
     val canDeploy = active > 0 || (count > 0 && state.totalDebris >= repairCost && state.activeFleetCounts.values.sum() < viewModel.activeDroneCapacity(state))
-    val hoverFrames = if (drone.rarity == Rarity.LEGENDARY) 16 else 8
-    val hoverMotion = rememberInfiniteTransition(label = "hangar_hover_${drone.id}")
-    val hoverPhase by hoverMotion.animateFloat(
-        initialValue = 0f,
-        targetValue = hoverFrames.toFloat(),
-        animationSpec = infiniteRepeatable(tween(1_600, easing = LinearEasing)),
-        label = "hangar_hover_phase"
-    )
-    val frame = hoverPhase.toInt().coerceIn(0, hoverFrames - 1)
-    val half = hoverFrames / 2
-    val hoverOffset = if (frame <= half) -frame else -(hoverFrames - frame)
+    val hoverOffset = -kotlin.math.sin(hoverPhase * Math.PI).toFloat() *
+        if (drone.rarity == Rarity.LEGENDARY) 4f else 2.5f
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = if (active > 0) AppColors.Primary.copy(alpha = .15f) else AppColors.Surface.copy(alpha = .88f)),
         border = androidx.compose.foundation.BorderStroke(1.dp, if (active > 0) AppColors.Primary.copy(alpha = .38f) else AppColors.Outline.copy(alpha = .7f))
     ) {
+        Box {
         Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Surface(shape = RoundedCornerShape(8.dp), color = drone.rarity.color.copy(alpha = .14f)) {
@@ -363,12 +381,16 @@ internal fun CompactHangarDroneCard(
                 Image(
                     painter = painterResource(drone.iconRes),
                     contentDescription = null,
-                    modifier = Modifier.size(68.dp).offset(y = (hoverOffset * 0.55f).dp),
+                    modifier = Modifier.size(68.dp).offset(y = hoverOffset.dp),
                     contentScale = ContentScale.Fit,
+                    colorFilter = androidx.compose.ui.graphics.ColorFilter.tint(
+                        androidx.compose.ui.graphics.Color(0xFFE4F1F7),
+                        androidx.compose.ui.graphics.BlendMode.Modulate
+                    ),
                     alpha = if (discovered) 1f else .18f
                 )
                 if (!discovered) Icon(
-                    painter = painterResource(R.drawable.ui_lock_control_v2),
+                    painter = painterResource(R.drawable.ui_lock_simple),
                     contentDescription = stringResource(R.string.locked),
                     tint = Color.White.copy(alpha = .85f),
                     modifier = Modifier.size(25.dp)
@@ -417,6 +439,7 @@ internal fun CompactHangarDroneCard(
                 )
             }
         }
+        }
     }
 }
 
@@ -430,20 +453,19 @@ private fun CosmicHangarAction(
     onClick: () -> Unit
 ) {
     val accent = if (primary) AppColors.Primary else AppColors.Danger
-    Surface(
-        modifier = modifier
-            .height(48.dp)
-            .alpha(if (enabled) 1f else .34f)
-            .clickable(enabled = enabled, onClick = onClick),
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(48.dp),
+        enabled = enabled,
         shape = RoundedCornerShape(12.dp),
-        color = if (primary) accent.copy(alpha = .20f) else AppColors.SurfaceRaised.copy(alpha = .72f),
-        border = androidx.compose.foundation.BorderStroke(
-            1.dp,
-            accent.copy(alpha = if (primary) .58f else .38f)
-        )
+        style = if (primary) CosmicButtonStyle.Primary else CosmicButtonStyle.Danger,
+        state = if (enabled) CosmicButtonState.Normal else CosmicButtonState.Locked,
+        compact = true,
+        generatedArtwork = true,
+        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
     ) {
         Row(
-            modifier = Modifier.fillMaxSize().padding(horizontal = 8.dp),
+            modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -707,7 +729,7 @@ fun PrestigeShopPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
         stringResource(R.string.prestige_shop_subtitle),
         onClose,
         modifier,
-        backgroundRes = R.drawable.bg_prestige_shop_minimal_v2
+        backgroundRes = R.drawable.bg_prestige_core_v3
     ) {
         item {
             Surface(modifier = Modifier.fillMaxWidth().height(68.dp), shape = RoundedCornerShape(16.dp), color = Color(0xCC091426), border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF8A77FF).copy(.28f))) {
@@ -805,8 +827,7 @@ fun StatisticsPanel(viewModel: GameViewModel, state: GameState, onClose: () -> U
         title = stringResource(R.string.statistics_and_achievements),
         subtitle = stringResource(R.string.statistics_subtitle),
         onClose = onClose,
-        modifier = modifier,
-        backgroundRes = R.drawable.bg_statistics_observatory_v1
+        modifier = modifier
     ) {
         item(key = "completion") {
             Column(
@@ -856,11 +877,9 @@ private fun StatisticRow(label: String, value: String) {
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(painterResource(R.drawable.ic_nav_stats_minimal), null, Modifier.size(22.dp), tint = Color.Unspecified)
-        Spacer(Modifier.width(9.dp))
         Text(label, modifier = Modifier.weight(1f), color = Color.White.copy(alpha = .88f), fontSize = 12.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
         Spacer(Modifier.width(12.dp))
-        Text(value, color = AppColors.Primary, fontWeight = FontWeight.SemiBold, fontSize = 12.sp, maxLines = 1)
+        Text(value, color = Color.White, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, maxLines = 1)
     }
 }
 

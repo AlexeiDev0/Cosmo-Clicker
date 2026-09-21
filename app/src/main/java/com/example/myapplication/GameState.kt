@@ -73,7 +73,8 @@ data class Quest(
     val isClaimed: Boolean = false,
     val cadence: QuestCadence = QuestCadence.DAILY,
     val difficulty: QuestDifficulty = QuestDifficulty.EASY,
-    val rewardPrestigePoints: Int = 0
+    val rewardPrestigePoints: Int = 0,
+    val rewardPlanetId: String? = null
 )
 
 data class GameState(
@@ -97,6 +98,7 @@ data class GameState(
     val isOpeningCase: Boolean = false,
     val openingCaseType: CaseType? = null,
     val pendingCaseOpenings: Int = 0,
+    val isRewardCaseOpening: Boolean = false,
     val caseBundleRewards: Map<String, Int> = emptyMap(),
     val showCaseBundleSummary: Boolean = false,
     val casesPurchased: Int = 0,

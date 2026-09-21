@@ -86,18 +86,18 @@ fun CaseOpeningOverlay(
         }
     }
 
-    val infiniteTransition = rememberInfiniteTransition(label = "")
-    val bounceOffset by infiniteTransition.animateFloat(
+    val infiniteTransition = if (isOpening && !reduceMotion) rememberInfiniteTransition(label = "case_idle") else null
+    val bounceOffset = infiniteTransition?.animateFloat(
         initialValue = 0f, targetValue = -20f,
         animationSpec = infiniteRepeatable(tween(1000, easing = FastOutSlowInEasing), RepeatMode.Reverse),
         label = ""
-    )
-    val textAlpha by infiniteTransition.animateFloat(
+    )?.value ?: 0f
+    val textAlpha = infiniteTransition?.animateFloat(
         initialValue = 0.4f, targetValue = 1f,
         animationSpec = infiniteRepeatable(tween(800), RepeatMode.Reverse),
         label = ""
-    )
-    val openingShake by infiniteTransition.animateFloat(
+    )?.value ?: 1f
+    val openingShake = infiniteTransition?.animateFloat(
         initialValue = -9f,
         targetValue = 9f,
         animationSpec = infiniteRepeatable(
@@ -105,17 +105,25 @@ fun CaseOpeningOverlay(
             repeatMode = RepeatMode.Reverse
         ),
         label = "caseOpeningShake"
-    )
+    )?.value ?: 0f
     Box(modifier = Modifier.fillMaxSize()) {
         // ЭКРАН КЕЙСА (ОЖИДАНИЕ ИЛИ АНИМАЦИЯ)
         AnimatedVisibility(visible = isOpening, enter = fadeIn(), exit = fadeOut()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.92f))
+                    .background(Color.Black)
                     .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {},
                 contentAlignment = Alignment.Center
             ) {
+                Image(
+                    painter = painterResource(R.drawable.bg_case_vault_v3),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds,
+                    alpha = .72f
+                )
+                Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = .28f)))
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (!hasClickedToOpen) {
                         Text(
@@ -190,16 +198,24 @@ fun CaseOpeningOverlay(
         // ЭКРАН НАГРАДЫ (ПОСЛЕ АНИМАЦИИ)
         AnimatedVisibility(
             visible = lastDroppedDrone != null,
-            enter = fadeIn() + scaleIn(initialScale = 0.5f),
+            enter = if (reduceMotion) fadeIn() else fadeIn() + scaleIn(initialScale = 0.85f),
             exit = fadeOut()
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black.copy(alpha = 0.85f))
+                    .background(Color.Black)
                     .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {},
                 contentAlignment = Alignment.Center
             ) {
+                Image(
+                    painter = painterResource(R.drawable.bg_case_vault_v3),
+                    contentDescription = null,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.FillBounds,
+                    alpha = .46f
+                )
+                Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = .54f)))
                 lastDroppedDrone?.let { drone ->
                     Column(
                         modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
@@ -276,7 +292,7 @@ fun CaseOpeningOverlay(
                                     visible = true
                                 }
                             }
-                            AnimatedVisibility(visible, enter = fadeIn(tween(420)) + slideInVertically(tween(420)) { it / 3 }) {
+                            AnimatedVisibility(visible, enter = if (reduceMotion) fadeIn() else fadeIn(tween(420)) + slideInVertically(tween(420)) { it / 3 }) {
                                 Surface(
                                     modifier = Modifier.fillMaxWidth(),
                                     shape = RoundedCornerShape(16.dp),
