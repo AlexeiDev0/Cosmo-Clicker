@@ -1,5 +1,36 @@
 # News
 
+## 1.19.2 (versionCode 40) — 2026-10-03
+
+- Added 29 new drone designs and 24 case frames in a simpler industrial style
+  with metallic shading, optics, vents and rarity lights.
+- Added a blue underlined privacy-policy link in Settings and on entry screens.
+  The link opens the full localized policy without starting gameplay or requiring
+  an internet connection. Existing agreement and withdrawal controls remain.
+- Identified the developer by name in the policy and synchronized the app text
+  with the standalone HTML and text files.
+
+## 1.19.1 (versionCode 39) — 2026-10-03
+
+- Restored the 28 detailed salvage images in the play area above the planet.
+- Restored detailed painted case frames with rarity lights and orbital reveal framing.
+- Restored all 29 detailed painted drone sprites, added engine glow, and
+  corrected atlas thumbnail rendering. Reduced-motion mode keeps engine light steady.
+- Unified 14 primary control icons with crisp metallic vectors and accent lighting.
+- Retained the bundled CC0 audio and version 3 privacy policy from 1.19.0.
+
+## 1.19.0 (versionCode 38) — 2026-10-03
+
+- Added bundled CC0 interface and sci-fi effects for tapping, salvage, drones,
+  cases, events, prestige and planet unlocks, plus Exploration Theme music.
+- Replaced generated tones with a bounded SoundPool and retained foreground and
+  sound-setting controls. Preserved source pages, licences and asset hashes.
+- Updated privacy policy and local consent to version 3; exported matching HTML
+  and English, Russian and Spanish text files with local storage, backup,
+  anti-autoclick, audio and support disclosures.
+- Detailed the case armour and drone materials and moved salvage debris above
+  the planet so it remains visible.
+
 ## Unreleased
 
 - Preserved and audited the complete 39-planet route, including its late-game
@@ -135,7 +166,7 @@
 ## 1.13.0 - 2026-08-09
 
 - Replaced the complete visual set with a cohesive atlas of 20 unique planets and
-  29 progressively rarer salvage drones, including dedicated late-game worlds.
+  29 progressively rarecr salvage drones, including dedicated late-game worlds.
 - Removed rectangular touch flashes from transparent event sprites, including the
   black hole, golden asteroid, pirate raid, and trading ship.
 - Reworked the trading-ship market composition so its title leads the screen and

@@ -1,0 +1,26 @@
+Drona Salvage — política de privacidad
+Versión 3 · 3 de octubre de 2026
+
+Datos locales y finalidad
+El juego guarda recursos, planetas, drones, mejoras, misiones, logros, estadísticas y fechas de actividad para conservar el progreso, calcular recompensas sin conexión y renovar misiones. También guarda idioma, sonido y movimiento reducido. Analiza temporalmente los tiempos y posiciones de pulsaciones en el dispositivo para detectar clics automáticos; este historial no se envía al desarrollador.
+
+Protección local de pulsaciones
+El juego también guarda pausas temporales de pulsaciones del planeta, el número y la fecha de detecciones recientes y el contador de arranques de Android para conservar la pausa al reiniciar la aplicación. No guarda posiciones ni historial de pulsaciones en estos datos, no los envía al desarrollador y los excluye de las copias. El contador distingue reinicios del dispositivo; no es un identificador publicitario. La pausa dura como máximo dos minutos; la escalada caduca tras cinco minutos tranquilos. Restablecer el progreso no elimina la pausa. Borrar el almacenamiento de la aplicación elimina estos datos.
+
+Red y terceros
+Esta versión no tiene cuentas, publicidad, SDK de análisis ni pagos dentro del juego con dinero real. No envía partidas ni historial de pulsaciones al desarrollador y no accede a contactos, ubicación, cámara o micrófono. El permiso de vibración sirve para la respuesta táctil. El contacto de Telegram abre un servicio externo; Telegram y el destinatario tratan la información que decidas enviar allí. No envíes información sensible.
+
+Copias de Android
+Android puede copiar progreso y ajustes o transferirlos a otro dispositivo según los ajustes del sistema y del proveedor de copias. Las controla la plataforma o el proveedor, no el desarrollador del juego. Adminístralas en los ajustes de copias de Android. El consentimiento se excluye de las copias de la aplicación y se solicita de nuevo tras una restauración o transferencia.
+
+Conservación y eliminación
+El progreso permanece hasta que lo restablezcas o borres el almacenamiento. Restablecer el progreso elimina la partida guardada y crea una nueva; el idioma y otros ajustes permanecen. Borrar el almacenamiento en Android elimina todos los datos locales de la aplicación. El borrado local no garantiza eliminar copias del sistema existentes; adminístralas por separado con tu proveedor.
+
+Tu decisión
+Antes de aceptar, el juego no crea una sesión ni carga o guarda progreso. El consentimiento se guarda localmente con fecha y versión. Puedes consultar este texto y retirarlo en Ajustes. Retirarlo detiene el tratamiento durante el juego, pero no borra la partida ni las copias del sistema. Para volver a jugar, acepta de nuevo.
+
+Consultas
+Desarrollador: Alexei Fitlin. Contacto de privacidad: Telegram @AlexFitlin. Abrir el enlace no envía datos del juego automáticamente. Si cambian estas prácticas, se debe actualizar la política y solicitar consentimiento para la nueva versión.
+
+Seguridad y soporte
+El progreso y los ajustes se guardan en el almacenamiento privado de Android. El juego no añade cifrado a estos archivos; la protección del dispositivo y de las copias depende de Android y tus ajustes. La música y los efectos están incluidos en la aplicación y se reproducen localmente sin acceder a las páginas de sus autores. Si contactas por Telegram, el destinatario puede ver el perfil y los mensajes que compartas. Los mensajes de soporte se utilizan para responder; puedes solicitar su eliminación mediante el mismo contacto. Telegram trata sus propias copias conforme a su política. No envíes contraseñas, datos de pago ni información personal sensible.

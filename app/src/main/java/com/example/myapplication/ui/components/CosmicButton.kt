@@ -1,6 +1,8 @@
 package com.example.myapplication.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -26,6 +28,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -74,7 +77,7 @@ fun Button(
     generatedArtwork: Boolean = style != CosmicButtonStyle.Secondary,
     content: @Composable RowScope.() -> Unit
 ) {
-    // Bold flat surfaces; accents communicate state without material reflections.
+    // Soft warm highlights and cool shadows echo the painted planet artwork.
     val requestedAccent = if (enabled) colors.containerColor else colors.disabledContainerColor
     val accent = when (style) {
         CosmicButtonStyle.Primary -> requestedAccent
@@ -96,11 +99,11 @@ fun Button(
     val depth = if (pressed) .16f else if (emphasized) .38f else .29f
     val surface = if (richSurface) Brush.verticalGradient(
         listOf(
-            lerp(Color(0xFF233253), effectiveAccent, depth),
-            lerp(Color(0xFF17213C), effectiveAccent, depth * .72f),
-            lerp(Color(0xFF111A30), effectiveAccent, depth * .42f)
+            lerp(Color(0xFF40516C), effectiveAccent, depth),
+            lerp(AppColors.Surface, effectiveAccent, depth * .72f),
+            lerp(AppColors.CardBackground, effectiveAccent, depth * .42f)
         )
-    ) else Brush.verticalGradient(listOf(Color(0xFF29344E), Color(0xFF1D283F)))
+    ) else Brush.verticalGradient(listOf(AppColors.SurfaceRaised, AppColors.CardBackground))
     Box(
         modifier = modifier
             .defaultMinSize(
@@ -112,6 +115,7 @@ fun Button(
                 scaleX = pressScale
                 scaleY = pressScale
             }
+            .shadow(if (enabled && (emphasized || richSurface)) 5.dp else 2.dp, shape, clip = false)
             .clip(shape)
             .background(surface)
             .then(
@@ -132,6 +136,15 @@ fun Button(
             ),
         contentAlignment = Alignment.Center
     ) {
+        if (generatedArtwork && !compact) {
+            Image(
+                painter = shipButtonPainter(style, pressed),
+                contentDescription = null,
+                modifier = Modifier.matchParentSize(),
+                contentScale = ContentScale.FillBounds,
+                alpha = .32f
+            )
+        }
         CompositionLocalProvider(
             LocalContentColor provides if (enabled) Color(0xFFF0F5F7) else AppColors.TextDisabled
         ) {

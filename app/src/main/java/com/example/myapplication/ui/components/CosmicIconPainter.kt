@@ -7,9 +7,87 @@ import com.example.myapplication.R
 
 /** Shared artwork for scene, collections and rewards; legacy IDs remain stable. */
 @Composable
-fun cosmicIconPainter(id: Int): Painter = painterResource(flatArtworkResource(id))
+fun cosmicIconPainter(id: Int): Painter {
+    val resource = flatArtworkResource(id)
+    paintedBackgroundPainter(resource)?.let { return it }
+    refinedControlResource(resource)?.let { return painterResource(it) }
+    shipArtworkPainter(id)?.let { return it }
+    return painterResource(resource)
+}
+
+/** Small controls use full-size vectors for consistent weight and crisp edges. */
+private fun refinedControlResource(id: Int): Int? = when (id) {
+    R.drawable.flat_nav_shop, R.drawable.flat_icon_shop -> R.drawable.ui_refined_shop
+    R.drawable.flat_nav_hangar, R.drawable.flat_icon_hangar -> R.drawable.ui_refined_hangar
+    R.drawable.flat_nav_quests, R.drawable.flat_icon_quests -> R.drawable.ui_refined_quests
+    R.drawable.flat_nav_stats, R.drawable.flat_icon_stats -> R.drawable.ui_refined_stats
+    R.drawable.flat_nav_settings, R.drawable.flat_icon_settings -> R.drawable.ui_refined_settings
+    R.drawable.flat_nav_prestige, R.drawable.flat_icon_prestige -> R.drawable.ui_refined_prestige
+    R.drawable.flat_nav_achievements, R.drawable.flat_icon_achievements -> R.drawable.ui_refined_achievements
+    R.drawable.flat_nav_route, R.drawable.flat_icon_route -> R.drawable.ui_refined_route
+    R.drawable.ui_close_simple, R.drawable.flat_icon_close -> R.drawable.ui_refined_close
+    R.drawable.ui_lock_simple, R.drawable.flat_icon_lock -> R.drawable.ui_refined_lock
+    R.drawable.ui_reset_simple, R.drawable.flat_icon_reset -> R.drawable.ui_refined_reset
+    R.drawable.ui_sound_simple, R.drawable.icon_settings_sound_v2, R.drawable.flat_icon_sound -> R.drawable.ui_refined_sound
+    R.drawable.ui_language_simple, R.drawable.flat_icon_language -> R.drawable.ui_refined_language
+    R.drawable.ui_motion_simple, R.drawable.flat_icon_motion -> R.drawable.ui_refined_motion
+    else -> null
+}
 
 internal fun flatArtworkResource(id: Int): Int = when (id) {
+        R.drawable.drone_01_v2 -> R.drawable.flat_mid_drone_1
+        R.drawable.drone_02_v2 -> R.drawable.flat_mid_drone_2
+        R.drawable.drone_03_v2 -> R.drawable.flat_mid_drone_3
+        R.drawable.drone_04_v2 -> R.drawable.flat_mid_drone_4
+        R.drawable.drone_05_v2 -> R.drawable.flat_mid_drone_5
+        R.drawable.drone_06_v2 -> R.drawable.flat_mid_drone_6
+        R.drawable.drone_07_v2 -> R.drawable.flat_mid_drone_7
+        R.drawable.drone_08_v2 -> R.drawable.flat_mid_drone_8
+        R.drawable.drone_09_v2 -> R.drawable.flat_mid_drone_9
+        R.drawable.drone_10_v2 -> R.drawable.flat_mid_drone_10
+        R.drawable.drone_11_v2 -> R.drawable.flat_mid_drone_11
+        R.drawable.drone_12_v2 -> R.drawable.flat_mid_drone_12
+        R.drawable.drone_13_v2 -> R.drawable.flat_mid_drone_13
+        R.drawable.drone_14_v2 -> R.drawable.flat_mid_drone_14
+        R.drawable.drone_15_v2 -> R.drawable.flat_mid_drone_15
+        R.drawable.drone_16_v2 -> R.drawable.flat_mid_drone_16
+        R.drawable.drone_17_v2 -> R.drawable.flat_mid_drone_17
+        R.drawable.drone_18_v2 -> R.drawable.flat_mid_drone_18
+        R.drawable.drone_19_v2 -> R.drawable.flat_mid_drone_19
+        R.drawable.drone_20_v2 -> R.drawable.flat_mid_drone_20
+        R.drawable.drone_21_v2 -> R.drawable.flat_mid_drone_21
+        R.drawable.drone_22_v2 -> R.drawable.flat_mid_drone_22
+        R.drawable.drone_23_v2 -> R.drawable.flat_mid_drone_23
+        R.drawable.drone_24_v2 -> R.drawable.flat_mid_drone_24
+        R.drawable.drone_25_v2 -> R.drawable.flat_mid_drone_25
+        R.drawable.drone_26_v2 -> R.drawable.flat_mid_drone_26
+        R.drawable.drone_27_v2 -> R.drawable.flat_mid_drone_27
+        R.drawable.drone_28_v2 -> R.drawable.flat_mid_drone_28
+        R.drawable.drone_29_v2 -> R.drawable.flat_mid_drone_29
+        R.drawable.case_common_1 -> R.drawable.flat_mid_case_common_1
+        R.drawable.case_common_2 -> R.drawable.flat_mid_case_common_2
+        R.drawable.case_common_3 -> R.drawable.flat_mid_case_common_3
+        R.drawable.case_common_4 -> R.drawable.flat_mid_case_common_4
+        R.drawable.case_common_5 -> R.drawable.flat_mid_case_common_5
+        R.drawable.case_common_6 -> R.drawable.flat_mid_case_common_6
+        R.drawable.case_common_7 -> R.drawable.flat_mid_case_common_7
+        R.drawable.case_common_8 -> R.drawable.flat_mid_case_common_8
+        R.drawable.case_rare_1 -> R.drawable.flat_mid_case_rare_1
+        R.drawable.case_rare_2 -> R.drawable.flat_mid_case_rare_2
+        R.drawable.case_rare_3 -> R.drawable.flat_mid_case_rare_3
+        R.drawable.case_rare_4 -> R.drawable.flat_mid_case_rare_4
+        R.drawable.case_rare_5 -> R.drawable.flat_mid_case_rare_5
+        R.drawable.case_rare_6 -> R.drawable.flat_mid_case_rare_6
+        R.drawable.case_rare_7 -> R.drawable.flat_mid_case_rare_7
+        R.drawable.case_rare_8 -> R.drawable.flat_mid_case_rare_8
+        R.drawable.case_legendary_1 -> R.drawable.flat_mid_case_legendary_1
+        R.drawable.case_legendary_2 -> R.drawable.flat_mid_case_legendary_2
+        R.drawable.case_legendary_3 -> R.drawable.flat_mid_case_legendary_3
+        R.drawable.case_legendary_4 -> R.drawable.flat_mid_case_legendary_4
+        R.drawable.case_legendary_5 -> R.drawable.flat_mid_case_legendary_5
+        R.drawable.case_legendary_6 -> R.drawable.flat_mid_case_legendary_6
+        R.drawable.case_legendary_7 -> R.drawable.flat_mid_case_legendary_7
+        R.drawable.case_legendary_8 -> R.drawable.flat_mid_case_legendary_8
         R.drawable.planet_1_v2, R.drawable.flat_planet_1 -> R.drawable.planet_1_painted_v3
         R.drawable.planet_2_v2, R.drawable.flat_planet_2 -> R.drawable.planet_2_painted_v3
         R.drawable.planet_3_v2, R.drawable.flat_planet_3 -> R.drawable.planet_3_painted_v3
@@ -49,59 +127,6 @@ internal fun flatArtworkResource(id: Int): Int = when (id) {
         R.drawable.planet_37_v2, R.drawable.flat_planet_37 -> R.drawable.planet_37_painted_v3
         R.drawable.planet_38_v2, R.drawable.flat_planet_38 -> R.drawable.planet_38_painted_v3
         R.drawable.planet_39_v2, R.drawable.flat_planet_39 -> R.drawable.planet_39_painted_v3
-        R.drawable.drone_01_v2 -> R.drawable.flat_drone_1
-        R.drawable.drone_02_v2 -> R.drawable.flat_drone_2
-        R.drawable.drone_03_v2 -> R.drawable.flat_drone_3
-        R.drawable.drone_04_v2 -> R.drawable.flat_drone_4
-        R.drawable.drone_05_v2 -> R.drawable.flat_drone_5
-        R.drawable.drone_06_v2 -> R.drawable.flat_drone_6
-        R.drawable.drone_07_v2 -> R.drawable.flat_drone_7
-        R.drawable.drone_08_v2 -> R.drawable.flat_drone_8
-        R.drawable.drone_09_v2 -> R.drawable.flat_drone_9
-        R.drawable.drone_10_v2 -> R.drawable.flat_drone_10
-        R.drawable.drone_11_v2 -> R.drawable.flat_drone_11
-        R.drawable.drone_12_v2 -> R.drawable.flat_drone_12
-        R.drawable.drone_13_v2 -> R.drawable.flat_drone_13
-        R.drawable.drone_14_v2 -> R.drawable.flat_drone_14
-        R.drawable.drone_15_v2 -> R.drawable.flat_drone_15
-        R.drawable.drone_16_v2 -> R.drawable.flat_drone_16
-        R.drawable.drone_17_v2 -> R.drawable.flat_drone_17
-        R.drawable.drone_18_v2 -> R.drawable.flat_drone_18
-        R.drawable.drone_19_v2 -> R.drawable.flat_drone_19
-        R.drawable.drone_20_v2 -> R.drawable.flat_drone_20
-        R.drawable.drone_21_v2 -> R.drawable.flat_drone_21
-        R.drawable.drone_22_v2 -> R.drawable.flat_drone_22
-        R.drawable.drone_23_v2 -> R.drawable.flat_drone_23
-        R.drawable.drone_24_v2 -> R.drawable.flat_drone_24
-        R.drawable.drone_25_v2 -> R.drawable.flat_drone_25
-        R.drawable.drone_26_v2 -> R.drawable.flat_drone_26
-        R.drawable.drone_27_v2 -> R.drawable.flat_drone_27
-        R.drawable.drone_28_v2 -> R.drawable.flat_drone_28
-        R.drawable.drone_29_v2 -> R.drawable.flat_drone_29
-        R.drawable.case_common_1 -> R.drawable.flat_case_common_1
-        R.drawable.case_common_2 -> R.drawable.flat_case_common_2
-        R.drawable.case_common_3 -> R.drawable.flat_case_common_3
-        R.drawable.case_common_4 -> R.drawable.flat_case_common_4
-        R.drawable.case_common_5 -> R.drawable.flat_case_common_5
-        R.drawable.case_common_6 -> R.drawable.flat_case_common_6
-        R.drawable.case_common_7 -> R.drawable.flat_case_common_7
-        R.drawable.case_common_8 -> R.drawable.flat_case_common_8
-        R.drawable.case_rare_1 -> R.drawable.flat_case_rare_1
-        R.drawable.case_rare_2 -> R.drawable.flat_case_rare_2
-        R.drawable.case_rare_3 -> R.drawable.flat_case_rare_3
-        R.drawable.case_rare_4 -> R.drawable.flat_case_rare_4
-        R.drawable.case_rare_5 -> R.drawable.flat_case_rare_5
-        R.drawable.case_rare_6 -> R.drawable.flat_case_rare_6
-        R.drawable.case_rare_7 -> R.drawable.flat_case_rare_7
-        R.drawable.case_rare_8 -> R.drawable.flat_case_rare_8
-        R.drawable.case_legendary_1 -> R.drawable.flat_case_legendary_1
-        R.drawable.case_legendary_2 -> R.drawable.flat_case_legendary_2
-        R.drawable.case_legendary_3 -> R.drawable.flat_case_legendary_3
-        R.drawable.case_legendary_4 -> R.drawable.flat_case_legendary_4
-        R.drawable.case_legendary_5 -> R.drawable.flat_case_legendary_5
-        R.drawable.case_legendary_6 -> R.drawable.flat_case_legendary_6
-        R.drawable.case_legendary_7 -> R.drawable.flat_case_legendary_7
-        R.drawable.case_legendary_8 -> R.drawable.flat_case_legendary_8
         R.drawable.background_space_main_v4 -> R.drawable.flat_bg_main
         R.drawable.background_space_start_v4 -> R.drawable.flat_bg_start
         R.drawable.bg_shop_salvage_market_v3 -> R.drawable.flat_bg_shop
@@ -137,10 +162,10 @@ internal fun flatArtworkResource(id: Int): Int = when (id) {
         R.drawable.bg_events_minimal_v2 -> R.drawable.flat_bg_events
         R.drawable.event_distress_background_v2 -> R.drawable.flat_event_distress
         R.drawable.event_reactor_core -> R.drawable.flat_event_station
-        R.drawable.drone_20 -> R.drawable.flat_drone_20
-        R.drawable.drone_29 -> R.drawable.flat_drone_29
-        R.drawable.cargo_crate_space_v2 -> R.drawable.flat_case_common_1
-        R.drawable.offline_drone_reward_v1 -> R.drawable.flat_drone_22
+        R.drawable.drone_20 -> R.drawable.flat_mid_drone_20
+        R.drawable.drone_29 -> R.drawable.flat_mid_drone_29
+        R.drawable.cargo_crate_space_v2 -> R.drawable.flat_mid_case_common_1
+        R.drawable.offline_drone_reward_v1 -> R.drawable.flat_mid_drone_22
         R.drawable.drone_fleet_showcase_v1 -> R.drawable.flat_drone_29
         R.drawable.drone_collection_art_v2 -> R.drawable.flat_drone_29
         R.drawable.case_tier_showcase_v1 -> R.drawable.flat_case_legendary_1

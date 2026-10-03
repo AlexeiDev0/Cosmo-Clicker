@@ -1,0 +1,26 @@
+{
+  "tool": "image_gen",
+  "reference": "app/src/main/res/drawable-nodpi/planet_1_painted_v3.png",
+  "assets": [
+    {
+      "file": "background_ocean.png",
+      "prompt": "Match the attached Azurea planet as STYLE REFERENCE ONLY: premium hand-painted stylized 2D mobile space game illustration, soft rounded volume, broad organic forms, smooth rich color transitions, gentle brushwork, upper-left warm lighting and cool shadows, medium detail. No photorealism, no flat vector shapes, no thick outlines, no excessive neon, no text or watermarks. Generate ONE portrait 9:16 full-bleed game background. Deep sapphire outer space, broad soft turquoise and blue nebula clouds around outer edges, sparse tiny stars, a small distant blue ocean world tucked in lower-right corner, subtle emerald and creamy light accents. Middle 65 percent stays dark and low contrast, clear empty space for foreground planet and interface. Background only, no UI."
+    },
+    {
+      "file": "background_nebula.png",
+      "prompt": "Match the attached Azurea planet as STYLE REFERENCE ONLY: premium hand-painted stylized 2D mobile space game illustration, soft rounded volume, broad organic forms, smooth rich color transitions, gentle brushwork, upper-left warm lighting and cool shadows, medium detail. No photorealism, no flat vector shapes, no thick outlines, no excessive neon, no text or watermarks. Generate ONE portrait 9:16 full-bleed game background. Deep indigo space with broad painterly lavender and plum nebula clouds along side edges, subtle turquoise dust and sparse stars, a small distant ringed world in bottom-left. Middle 65 percent dark and low contrast, ample empty space for readable quests/events UI. No UI."
+    },
+    {
+      "file": "background_hangar.png",
+      "prompt": "Match the attached Azurea planet as STYLE REFERENCE ONLY: premium hand-painted stylized 2D mobile space game illustration, soft rounded volume, broad organic forms, smooth rich color transitions, gentle brushwork, upper-left warm lighting and cool shadows, medium detail. No photorealism, no flat vector shapes, no thick outlines, no excessive neon, no text or watermarks. Generate ONE portrait 9:16 full-bleed background for a drone hangar/shop screen. Charming softly painted curved spacecraft interior framing a panoramic deep sapphire space window. Slate-blue metal, small warm brass joints, muted turquoise light, a small distant planet seen near lower-right edge. Broad simple shapes, framing at edges only, middle 65 percent dark quiet empty space for cards. No drones in center, no UI."
+    },
+    {
+      "file": "icons_atlas.png",
+      "prompt": "Match the attached Azurea planet as STYLE REFERENCE ONLY: premium hand-painted stylized 2D mobile space game illustration, soft rounded volume, broad organic forms, smooth rich color transitions, gentle brushwork, upper-left warm lighting and cool shadows, medium detail. No photorealism, no flat vector shapes, no thick outlines, no excessive neon, no text or watermarks. Generate ONE production sprite atlas, genuinely transparent RGBA background, square canvas, exact 4 columns by 3 rows equal cells, one separate centered icon in each cell, no overlaps, generous padding. Row 1: blue ocean planet; teal scavenger drone; warm brass salvage chest; green-blue debris crystal. Row 2: brass and blue shopping bag; cream quest scroll with tiny blue star seal; gold achievement medal; violet spiral galaxy prestige emblem. Row 3: blue brass settings gear; turquoise lightning energy; blue horseshoe magnet; small teal speaker. Consistent softly painted 3D-like volume matching reference planet, recognizable at 48px, no text, no frames, no background shadows. Transparent background essential."
+    },
+    {
+      "file": "buttons_atlas.png",
+      "prompt": "Match the attached Azurea planet as STYLE REFERENCE ONLY: premium hand-painted stylized 2D mobile space game illustration, soft rounded volume, broad organic forms, smooth rich color transitions, gentle brushwork, upper-left warm lighting and cool shadows, medium detail. No photorealism, no flat vector shapes, no thick outlines, no excessive neon, no text or watermarks. Generate ONE production button sprite atlas on genuinely transparent RGBA background. Square canvas exact 2 columns by 4 rows equal cells, each cell one wide rounded rectangular blank button with generous padding, all same shape and size. Left column normal states, right column corresponding pressed states. Row 1 sapphire-blue primary, row 2 emerald-teal confirm, row 3 honey-gold reward, row 4 muted coral-red danger. Organic softly hand-painted rounded metal/mineral surfaces, restrained cream upper-left highlights and deep cool lower-right bevel shadows matching the softness of the reference planet. Large quiet blank center for runtime text. Pressed states slightly darker and recessed. No text, no icons, no sci-fi wires, no hard chrome, no neon, transparent outside each button."
+    }
+  ]
+}

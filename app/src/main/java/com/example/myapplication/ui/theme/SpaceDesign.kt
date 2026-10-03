@@ -6,8 +6,8 @@ import androidx.compose.ui.unit.dp
 object SpaceDesign {
     // Sheet, card, and control are the only standard shape levels.
     val SheetRadius = 24.dp
-    val CardRadius = 16.dp
-    val ControlRadius = 12.dp
+    val CardRadius = 20.dp
+    val ControlRadius = 16.dp
 
     val Space2 = 2.dp
     val Space4 = 4.dp

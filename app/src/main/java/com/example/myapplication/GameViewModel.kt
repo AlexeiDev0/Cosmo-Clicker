@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 import android.app.Application
+import android.os.SystemClock
 import androidx.compose.ui.graphics.Color
 import com.example.myapplication.R
 import androidx.lifecycle.AndroidViewModel
@@ -22,7 +23,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     private val lastStoreActionNanos = mutableMapOf<String, Long>()
     private val debrisId = AtomicLong(System.currentTimeMillis())
     private val simulationJobs = SimulationJobRegistry(viewModelScope + Dispatchers.Default)
-    private var autoClickDetector = AutoClickDetector()
+    private val autoClickBlockRepository = AutoClickBlockRepository(application)
+    private val autoClickDetector = AutoClickDetector(autoClickBlockRepository.load(SystemClock.elapsedRealtime()))
+    private var autoClickCountdownJob: Job? = null
     internal var randomProvider: RandomProvider = KotlinRandomProvider
     private val questDescriptionProvider = QuestDescriptionProvider(application)
     private val timedQuestFactory = TimedQuestFactory(questDescriptionProvider::describe)
@@ -129,6 +132,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     val gameState: StateFlow<GameState> = _gameState.asStateFlow()
 
     init {
+        if (autoClickDetector.remainingBlockMillis(SystemClock.elapsedRealtime()) > 0L) startAutoClickBlockCountdown()
         // Acknowledge any startup offline reward immediately so a process crash cannot replay it.
         saveGameState()
         resumeSimulation()
@@ -1127,15 +1131,21 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun onPlanetClick(x: Float = 0.5f, y: Float = 0.5f): Double {
-        val monotonicNow = System.nanoTime() / 1_000_000L
+        val monotonicNow = SystemClock.elapsedRealtime()
         val detection = autoClickDetector.registerClick(monotonicNow, x, y)
         if (!detection.allowed) {
             _autoClickBlockSeconds.value = ((detection.remainingBlockMillis + 999L) / 1_000L).toInt()
-            if (detection.newlyDetected) startAutoClickBlockCountdown()
+            if (detection.newlyDetected) {
+                _combo.value = 0
+                lastClickMillis = 0L
+                val snapshot = autoClickDetector.snapshot()
+                viewModelScope.launch(Dispatchers.IO) { autoClickBlockRepository.save(snapshot) }
+                startAutoClickBlockCountdown()
+            }
             return 0.0
         }
         if (_gameState.value.activeEvent?.type == GameEventType.PIRATE_RAID) return 0.0
-        val now = System.currentTimeMillis()
+        val now = monotonicNow
         val isCombo = now - lastClickMillis < 160
         lastClickMillis = now
         _combo.update { if (isCombo) (it + 1).coerceAtMost(MAX_COMBO) else 1 }
@@ -1189,9 +1199,10 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun startAutoClickBlockCountdown() {
-        viewModelScope.launch {
+        autoClickCountdownJob?.cancel()
+        autoClickCountdownJob = viewModelScope.launch {
             while (true) {
-                val remaining = autoClickDetector.remainingBlockMillis(System.nanoTime() / 1_000_000L)
+                val remaining = autoClickDetector.remainingBlockMillis(SystemClock.elapsedRealtime())
                 _autoClickBlockSeconds.value = ((remaining + 999L) / 1_000L).toInt()
                 if (remaining <= 0L) break
                 delay(250L)
@@ -1518,9 +1529,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         pauseSimulation()
         prefs.clear()
         synchronized(storeActionLock) { lastStoreActionNanos.clear() }
-        autoClickDetector = AutoClickDetector()
         _combo.value = 0
-        _autoClickBlockSeconds.value = 0
         lastClickMillis = 0L
         _gameState.value = loadGameState()
         refreshTimedQuests()

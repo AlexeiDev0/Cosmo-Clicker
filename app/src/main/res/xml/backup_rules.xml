@@ -6,6 +6,8 @@
    See https://developer.android.com/about/versions/12/backup-restore
 -->
 <full-backup-content>
+    <exclude domain="sharedpref" path="privacy_consent.xml" />
+    <exclude domain="sharedpref" path="input_guard.xml" />
     <!--
    <include domain="sharedpref" path="."/>
    <exclude domain="sharedpref" path="device.xml"/>

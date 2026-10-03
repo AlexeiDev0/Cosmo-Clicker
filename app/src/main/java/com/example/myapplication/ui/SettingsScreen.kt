@@ -27,6 +27,7 @@ import com.example.myapplication.ui.components.CosmicButtonStyle
 import com.example.myapplication.ui.components.CosmicButtonState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -49,6 +50,7 @@ import com.example.myapplication.R
 import com.example.myapplication.ui.theme.AppColors
 import com.example.myapplication.ui.theme.SpaceDesign
 import com.example.myapplication.ui.components.SpaceDialog
+import com.example.myapplication.ui.components.shipActionPainter
 
 private data class LanguageOption(val tag: String?, val label: Int)
 
@@ -62,10 +64,12 @@ fun SettingsScreen(
     onReducedMotionChanged: (Boolean) -> Unit,
     onAchievements: () -> Unit,
     onResetGame: () -> Unit,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onPrivacyWithdraw: () -> Unit = {}
 ) {
     var showLanguageDialog by remember { mutableStateOf(false) }
     var showResetDialog by remember { mutableStateOf(false) }
+    var showPrivacyDialog by remember { mutableStateOf(false) }
     val uriHandler = LocalUriHandler.current
     val languages = listOf(
         LanguageOption(null, R.string.language_system),
@@ -78,6 +82,7 @@ fun SettingsScreen(
 
     BackHandler {
         when {
+            showPrivacyDialog -> showPrivacyDialog = false
             showLanguageDialog -> showLanguageDialog = false
             showResetDialog -> showResetDialog = false
             else -> onBack()
@@ -88,15 +93,21 @@ fun SettingsScreen(
         modifier = Modifier
             .fillMaxSize()
     ) {
+        Image(
+            painter = painterResource(R.drawable.bg_settings_control_v3),
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop
+        )
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
                         listOf(
-                            AppColors.BackgroundStart.copy(alpha = .90f),
-                            Color(0xFF020817).copy(alpha = .96f),
-                            AppColors.BackgroundStart.copy(alpha = .92f)
+                            AppColors.BackgroundStart.copy(alpha = .36f),
+                            AppColors.SpaceBlack.copy(alpha = .68f),
+                            AppColors.BackgroundStart.copy(alpha = .48f)
                         )
                     )
                 )
@@ -123,7 +134,9 @@ fun SettingsScreen(
                     color = AppColors.Surface,
                     border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Primary.copy(alpha = .25f))
                 ) {
-                    Box(contentAlignment = Alignment.Center) { Text("‹", color = AppColors.Primary, fontSize = 30.sp) }
+                    Box(contentAlignment = Alignment.Center) {
+                        Image(shipActionPainter(4), stringResource(R.string.ship_back), Modifier.size(44.dp))
+                    }
                 }
                 Spacer(Modifier.width(10.dp))
                 Image(painterResource(R.drawable.ic_nav_settings_minimal), null, Modifier.size(34.dp))
@@ -195,6 +208,7 @@ fun SettingsScreen(
             Spacer(Modifier.height(8.dp))
 
             SettingsCard {
+                PrivacyPolicyLink(onClick = { showPrivacyDialog = true })
                 SettingsRow(
                     stringResource(R.string.version),
                     "${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
@@ -249,6 +263,16 @@ fun SettingsScreen(
             }
 
         }
+    }
+
+    if (showPrivacyDialog) {
+        PrivacyPolicyDialog(
+            onDismiss = { showPrivacyDialog = false },
+            onWithdraw = {
+                showPrivacyDialog = false
+                onPrivacyWithdraw()
+            }
+        )
     }
 
     if (showLanguageDialog) {

@@ -80,13 +80,20 @@ fun SpaceTab(
         state = if (selected) CosmicButtonState.Selected else CosmicButtonState.Normal,
         style = if (selected) CosmicButtonStyle.Primary else CosmicButtonStyle.Secondary,
         compact = true,
-        generatedArtwork = selected,
+        generatedArtwork = false,
         contentPadding = PaddingValues(horizontal = 2.dp, vertical = 4.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
         Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
             if (iconSheetIndex != null) {
-                GeneratedSheetIcon(R.drawable.shop_ui_minimal_sheet_v1, iconSheetIndex, 19.dp, columns = 4, rows = 4)
+                val atlasIndex = listOf(3, 2, 0, 9)[iconSheetIndex.coerceIn(0, 3)]
+                GeneratedSheetIcon(
+                    R.drawable.icons_atlas,
+                    atlasIndex,
+                    20.dp,
+                    columns = 4,
+                    rows = 3
+                )
                 Spacer(Modifier.width(5.dp))
             } else if (iconRes != null) {
                 Icon(
@@ -100,13 +107,13 @@ fun SpaceTab(
             Text(
                 text,
                 modifier = Modifier.padding(horizontal = 5.dp),
-                color = if (selected) accent else Color.White.copy(alpha = 0.65f),
-                fontSize = 10.sp,
+                color = if (selected) Color.White else AppColors.TextMuted,
+                fontSize = 11.sp,
                 fontWeight = FontWeight.SemiBold,
                 textAlign = TextAlign.Center,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                lineHeight = 11.sp
+                lineHeight = 13.sp
             )
         }
         }
@@ -127,7 +134,7 @@ fun SpaceDialog(
             modifier = modifier.widthIn(max = 640.dp).fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
             color = AppColors.CardBackground,
-            border = null,
+            border = BorderStroke(1.dp, AppColors.Outline.copy(alpha = .55f)),
             shadowElevation = 18.dp
         ) {
             Box {
@@ -141,18 +148,18 @@ fun SpaceDialog(
                     Box(
                         Modifier
                             .matchParentSize()
-                            .background(Color(0xFF030916).copy(alpha = .34f))
+                            .background(AppColors.SpaceBlack.copy(alpha = .18f))
                     )
                 }
                 Column(
                     modifier = Modifier
                         .then(
                             if (backgroundRes == null) {
-                                Modifier.background(Brush.verticalGradient(listOf(Color(0xFF142641), Color(0xFF080F1E))))
+                                Modifier.background(Brush.verticalGradient(listOf(AppColors.SurfaceRaised, AppColors.CardBackground)))
                             } else {
                                 Modifier.background(
                                     Brush.verticalGradient(
-                                        listOf(Color(0xFF12213A).copy(alpha = .30f), Color(0xFF030817).copy(alpha = .64f))
+                                        listOf(AppColors.Surface.copy(alpha = .20f), AppColors.SpaceBlack.copy(alpha = .56f))
                                     )
                                 )
                             }

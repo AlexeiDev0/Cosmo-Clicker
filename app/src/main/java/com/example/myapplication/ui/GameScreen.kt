@@ -70,6 +70,7 @@ fun GameScreen(
     onSoundEnabledChanged: (Boolean) -> Unit = {},
     reducedMotion: Boolean = false,
     onReducedMotionChanged: (Boolean) -> Unit = {},
+    onPrivacyWithdraw: () -> Unit = {},
     viewModel: GameViewModel = viewModel()
 ) {
     val state by viewModel.gameState.collectAsState()
@@ -89,7 +90,9 @@ fun GameScreen(
     val soundManager = remember(context) { SoundManager(context) }
     val currentSoundEnabled by rememberUpdatedState(soundEnabled)
     LaunchedEffect(soundManager, soundEnabled) {
-        if (soundEnabled) soundManager.resumeBackgroundMusic() else soundManager.pauseBackgroundMusic()
+        if (soundEnabled && lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            soundManager.resumeBackgroundMusic()
+        } else soundManager.pauseBackgroundMusic()
     }
     val floatingTextId = remember { AtomicLong(0L) }
     val floatingTexts = remember { mutableStateListOf<FloatingTextData?>().apply { repeat(MAX_FLOATING_TEXTS) { add(null) } } }
@@ -108,6 +111,7 @@ fun GameScreen(
 
     // Состояние стартового экрана
     var showStartScreen by rememberSaveable { mutableStateOf(true) }
+    var showStartPrivacy by rememberSaveable { mutableStateOf(false) }
     val startScreenOffset = remember { Animatable(0f) }
     val startScreenAlpha = remember { Animatable(1f) }
 
@@ -171,6 +175,16 @@ fun GameScreen(
     }
 
     var previousClaimedAchievements by remember { mutableStateOf(state.claimedAchievementIds) }
+    var previousCollectedDebris by remember { mutableLongStateOf(state.lifetimeStats.debrisCollected) }
+    LaunchedEffect(state.lifetimeStats.debrisCollected) {
+        if (soundEnabled && state.lifetimeStats.debrisCollected > previousCollectedDebris) soundManager.playResourceCollected()
+        previousCollectedDebris = state.lifetimeStats.debrisCollected
+    }
+    var previousPrestiges by remember { mutableIntStateOf(state.lifetimeStats.prestiges) }
+    LaunchedEffect(state.lifetimeStats.prestiges) {
+        if (soundEnabled && state.lifetimeStats.prestiges > previousPrestiges) soundManager.playPrestige()
+        previousPrestiges = state.lifetimeStats.prestiges
+    }
     LaunchedEffect(state.claimedAchievementIds) {
         if (state.claimedAchievementIds.size > previousClaimedAchievements.size) {
             if (soundEnabled) soundManager.playAchievementClaimed()
@@ -210,7 +224,6 @@ fun GameScreen(
     val nextPlanetImageRes = nextPlanetIndex?.let { viewModel.planets["p$it"]?.imageRes }
 
     // Логика выбора фона в зависимости от активного ивента
-    val backgroundRes = R.drawable.background_space_main_v4
     val eventTint = when (state.activeEvent?.type) {
         GameEventType.STORM, GameEventType.BLACK_HOLE -> Color(0xFF5A3D8F)
         GameEventType.SOLAR_FLARE -> Color(0xFF9A512F)
@@ -270,12 +283,7 @@ fun GameScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         // ДИНАМИЧЕСКИЙ ФОН
-        Image(
-            painter = painterResource(id = backgroundRes),
-            contentDescription = null,
-            modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.Crop
-        )
+        MinimalCosmicBackground(Modifier.fillMaxSize())
 
         if (!reducedMotion) CosmicParticleTrails(cosmicParticlePhase)
         val planetColors = com.example.myapplication.ui.theme.PlanetPalette.forPlanet(state.currentPlanetId)
@@ -310,17 +318,6 @@ fun GameScreen(
             
             BoxWithConstraints(modifier = Modifier.weight(1f).fillMaxWidth()) {
                 val planetDiameter = minOf(maxWidth * .88f, maxHeight * .78f, 390.dp)
-                state.scavengeTargets.forEach { target ->
-                    key(target.id) {
-                        DebrisTarget(
-                            target,
-                            maxWidth,
-                            maxHeight,
-                            onClick = null
-                        )
-                    }
-                }
-
                 state.activeEvent?.let { event ->
                     EventBanner(event, state.eventTapsLeft)
                 }
@@ -361,9 +358,21 @@ fun GameScreen(
                         }
                     }
 
+                state.scavengeTargets.forEach { target ->
+                    key(target.id) {
+                        DebrisTarget(
+                            target,
+                            maxWidth,
+                            maxHeight,
+                            onClick = null
+                        )
+                    }
+                }
+
                 state.drones.forEachIndexed { index, drone ->
                     key(drone.id) {
                         ScavengingDrone(drone, fleetMap, maxWidth, maxHeight, sharedRotorPhase) {
+                            if (soundEnabled) soundManager.playDroneAction()
                             viewModel.onDroneClick(it)
                         }
                     }
@@ -542,20 +551,23 @@ fun GameScreen(
                     .heightIn(min = 68.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Image(
-                    painter = painterResource(R.drawable.ui_autoclick_warning_v2),
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.FillBounds
-                )
-                Text(
-                    stringResource(R.string.autoclicker_detected, autoClickBlockSeconds),
-                    modifier = Modifier.padding(horizontal = 44.dp, vertical = 14.dp),
-                    color = Color.White,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center
-                )
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = Color(0xFF273540),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Image(shipActionPainter(1), null, Modifier.size(42.dp))
+                        Text(
+                            stringResource(R.string.autoclicker_detected, autoClickBlockSeconds),
+                            modifier = Modifier.weight(1f).padding(start = 12.dp),
+                            color = Color.White,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Bold,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
             }
         }
 
@@ -591,6 +603,7 @@ fun GameScreen(
 
         if (showSettings) {
             SettingsScreen(
+                onPrivacyWithdraw = onPrivacyWithdraw,
                 selectedLanguage = selectedLanguage,
                 onLanguageSelected = onLanguageSelected,
                 soundEnabled = soundEnabled,
@@ -790,8 +803,15 @@ fun GameScreen(
                             maxLines = 2
                         )
                     }
+                    PrivacyPolicyLink(onClick = { showStartPrivacy = true })
                 }
             }
+        }
+        if (showStartPrivacy) {
+            PrivacyPolicyDialog(onDismiss = { showStartPrivacy = false }, onWithdraw = {
+                showStartPrivacy = false
+                onPrivacyWithdraw()
+            })
         }
     }
 }
@@ -841,18 +861,18 @@ private fun GameNavigationButton(
         Icon(
             painter = painterResource(icon),
             contentDescription = stringResource(description),
-            modifier = Modifier.size(30.dp),
+            modifier = Modifier.size(26.dp),
             tint = Color.Unspecified
         )
-        Spacer(Modifier.height(3.dp))
+        Spacer(Modifier.height(6.dp))
         Text(
             text = stringResource(label),
             color = Color.White.copy(alpha = 0.88f),
-            fontSize = 10.sp,
+            fontSize = 11.sp,
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
             maxLines = 2,
-            lineHeight = 11.sp,
+            lineHeight = 13.sp,
             overflow = TextOverflow.Ellipsis
         )
     }
@@ -861,6 +881,46 @@ private fun GameNavigationButton(
 
 private const val MAX_FLOATING_TEXTS = 6
 private const val FLOATING_TEXT_THROTTLE_MS = 120L
+
+@Composable
+private fun MinimalCosmicBackground(modifier: Modifier = Modifier) {
+    Canvas(modifier = modifier) {
+        drawRect(
+            brush = Brush.verticalGradient(
+                colors = listOf(Color(0xFF050B18), Color(0xFF080F22), Color(0xFF050A17)),
+                startY = 0f,
+                endY = size.height
+            )
+        )
+        drawRect(
+            brush = Brush.radialGradient(
+                colors = listOf(Color(0xFF254A76).copy(alpha = .25f), Color.Transparent),
+                center = Offset(size.width * .92f, size.height * .22f),
+                radius = size.maxDimension * .72f
+            )
+        )
+        drawRect(
+            brush = Brush.radialGradient(
+                colors = listOf(Color(0xFF433275).copy(alpha = .17f), Color.Transparent),
+                center = Offset(size.width * .08f, size.height * .76f),
+                radius = size.maxDimension * .62f
+            )
+        )
+        val orbitColor = Color(0xFF9DC7FF).copy(alpha = .045f)
+        drawOval(
+            color = orbitColor,
+            topLeft = Offset(size.width * .03f, size.height * .34f),
+            size = androidx.compose.ui.geometry.Size(size.width * .94f, size.height * .30f),
+            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.dp.toPx())
+        )
+        drawOval(
+            color = orbitColor.copy(alpha = .58f),
+            topLeft = Offset(-size.width * .22f, size.height * .25f),
+            size = androidx.compose.ui.geometry.Size(size.width * 1.44f, size.height * .48f),
+            style = androidx.compose.ui.graphics.drawscope.Stroke(width = 1.dp.toPx())
+        )
+    }
+}
 
 @Composable
 private fun CosmicParticleTrails(phase: Float, modifier: Modifier = Modifier) {

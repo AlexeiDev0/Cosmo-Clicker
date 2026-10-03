@@ -3,6 +3,7 @@ package com.example.myapplication.ui.components
 import androidx.compose.animation.*
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -20,6 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.IntOffset
@@ -55,6 +59,11 @@ fun CaseOpeningOverlay(
     var hasClickedToOpen by remember { mutableStateOf(false) }
     var currentFrame by remember { mutableIntStateOf(1) }
     var displayedCaseType by remember { mutableStateOf(caseType) }
+    val caseAccent = when (displayedCaseType) {
+        CaseType.COMMON -> Color(0xFF83F3E1)
+        CaseType.RARE -> Color(0xFFC0ADFF)
+        CaseType.LEGENDARY -> Color(0xFFFFD88C)
+    }
 
     // Сброс состояния при закрытии
     LaunchedEffect(isOpening) {
@@ -156,6 +165,21 @@ fun CaseOpeningOverlay(
                             },
                         contentAlignment = Alignment.Center
                     ) {
+                        Box(
+                            Modifier.fillMaxSize().background(
+                                androidx.compose.ui.graphics.Brush.radialGradient(listOf(
+                                    caseAccent.copy(alpha = .32f),
+                                    Color(0xFFB8A8DE).copy(alpha = .10f),
+                                    Color.Transparent
+                                )), CircleShape
+                            )
+                        )
+                        Canvas(Modifier.fillMaxSize()) {
+                            val rim = Size(size.width * .88f, size.height * .88f)
+                            val origin = Offset(size.width * .06f, size.height * .06f)
+                            drawArc(caseAccent.copy(alpha = .35f), 25f, 115f, false, origin, rim, style = Stroke(1.5.dp.toPx()))
+                            drawArc(caseAccent.copy(alpha = .35f), 205f, 115f, false, origin, rim, style = Stroke(1.5.dp.toPx()))
+                        }
                         Image(
                             painter = painterResource(id = GameResourceRegistry.caseFrame(displayedCaseType, currentFrame)),
                             contentDescription = null,

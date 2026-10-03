@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Drona Salvage</string>
-    <string name="autoclicker_detected">Обнаружен автокликер. Ручные клики заблокированы на %1$d сек.</string>
+    <string name="autoclicker_detected">Слишком ровная или частая серия: клики по планете на паузе %1$d сек. Флот и встроенный автосбор работают.</string>
     <string name="settings">Настройки</string>
     <string name="reset_game">Сбросить прогресс</string>
     <string name="reset_game_description">Удалить сохранение и начать сначала для тестирования</string>

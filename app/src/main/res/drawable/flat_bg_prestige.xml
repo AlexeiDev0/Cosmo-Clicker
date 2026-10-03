@@ -18,4 +18,6 @@
     <path android:fillAlpha="1" android:fillColor="#8CDED9" android:pathData="M269,182a31,31 0 1,0 62,0a31,31 0 1,0 -62,0"/>
     <path android:fillAlpha="1" android:fillColor="#171331" android:pathData="M276,182a24,24 0 1,0 48,0a24,24 0 1,0 -48,0"/>
     <path android:fillAlpha="1" android:fillColor="#F8DDA5" android:pathData="M300,162L307,182L300,202L293,182Z"/>
+    <path android:fillAlpha="1" android:fillColor="#00000000" android:pathData="M24,318C92,258 268,258 336,318" android:strokeColor="#89C1CE" android:strokeWidth="1.4" android:strokeLineCap="round" android:strokeLineJoin="round"/>
+    <path android:fillAlpha="1" android:fillColor="#00000000" android:pathData="M54,328C124,292 236,292 306,328" android:strokeColor="#6C5893" android:strokeWidth="0.8" android:strokeLineCap="round" android:strokeLineJoin="round"/>
 </vector>

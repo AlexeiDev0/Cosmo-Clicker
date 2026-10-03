@@ -20,3 +20,8 @@ keystore.properties
 *.keystore
 *.mcpr
 /.artifacts/flat-review-browser/
+/.artifacts/color-design-browser/
+/tmp/*.log
+/tmp/*.exit
+/.artifacts/audio-import/
+/.artifacts/review-v39-browser/

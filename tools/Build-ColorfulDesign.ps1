@@ -3,6 +3,8 @@ $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 . (Join-Path $PSScriptRoot 'Planet-SurfaceDetails.ps1')
+. (Join-Path $PSScriptRoot 'Drone-MaterialDetails.ps1')
+. (Join-Path $PSScriptRoot 'Cargo-MaterialDetails.ps1')
 
 function Blend([string]$a, [string]$b, [double]$amount) {
     $result = '#'
@@ -48,6 +50,8 @@ foreach ($planet in @($heroes | Where-Object name -Match '^flat_(planet|drone|ca
         $index++
     }
     if ($planet.name -like 'flat_planet_*') { Add-PlanetSurfaceDetails $planet }
+    if ($planet.name -like 'flat_drone_*') { Add-DroneMaterialDetails $planet }
+    if ($planet.name -like 'flat_case_*') { Add-CargoMaterialDetails $planet }
     $assets.Add($planet)
 }
 if (@($assets | Where-Object name -Like 'flat_planet_*').Count -ne 39) { throw 'Expected exactly 39 planets' }
@@ -129,6 +133,9 @@ foreach ($entry in $backgrounds) {
             $paths.Add((P $accent 'M266,166Q266,158 274,158H321Q329,158 329,166V174H266Z'))
             $paths.Add((P $dark 'M292,176H303V190Q303,195 298,195Q292,195 292,190Z'))
             $paths.Add((P '#9EE6DA' 'M295,180H301V187H295Z'))
+            $paths.Add((P (Blend $bright $accent .35) 'M269,178H329V201Q329,208 322,208H276Q269,208 269,201Z'))
+            $paths.Add((P (Blend $accent $dark .25) 'M276,184H286V190H276ZM312,184H322V190H312Z'))
+            $paths.Add((P '#F5D990' 'M270,162a3,3 0 1,0 6,0a3,3 0 1,0 -6,0 M319,162a3,3 0 1,0 6,0a3,3 0 1,0 -6,0'))
         }
         'events' {
             $paths.Add((P $bright 'M298,169L316,146L328,158L310,181L316,201L298,214L282,201L289,181L271,158L283,146Z'))
@@ -150,6 +157,9 @@ foreach ($entry in $backgrounds) {
             $paths.Add((P $accent 'M272,680Q272,676 276,676H298Q302,676 302,680V687Q302,691 298,691H276Q272,691 272,687Z'))
         }
     }
+    # Shared orbital arcs add depth while keeping the central reading area quiet.
+    $paths.Add([ordered]@{c='#00000000';d='M24,318C92,258 268,258 336,318';stroke=(Blend $accent $bright .25);width=1.4})
+    $paths.Add([ordered]@{c='#00000000';d='M54,328C124,292 236,292 306,328';stroke=(Blend $bright $dark .2);width=.8})
     foreach ($path in $paths) {
         if (!$path.gradient) { $null = Lit $path .18 360 }
     }

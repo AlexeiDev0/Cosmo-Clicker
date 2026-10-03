@@ -3,6 +3,7 @@ package com.example.myapplication
 import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
+import android.widget.Toast
 import java.util.Locale
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -16,6 +17,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import com.example.myapplication.ui.GameScreen
+import com.example.myapplication.ui.PrivacyScreen
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
@@ -36,7 +40,12 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val privacyConsent = PrivacyConsent(this)
         setContent {
+            var privacyAccepted by remember { mutableStateOf(privacyConsent.isAccepted()) }
+            var privacyBusy by remember { mutableStateOf(false) }
+            var privacyFailed by remember { mutableStateOf(false) }
+            val privacyScope = rememberCoroutineScope()
             var selectedLanguage by remember { mutableStateOf(getSelectedLanguage()) }
             var soundEnabled by remember { mutableStateOf(getBooleanSetting(SOUND_KEY, true)) }
             var reducedMotion by remember { mutableStateOf(getBooleanSetting(REDUCED_MOTION_KEY, false)) }
@@ -53,7 +62,34 @@ class MainActivity : ComponentActivity() {
                 LocalConfiguration provides localizedConfiguration
             ) {
                 MyApplicationTheme(reducedMotion = reducedMotion) {
+                    if (!privacyAccepted) {
+                        PrivacyScreen(
+                            onAccept = {
+                                privacyBusy = true
+                                privacyScope.launch {
+                                    privacyAccepted = privacyConsent.accept()
+                                    privacyFailed = !privacyAccepted
+                                    privacyBusy = false
+                                }
+                            },
+                            onDecline = { finish() },
+                            busy = privacyBusy,
+                            failed = privacyFailed
+                        )
+                    } else {
                     GameScreen(
+                        onPrivacyWithdraw = {
+                            privacyScope.launch {
+                                if (privacyConsent.withdraw()) {
+                                    privacyAccepted = false
+                                    privacyFailed = false
+                                } else {
+                                    Toast.makeText(localizedContext,
+                                        localizedContext.getString(R.string.privacy_save_error),
+                                        Toast.LENGTH_LONG).show()
+                                }
+                            }
+                        },
                         selectedLanguage = selectedLanguage,
                         onLanguageSelected = { language ->
                             saveSelectedLanguage(language)
@@ -70,6 +106,7 @@ class MainActivity : ComponentActivity() {
                             reducedMotion = enabled
                         }
                     )
+                    }
                 }
             }
         }

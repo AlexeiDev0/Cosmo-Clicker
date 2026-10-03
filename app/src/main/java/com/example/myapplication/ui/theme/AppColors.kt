@@ -4,22 +4,22 @@ import androidx.compose.ui.graphics.Color
 
 /** Semantic palette for the shared stylized-cosmic visual language. */
 object AppColors {
-    val Primary = Color(0xFF55E6BC)
-    val Secondary = Color(0xFF72E4FF)
-    val Danger = Color(0xFFFF6B74)
-    val Warning = Color(0xFFFFCA62)
+    val Primary = Color(0xFFAFE3CD)
+    val Secondary = Color(0xFFA7DDF3)
+    val Danger = Color(0xFFF3A1AC)
+    val Warning = Color(0xFFF4D59D)
 
     val SpaceBlack = Color(0xFF030817)
-    val BackgroundStart = Color(0xFF17213D)
-    val BackgroundMid = Color(0xFF202A4C)
-    val BackgroundEnd = Color(0xFF10172E)
+    val BackgroundStart = Color(0xFF18233E)
+    val BackgroundMid = Color(0xFF293653)
+    val BackgroundEnd = Color(0xFF121B32)
 
-    val CardBackground = Color(0xFF141D34)
-    val Surface = Color(0xFF1A2540)
-    val SurfaceRaised = Color(0xFF253250)
-    val Outline = Color(0xFF3B4C6A)
+    val CardBackground = Color(0xFF1C2942)
+    val Surface = Color(0xFF263650)
+    val SurfaceRaised = Color(0xFF344661)
+    val Outline = Color(0xFF5C708C)
     val OutlineActive = Primary
-    val TextMuted = Color(0xFFB0BFD5)
+    val TextMuted = Color(0xFFCBD7E6)
     val TextDisabled = Color(0xFF7F90AC)
     val CargoColor = Color(0xFFE7B679)
 

@@ -1,88 +1,73 @@
 package com.example.myapplication
 
 import android.content.Context
-import android.media.AudioManager
 import android.media.AudioAttributes
-import android.media.AudioFormat
 import android.media.MediaPlayer
-import android.media.AudioTrack
-import android.media.ToneGenerator
+import android.media.SoundPool
 import android.os.Build
+import android.os.SystemClock
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import kotlin.math.PI
-import kotlin.math.exp
-import kotlin.math.sin
 
+/** Bundled CC0 effects and a looping music track; no network requests. */
 class SoundManager(context: Context) : AutoCloseable {
     private val lock = Any()
     private val appContext = context.applicationContext
-    private var toneGenerator: ToneGenerator? = createToneGenerator()
-    private var backgroundPlayer: MediaPlayer? = createBackgroundPlayer()
-    private var effectPlayer: MediaPlayer? = null
-    private val clickTracks = Array(CLICK_TRACK_COUNT) { index -> createClickTrack(index) }
-    private var nextClickTrack = 0
-
+    private var closed = false
+    private var foreground = false
+    private val pool = SoundPool.Builder().setMaxStreams(6).setAudioAttributes(
+        AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME)
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION).build()
+    ).build()
+    private val loaded = mutableSetOf<Int>()
+    private val sounds = mutableMapOf<Int, Int>()
+    private val streams = ArrayDeque<Int>()
+    private var lastCollectionAt = 0L
+    private var backgroundPlayer: MediaPlayer? = null
     private val vibrator: Vibrator? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        val vibratorManager = appContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager
-        vibratorManager?.defaultVibrator
+        (appContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager)?.defaultVibrator
     } else {
         @Suppress("DEPRECATION")
         appContext.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator
     }
 
-    fun playClick() {
-        vibrate(15)
+    init {
+        pool.setOnLoadCompleteListener { _, id, status ->
+            synchronized(lock) { if (!closed && status == 0) loaded.add(id) }
+        }
+        listOf(R.raw.sfx_click, R.raw.sfx_case_pulse, R.raw.sfx_case_reveal,
+            R.raw.sfx_event_start, R.raw.sfx_event_success, R.raw.sfx_event_failure,
+            R.raw.sfx_resource_collect, R.raw.sfx_drone_action, R.raw.sfx_prestige,
+            R.raw.sfx_planet_travel).forEach { sounds[it] = pool.load(appContext, it, 1) }
+    }
+
+    fun playClick() { vibrate(15); play(R.raw.sfx_click, .22f, priority = 0) }
+    fun playEventStart() { vibrate(40); play(R.raw.sfx_event_start) }
+    fun playEventSuccess() { vibrate(60); play(R.raw.sfx_event_success) }
+    fun playEventFailure() { vibrate(100); play(R.raw.sfx_event_failure, .35f) }
+    fun playPlanetUnlock() = play(R.raw.sfx_planet_travel, .45f)
+    fun playAchievementClaimed() = play(R.raw.sfx_event_success, .38f)
+    fun playDroneAction() = play(R.raw.sfx_drone_action, .22f)
+    fun playPrestige() = play(R.raw.sfx_prestige, .45f)
+    fun playResourceCollected() {
         synchronized(lock) {
-            val track = clickTracks[nextClickTrack]
-            nextClickTrack = (nextClickTrack + 1) % clickTracks.size
-            if (track != null) {
-                try {
-                    track.stop()
-                    track.setPlaybackHeadPosition(0)
-                    track.play()
-                } catch (_: IllegalStateException) {
-                    // Audio can disappear briefly while Android changes output devices.
-                }
-            } else {
-                toneGenerator?.startTone(ToneGenerator.TONE_PROP_BEEP2, CLICK_DURATION_MS)
-            }
+            val now = SystemClock.elapsedRealtime()
+            if (now - lastCollectionAt < 350L) return
+            lastCollectionAt = now
+            play(R.raw.sfx_resource_collect, .16f, priority = 0)
         }
-    }
-
-    private fun vibrate(duration: Long) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator?.vibrate(VibrationEffect.createOneShot(duration, VibrationEffect.DEFAULT_AMPLITUDE))
-        } else {
-            @Suppress("DEPRECATION")
-            vibrator?.vibrate(duration)
-        }
-    }
-
-    fun playEventStart() {
-        vibrate(40)
-        playTone(ToneGenerator.TONE_PROP_PROMPT, 120)
-    }
-
-    fun playEventSuccess() {
-        vibrate(60)
-        playTone(ToneGenerator.TONE_PROP_ACK, 160)
-    }
-
-    fun playEventFailure() {
-        vibrate(100)
-        playTone(ToneGenerator.TONE_PROP_NACK, 220)
     }
 
     fun playCaseOpeningPulse(frame: Int, type: CaseType) {
-        val tierBoost = when (type) {
-            CaseType.COMMON -> 0
-            CaseType.RARE -> 30
-            CaseType.LEGENDARY -> 70
-        }
-        val amplitude = (35 + frame * 18 + tierBoost).coerceIn(1, 255)
-        val duration = if (frame >= 8) 90L else 12L + frame * 2L
+        val boost = when (type) { CaseType.COMMON -> 0; CaseType.RARE -> 30; CaseType.LEGENDARY -> 70 }
+        vibrate(if (frame >= 8) 90L else 12L + frame * 2L, (35 + frame * 18 + boost).coerceIn(1, 255))
+        play(if (frame >= 8) R.raw.sfx_case_reveal else R.raw.sfx_case_pulse,
+            if (frame >= 8) .5f else .2f, rate = (0.85f + frame * .06f).coerceAtMost(1.3f))
+    }
+
+    private fun vibrate(duration: Long, amplitude: Int = -1) {
+        if (closed || !foreground) return
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             vibrator?.vibrate(VibrationEffect.createOneShot(duration, amplitude))
         } else {
@@ -91,143 +76,58 @@ class SoundManager(context: Context) : AutoCloseable {
         }
     }
 
+    private fun play(resource: Int, volume: Float = .4f, rate: Float = 1f, priority: Int = 1) {
+        synchronized(lock) {
+            if (closed || !foreground) return
+            val id = sounds[resource] ?: return
+            if (id !in loaded) return
+            val stream = pool.play(id, volume, volume, priority, 0, rate)
+            if (stream != 0) {
+                streams.addLast(stream)
+                if (streams.size > 24) pool.stop(streams.removeFirst())
+            }
+        }
+    }
+
     fun resumeBackgroundMusic() {
         synchronized(lock) {
+            if (closed) return
+            foreground = true
             try {
-                backgroundPlayer?.start()
-            } catch (_: IllegalStateException) {
-                // The player may be temporarily unavailable while audio output changes.
+                val player = backgroundPlayer ?: MediaPlayer.create(appContext, R.raw.music_exploration)?.also {
+                    it.isLooping = true
+                    it.setVolume(.18f, .18f)
+                    backgroundPlayer = it
+                }
+                if (player != null && !player.isPlaying) player.start()
+            } catch (_: RuntimeException) {
+                backgroundPlayer?.release()
+                backgroundPlayer = null
             }
         }
     }
 
     fun pauseBackgroundMusic() {
         synchronized(lock) {
-            try {
-                backgroundPlayer?.pause()
-            } catch (_: IllegalStateException) {
-                // The player may be temporarily unavailable while audio output changes.
-            }
-        }
-    }
-
-    fun playPlanetUnlock() = playEffect(R.raw.planet_unlock)
-
-    fun playAchievementClaimed() = playEffect(
-        resourceId = R.raw.achievement_claimed,
-        volume = ACHIEVEMENT_VOLUME,
-        playbackSpeed = ACHIEVEMENT_PLAYBACK_SPEED
-    )
-
-    private fun playEffect(resourceId: Int, volume: Float = EFFECT_VOLUME, playbackSpeed: Float = 1f) {
-        synchronized(lock) {
-            effectPlayer?.release()
-            effectPlayer = MediaPlayer.create(appContext, resourceId)?.also { player ->
-                player.setVolume(volume, volume)
-                if (playbackSpeed != 1f) {
-                    player.playbackParams = player.playbackParams.setSpeed(playbackSpeed)
-                }
-                player.setOnCompletionListener {
-                    synchronized(lock) {
-                        if (effectPlayer === it) effectPlayer = null
-                        it.release()
-                    }
-                }
-                player.start()
-            }
-        }
-    }
-
-    private fun playTone(tone: Int, durationMillis: Int) {
-        synchronized(lock) {
-            toneGenerator?.startTone(tone, durationMillis)
+            if (closed) return
+            foreground = false
+            streams.forEach(pool::stop)
+            streams.clear()
+            vibrator?.cancel()
+            try { backgroundPlayer?.takeIf { it.isPlaying }?.pause() } catch (_: IllegalStateException) { }
         }
     }
 
     override fun close() {
         synchronized(lock) {
-            clickTracks.forEach { it?.release() }
+            if (closed) return
+            closed = true
+            foreground = false
+            pool.release()
+            loaded.clear()
             backgroundPlayer?.release()
             backgroundPlayer = null
-            effectPlayer?.release()
-            effectPlayer = null
-            toneGenerator?.release()
-            toneGenerator = null
+            vibrator?.cancel()
         }
-    }
-
-    private fun createClickTrack(variant: Int): AudioTrack? = try {
-        val samples = createSalvagePop(variant)
-        AudioTrack.Builder()
-            .setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setUsage(AudioAttributes.USAGE_GAME)
-                    .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                    .build()
-            )
-            .setAudioFormat(
-                AudioFormat.Builder()
-                    .setEncoding(AudioFormat.ENCODING_PCM_16BIT)
-                    .setSampleRate(CLICK_SAMPLE_RATE)
-                    .setChannelMask(AudioFormat.CHANNEL_OUT_MONO)
-                    .build()
-            )
-            .setBufferSizeInBytes(samples.size * 2)
-            .setTransferMode(AudioTrack.MODE_STATIC)
-            .build()
-            .also {
-                it.write(samples, 0, samples.size)
-                it.setVolume(CLICK_VOLUME)
-            }
-    } catch (_: RuntimeException) {
-        null
-    }
-
-    private fun createSalvagePop(variant: Int): ShortArray {
-        val size = CLICK_SAMPLE_RATE * CLICK_DURATION_MS / 1_000
-        var noiseState = 0x2468ace1 + variant * 7919
-        var lowPassedNoise = 0.0
-        var previousLowPassedNoise = 0.0
-        return ShortArray(size) { index ->
-            val time = index.toDouble() / CLICK_SAMPLE_RATE
-            val attack = (time / 0.0008).coerceAtMost(1.0)
-            val release = ((size - index).toDouble() / (CLICK_SAMPLE_RATE * 0.007)).coerceAtMost(1.0)
-            noiseState = noiseState * 1_664_525 + 1_013_904_223
-            val rawNoise = ((noiseState ushr 16) and 0xffff) / 32767.5 - 1.0
-            lowPassedNoise += (rawNoise - lowPassedNoise) * 0.16
-            val dryTick = lowPassedNoise - previousLowPassedNoise * 0.72
-            previousLowPassedNoise = lowPassedNoise
-            val mechanism = dryTick * exp(-time * 115.0) * 1.25
-            val quietWeight = sin(2.0 * PI * 118.0 * time) * exp(-time * 72.0) * 0.13
-            ((mechanism + quietWeight) * attack * release * Short.MAX_VALUE * 0.72)
-                .toInt()
-                .coerceIn(Short.MIN_VALUE.toInt(), Short.MAX_VALUE.toInt())
-                .toShort()
-        }
-    }
-
-    private fun createToneGenerator(): ToneGenerator? =
-        try {
-            ToneGenerator(AudioManager.STREAM_MUSIC, CLICK_VOLUME_PERCENT)
-        } catch (_: RuntimeException) {
-            null
-        }
-
-    private fun createBackgroundPlayer(): MediaPlayer? =
-        MediaPlayer.create(appContext, R.raw.background_music)?.also {
-            it.isLooping = true
-            it.setVolume(MUSIC_VOLUME, MUSIC_VOLUME)
-        }
-
-    private companion object {
-        const val CLICK_DURATION_MS = 36
-        const val CLICK_SAMPLE_RATE = 44_100
-        const val CLICK_TRACK_COUNT = 4
-        const val CLICK_VOLUME = 0.25f
-        const val CLICK_VOLUME_PERCENT = 35
-        const val MUSIC_VOLUME = 0.45f
-        const val EFFECT_VOLUME = 0.7f
-        const val ACHIEVEMENT_VOLUME = 0.34f
-        const val ACHIEVEMENT_PLAYBACK_SPEED = 0.92f
     }
 }

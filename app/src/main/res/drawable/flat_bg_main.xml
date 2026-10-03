@@ -16,4 +16,6 @@
     <path android:fillAlpha="1" android:fillColor="#7A73B0" android:pathData="M282,198a1.5,1.5 0 1,0 3,0a1.5,1.5 0 1,0 -3,0 M72,567a1.2,1.2 0 1,0 2.4,0a1.2,1.2 0 1,0 -2.4,0"/>
     <path android:fillAlpha="1" android:fillColor="#827AB9" android:pathData="M283,158a19,19 0 1,0 38,0a19,19 0 1,0 -38,0"/>
     <path android:fillAlpha="1" android:fillColor="#A89BE7" android:pathData="M285,151C290,138 309,134 318,146C306,141 296,146 293,157Z"/>
+    <path android:fillAlpha="1" android:fillColor="#00000000" android:pathData="M24,318C92,258 268,258 336,318" android:strokeColor="#8D90D1" android:strokeWidth="1.4" android:strokeLineCap="round" android:strokeLineJoin="round"/>
+    <path android:fillAlpha="1" android:fillColor="#00000000" android:pathData="M54,328C124,292 236,292 306,328" android:strokeColor="#325F7D" android:strokeWidth="0.8" android:strokeLineCap="round" android:strokeLineJoin="round"/>
 </vector>

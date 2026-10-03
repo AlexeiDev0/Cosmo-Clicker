@@ -7,6 +7,8 @@ import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onAllNodesWithText
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.onNodeWithTag
+import androidx.compose.ui.test.onAllNodesWithTag
 import androidx.compose.ui.test.performClick
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -20,6 +22,13 @@ class MainActivityUiTest {
 
     @Before
     fun freezeGameAnimations() {
+        if (composeRule.onAllNodesWithTag("privacy_gate").fetchSemanticsNodes().isNotEmpty()) {
+            composeRule.onNodeWithTag("privacy_agreement").performClick()
+            composeRule.onNodeWithTag("privacy_accept").performClick()
+            composeRule.waitUntil(5_000) {
+                composeRule.onAllNodesWithTag("privacy_gate").fetchSemanticsNodes().isEmpty()
+            }
+        }
         composeRule.mainClock.autoAdvance = false
     }
 

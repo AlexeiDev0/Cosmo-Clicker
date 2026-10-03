@@ -49,7 +49,7 @@ import com.example.myapplication.utils.formatNum
 @Composable
 fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, modifier: Modifier = Modifier) {
     var selectedTab by remember { mutableIntStateOf(0) }
-    val tabColors = listOf(Color(0xFF48DFFC), Color(0xFFAA77FF), Color(0xFFFFC857), Color(0xFF50D890))
+    val tabColors = listOf(AppColors.Secondary, Color(0xFFC2AFE9), AppColors.Warning, AppColors.Primary)
     val accent = tabColors[selectedTab]
     Card(
         modifier = modifier
@@ -66,15 +66,15 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
                 painter = painterResource(R.drawable.bg_shop_salvage_market_v3),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
-                contentScale = ContentScale.FillBounds,
-                alpha = .42f
+                contentScale = ContentScale.Crop,
+                alpha = .85f
             )
             Box(
                 Modifier
                     .fillMaxSize()
                     .background(
                         Brush.verticalGradient(
-                            listOf(accent.copy(alpha = .13f), Color(0xD907111F), Color(0xF2090D1A))
+                            listOf(accent.copy(alpha = .10f), AppColors.CardBackground.copy(alpha = .48f), AppColors.SpaceBlack.copy(alpha = .72f))
                         )
                     )
             )
@@ -391,7 +391,7 @@ internal fun CompactHangarDroneCard(
                 if (!discovered) Icon(
                     painter = painterResource(R.drawable.ui_lock_simple),
                     contentDescription = stringResource(R.string.locked),
-                    tint = Color.White.copy(alpha = .85f),
+                    tint = Color.Unspecified,
                     modifier = Modifier.size(25.dp)
                 )
             }
@@ -563,13 +563,6 @@ fun AchievementsPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
                         when { claimed -> Color.White.copy(alpha = .035f); unlocked -> AppColors.Warning.copy(alpha = .10f); else -> AppColors.Surface.copy(alpha = .82f) },
                         RoundedCornerShape(15.dp)
                     )
-                    .then(
-                        if (unlocked && !claimed) Modifier.border(
-                            1.dp,
-                            AppColors.Warning.copy(alpha = .42f),
-                            RoundedCornerShape(15.dp)
-                        ) else Modifier
-                    )
                     .padding(horizontal = 11.dp, vertical = 9.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -599,22 +592,25 @@ fun AchievementsPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
                         }
                         Text(reward, color = if (unlocked && !claimed) AppColors.Warning else AppColors.TextMuted, fontSize = 9.sp)
                     }
-                    Button(
-                        onClick = { viewModel.claimAchievement(achievement.id) },
-                        enabled = unlocked && !claimed,
-                        modifier = Modifier.fillMaxWidth().height(48.dp),
-                        shape = RoundedCornerShape(10.dp),
-                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 0.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = AppColors.Warning.copy(alpha = .18f), contentColor = AppColors.Warning),
-                        style = CosmicButtonStyle.Reward
-                    ) {
-                        Text(
-                            stringResource(if (claimed) R.string.achievement_claimed else if (unlocked) R.string.achievement_claim else R.string.achievement_locked),
-                            fontSize = 10.sp,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
-                        )
-                    }
+                }
+                Spacer(Modifier.width(8.dp))
+                Button(
+                    onClick = { viewModel.claimAchievement(achievement.id) },
+                    enabled = unlocked && !claimed,
+                    modifier = Modifier.widthIn(min = 96.dp, max = 128.dp).height(44.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    border = androidx.compose.foundation.BorderStroke(0.dp, Color.Transparent),
+                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = AppColors.Warning.copy(alpha = .18f), contentColor = AppColors.Warning),
+                    style = CosmicButtonStyle.Reward
+                ) {
+                    Text(
+                        stringResource(if (claimed) R.string.achievement_claimed else if (unlocked) R.string.achievement_claim else R.string.achievement_locked),
+                        fontSize = 10.sp,
+                        maxLines = 2,
+                        lineHeight = 12.sp,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 }
             }
         }

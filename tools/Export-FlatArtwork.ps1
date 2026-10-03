@@ -25,6 +25,12 @@ $assets = @($assets) + @($support | Where-Object { !$catalogNames.ContainsKey($_
 foreach ($asset in $assets) { $catalogNames[$asset.name] = $true }
 $assets = @($assets) + @($colorPass | Where-Object { !$catalogNames.ContainsKey($_.name) })
 $assets = @($assets | ForEach-Object { if ($replacements.ContainsKey($_.name)) { $replacements[$_.name] } else { $_ } })
+$balancedPath = Join-Path $root 'docs/visual/balanced-salvage.json'
+if (Test-Path -LiteralPath $balancedPath) {
+    $balanced = Get-Content $balancedPath -Raw -Encoding UTF8 | ConvertFrom-Json
+    foreach ($asset in $balanced) { $replacements[$asset.name] = $asset }
+    $assets = @($assets) + $balanced
+}
 $utf8 = New-Object System.Text.UTF8Encoding($false)
 function Save-Artifact([string]$relative, [string]$content) {
     $target = Join-Path $root $relative
@@ -125,3 +131,8 @@ foreach ($group in @('all','planets','drones','cases','events','backgrounds','su
     Save-Artifact ('docs/visual/' + $name + '.html') ($pagePrefix + '<main>' + (($items | ForEach-Object Html) -join '') + '</main>' + $controls + '</body></html>')
 }
 Write-Output "Validated/exported $($replacements.Count) refined vectors and eight review pages."
+if ($balanced) {
+    $balancedStyle = '<style>body{background:#09162b url("../../app/src/main/res/drawable-nodpi/background_nebula_painted_v1.png") center/cover fixed}figure{background:linear-gradient(145deg,#182944dd,#081325ee);border:1px solid #83bcd444}</style>'
+    $balancedPrefix = $prefix.Replace('</head>', $balancedStyle + '</head>')
+    Save-Artifact 'docs/visual/balanced-salvage.html' ($balancedPrefix + '<h2>Balanced drones and cases</h2><main>' + (($figures | Where-Object Html -Match 'data-name="flat_mid_' | ForEach-Object Html) -join '') + '</main></body></html>')
+}

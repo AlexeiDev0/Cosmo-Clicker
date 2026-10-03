@@ -1,0 +1,28 @@
+{
+  "tool": "image_gen",
+  "reference": "buttons_atlas.png",
+  "file": "action_buttons_atlas.png",
+  "prompt": "Use the attached image as STYLE REFERENCE ONLY for dark matte spacecraft control buttons. Generate ONE polished production sprite atlas for Drona Salvage: 16 small square icon buttons, exact 4 columns by 4 rows evenly spaced, transparent RGBA canvas. Each separate button has identical softly rounded square dark slate metal housing, softly inset navy matte enamel face, subtle hand-painted 2D volume, warm upper-left illumination and cool lower-right shadow, narrow clean rim. No gemstones, no gold ornament, no neon glow, no background, no labels, no watermark, no letters or numbers. All button silhouettes fully fit their equal cells with at least 12 percent clear padding, no overlap. Symbols large, centered, simple and very legible at 48 pixels, approximately 55 percent button width, creamy ivory with selective muted teal/amber accents, subtle painted shading. EXACT row-major symbols: row1 close X (muted rust-red face), closed padlock (amber body, clear closed shackle), unlocked padlock (teal body, clearly open shackle), settings gear. Row2 left chevron/back, right chevron/forward, up chevron, down chevron. Row3 plus, minus, confirm checkmark (teal face), circular reset arrow (rust-red subtle accent). Row4 speaker with two sound arcs, muted speaker with small slash, repair wrench, information lowercase i symbol (only this conventional icon is allowed). Uniform visual family closely matching the reference's restrained utilitarian spaceship panel art. These are actual standalone small button artworks with icon inside, NOT a screenshot of an interface. Preserve transparent outside all buttons.",
+  "grid": {
+    "columns": 4,
+    "rows": 4
+  },
+  "buttons": [
+    "close",
+    "lock",
+    "unlock",
+    "settings",
+    "back",
+    "forward",
+    "up",
+    "down",
+    "plus",
+    "minus",
+    "confirm",
+    "reset",
+    "sound",
+    "mute",
+    "repair",
+    "info"
+  ]
+}

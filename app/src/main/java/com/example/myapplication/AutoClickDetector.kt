@@ -2,105 +2,91 @@ package com.example.myapplication
 
 import kotlin.math.abs
 
-/** Rejects sustained machine-like input while allowing short human bursts. */
-class AutoClickDetector {
-    data class Result(
-        val allowed: Boolean,
-        val newlyDetected: Boolean = false,
-        val remainingBlockMillis: Long = 0L
-    )
-
+/** Conservative local heuristic: a repeated point alone never proves automation. */
+class AutoClickDetector(initial: Snapshot = Snapshot()) {
+    data class Result(val allowed: Boolean, val newlyDetected: Boolean = false, val remainingBlockMillis: Long = 0L)
+    data class Snapshot(val blockedUntil: Long = 0L, val strikes: Int = 0, val lastDetectionAt: Long = -1L)
     private data class Click(val time: Long, val x: Float, val y: Float)
 
     private val clicks = ArrayDeque<Click>()
-    private var blockedUntil = 0L
-    private var strikes = 0
-    private var lastDetectionAt = Long.MIN_VALUE
+    private var blockedUntil = initial.blockedUntil.coerceAtLeast(0L)
+    private var strikes = initial.strikes.coerceIn(0, 4)
+    private var lastDetectionAt = initial.lastDetectionAt
+    private var lastInputAt = -1L
+    private var seriesStartedAt = -1L
+    private var sampleCount = 0
+    private var suspiciousWindows = 0
 
     @Synchronized
     fun registerClick(nowMillis: Long, x: Float = 0f, y: Float = 0f): Result {
-        if (nowMillis < blockedUntil) {
-            return Result(false, remainingBlockMillis = blockedUntil - nowMillis)
-        }
+        val remaining = remainingBlockMillis(nowMillis)
+        if (remaining > 0L) return Result(false, remainingBlockMillis = remaining)
+        if (nowMillis < 0L || !x.isFinite() || !y.isFinite() || x !in 0f..1f || y !in 0f..1f) return Result(false)
+        // Batched callbacks and duplicate timestamps are dropped, never punished.
+        if (nowMillis <= lastInputAt) return Result(false)
+        if (lastDetectionAt >= 0L && nowMillis - lastDetectionAt >= STRIKE_DECAY_MILLIS) strikes = 0
+        if (lastInputAt < 0L || nowMillis - lastInputAt > SERIES_GAP_MILLIS) clearSeries()
+        lastInputAt = nowMillis
+        if (seriesStartedAt < 0L) seriesStartedAt = nowMillis
+        clicks.addLast(Click(nowMillis, x, y))
+        while (clicks.size > MAX_HISTORY || nowMillis - clicks.first().time > ANALYSIS_WINDOW_MILLIS) clicks.removeFirst()
+        sampleCount++
 
-        if (lastDetectionAt != Long.MIN_VALUE && nowMillis - lastDetectionAt >= STRIKE_DECAY_MILLIS) {
-            strikes = 0
-        }
+        // Detect sustained extreme input before rewarding it; retain a small burst allowance.
+        val burst = clicks.count { nowMillis - it.time <= 1_000L }
+        if (burst >= 26) return triggerBlock(nowMillis)
+        val last24 = clicks.takeLast(24)
+        if (last24.size == 24 && (last24.last().time - last24.first().time) / 23.0 <= 40.0) return triggerBlock(nowMillis)
+        // No reward above 20 accepted callbacks per second, even with randomised rhythm.
+        if (burst > 20) return Result(false)
 
-        // A monotonic timestamp protects the statistics from clock anomalies and
-        // from injected events which arrive with an older timestamp.
-        if (clicks.isNotEmpty() && nowMillis <= clicks.last().time) {
-            return triggerBlock(nowMillis)
-        }
+        if (sampleCount % 12 != 0 || clicks.size < 12) return Result(true)
+        val window = clicks.takeLast(12)
+        val intervals = window.zipWithNext { a, b -> (b.time - a.time).toDouble() }
+        val average = intervals.average()
+        val deviation = intervals.sumOf { abs(it - average) } / intervals.size / average
+        val buckets = intervals.map { (it / 8.0).toInt() }.distinct().size
+        val origin = window.first()
+        val stationary = window.count {
+            val dx = it.x - origin.x
+            val dy = it.y - origin.y
+            dx * dx + dy * dy <= .035f * .035f
+        } >= 10
+        val exactRhythm = average <= 800.0 && deviation <= .04
+        val lowJitter = average <= 180.0 && deviation <= .10 && buckets <= 4
+        val suspicious = exactRhythm || (stationary && lowJitter)
+        suspiciousWindows = if (suspicious) suspiciousWindows + 1 else 0
+        if (suspiciousWindows >= 3 && nowMillis - seriesStartedAt >= 4_000L) return triggerBlock(nowMillis)
+        return Result(true)
+    }
 
-        clicks.addLast(Click(nowMillis, x.coerceIn(0f, 1f), y.coerceIn(0f, 1f)))
-        while (clicks.isNotEmpty() && nowMillis - clicks.first().time > ANALYSIS_WINDOW_MILLIS) {
-            clicks.removeFirst()
-        }
-        if (clicks.size < MIN_SAMPLE_SIZE) return Result(true)
-
-        val recent = clicks.toList()
-        val intervals = recent.zipWithNext { first, second ->
-            (second.time - first.time).coerceAtLeast(1L).toDouble()
-        }
-        val averageInterval = intervals.average()
-        val relativeDeviation = intervals.sumOf { abs(it - averageInterval) } /
-            intervals.size / averageInterval
-        val roundedIntervals = intervals.map { (it / INTERVAL_BUCKET_MILLIS).toInt() }.distinct().size
-        val repeatedAtPoint = recent.count { click ->
-            val dx = click.x - x
-            val dy = click.y - y
-            dx * dx + dy * dy <= SAME_POINT_RADIUS * SAME_POINT_RADIUS
-        }
-        val impossiblyFast = recent.size >= FAST_SAMPLE_SIZE && averageInterval <= IMPOSSIBLE_INTERVAL_MILLIS
-        val machineRhythm = recent.size >= REGULAR_SAMPLE_SIZE &&
-            repeatedAtPoint >= REGULAR_SAMPLE_SIZE &&
-            averageInterval <= REGULAR_MAX_INTERVAL_MILLIS &&
-            relativeDeviation <= MAX_RELATIVE_DEVIATION
-        val scriptedRhythmWithJitter = recent.size >= JITTER_SAMPLE_SIZE &&
-            averageInterval <= JITTER_MAX_INTERVAL_MILLIS &&
-            relativeDeviation <= JITTER_MAX_RELATIVE_DEVIATION &&
-            roundedIntervals <= MAX_INTERVAL_BUCKETS
-        val recentBurstCount = recent.count { nowMillis - it.time <= BURST_WINDOW_MILLIS }
-        val impossibleBurst = recentBurstCount >= MAX_BURST_CLICKS
-        if (!impossiblyFast && !machineRhythm && !scriptedRhythmWithJitter && !impossibleBurst) {
-            return Result(true)
-        }
-
-        return triggerBlock(nowMillis)
+    private fun clearSeries() {
+        clicks.clear()
+        sampleCount = 0
+        suspiciousWindows = 0
+        seriesStartedAt = -1L
     }
 
     private fun triggerBlock(nowMillis: Long): Result {
-        strikes++
-        val blockMillis = (BASE_BLOCK_MILLIS * (1L shl (strikes - 1).coerceAtMost(3)))
-            .coerceAtMost(MAX_BLOCK_MILLIS)
-        blockedUntil = nowMillis + blockMillis
+        strikes = (strikes + 1).coerceAtMost(4)
+        val duration = (15_000L * (1L shl (strikes - 1))).coerceAtMost(MAX_BLOCK_MILLIS)
+        blockedUntil = nowMillis + duration
         lastDetectionAt = nowMillis
-        clicks.clear()
-        return Result(false, newlyDetected = true, remainingBlockMillis = blockMillis)
+        clearSeries()
+        return Result(false, newlyDetected = true, remainingBlockMillis = duration)
     }
 
     @Synchronized
-    fun remainingBlockMillis(nowMillis: Long): Long = (blockedUntil - nowMillis).coerceAtLeast(0L)
+    fun remainingBlockMillis(nowMillis: Long): Long = (blockedUntil - nowMillis).coerceIn(0L, MAX_BLOCK_MILLIS)
 
-    private companion object {
-        const val ANALYSIS_WINDOW_MILLIS = 12_000L
-        const val MIN_SAMPLE_SIZE = 10
-        const val FAST_SAMPLE_SIZE = 18
-        const val REGULAR_SAMPLE_SIZE = 10
-        const val JITTER_SAMPLE_SIZE = 36
-        const val IMPOSSIBLE_INTERVAL_MILLIS = 45.0
-        const val REGULAR_MAX_INTERVAL_MILLIS = 800.0
-        const val MAX_RELATIVE_DEVIATION = 0.08
-        const val JITTER_MAX_INTERVAL_MILLIS = 180.0
-        const val JITTER_MAX_RELATIVE_DEVIATION = 0.085
-        const val INTERVAL_BUCKET_MILLIS = 8.0
-        const val MAX_INTERVAL_BUCKETS = 4
-        const val BURST_WINDOW_MILLIS = 1_000L
-        const val MAX_BURST_CLICKS = 22
-        const val SAME_POINT_RADIUS = 0.035f
-        const val BASE_BLOCK_MILLIS = 15_000L
+    @Synchronized
+    fun snapshot(): Snapshot = Snapshot(blockedUntil, strikes, lastDetectionAt)
+
+    companion object {
         const val MAX_BLOCK_MILLIS = 120_000L
-        const val STRIKE_DECAY_MILLIS = 5 * 60_000L
+        private const val STRIKE_DECAY_MILLIS = 5 * 60_000L
+        private const val ANALYSIS_WINDOW_MILLIS = 30_000L
+        private const val SERIES_GAP_MILLIS = 2_000L
+        private const val MAX_HISTORY = 128
     }
 }

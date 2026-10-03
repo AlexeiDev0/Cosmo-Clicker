@@ -18,6 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
 import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.painterResource as debrisPainterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -48,7 +49,7 @@ fun Star(index: Int, twinklePhase: Float, reduceMotion: Boolean = false) {
 
 @Composable
 fun DebrisTarget(target: ScavengeTarget, gameAreaWidth: Dp, gameAreaHeight: Dp, onClick: (() -> Unit)? = null) {
-    val targetSize = if (target.isMeteor) 38.dp else (30 + target.rarity.ordinal * 2).dp
+    val targetSize = if (target.isMeteor) 38.dp else (38 + target.rarity.ordinal * 3).dp
 
     Box(
         modifier = Modifier
@@ -57,7 +58,9 @@ fun DebrisTarget(target: ScavengeTarget, gameAreaWidth: Dp, gameAreaHeight: Dp, 
                 y = gameAreaHeight * target.y - (targetSize / 2)
             )
             .size(targetSize)
-            .alpha(0.88f)
+            .background(androidx.compose.ui.graphics.Brush.radialGradient(listOf(
+                target.rarity.color.copy(alpha = .24f), Color.Transparent
+            )), CircleShape)
             .then(if (onClick != null) Modifier.clickable(onClick = onClick) else Modifier),
         contentAlignment = Alignment.Center
     ) {
@@ -72,7 +75,7 @@ fun DebrisTarget(target: ScavengeTarget, gameAreaWidth: Dp, gameAreaHeight: Dp, 
             )
         } else {
             Image(
-                painter = painterResource(debrisDrawable(target.imageIndex)),
+                painter = debrisPainterResource(debrisDrawable(target.imageIndex)),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
