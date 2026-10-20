@@ -16,8 +16,9 @@ class GameRepository(context: Context) {
     fun getStringSet(key: String, fallback: Set<String>): Set<String>? =
         preferences.getStringSet(key, fallback)?.toSet()
 
-    fun edit(block: SharedPreferences.Editor.() -> Unit) {
-        preferences.edit().apply(block).apply()
+    fun edit(durable: Boolean = false, block: SharedPreferences.Editor.() -> Unit): Boolean {
+        val editor = preferences.edit().apply(block)
+        return if (durable) editor.commit() else { editor.apply(); true }
     }
 
     fun clear() {

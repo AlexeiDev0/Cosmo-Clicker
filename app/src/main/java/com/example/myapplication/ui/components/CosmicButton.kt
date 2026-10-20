@@ -19,10 +19,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -43,6 +46,8 @@ import com.example.myapplication.ui.theme.SpaceDesign
 
 enum class CosmicButtonStyle { Primary, Secondary, Reward, Danger }
 enum class CosmicButtonState { Normal, Selected, Active, Locked }
+
+val LocalButtonSound = staticCompositionLocalOf<() -> Unit> { {} }
 
 @Composable
 fun IconButton(
@@ -78,6 +83,7 @@ fun Button(
     content: @Composable RowScope.() -> Unit
 ) {
     // Soft warm highlights and cool shadows echo the painted planet artwork.
+    val playButtonSound = LocalButtonSound.current
     val requestedAccent = if (enabled) colors.containerColor else colors.disabledContainerColor
     val accent = when (style) {
         CosmicButtonStyle.Primary -> requestedAccent
@@ -132,7 +138,10 @@ fun Button(
                 role = Role.Button,
                 interactionSource = interactionSource,
                 indication = null,
-                onClick = onClick
+                onClick = {
+                    playButtonSound()
+                    onClick()
+                }
             ),
         contentAlignment = Alignment.Center
     ) {
@@ -146,7 +155,8 @@ fun Button(
             )
         }
         CompositionLocalProvider(
-            LocalContentColor provides if (enabled) Color(0xFFF0F5F7) else AppColors.TextDisabled
+            LocalContentColor provides if (enabled) AppColors.TextPrimary else AppColors.TextDisabled,
+            LocalTextStyle provides MaterialTheme.typography.labelLarge
         ) {
             Row(
                 modifier = Modifier.padding(contentPadding),

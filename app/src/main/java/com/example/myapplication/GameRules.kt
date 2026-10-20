@@ -4,7 +4,6 @@ import kotlin.math.pow
 
 object GameRules {
     private const val CASE_BASE_COST = 25_000.0
-    private const val CASE_COST_MULTIPLIER = 1.08
     private const val DRONE_SALE_SHARE = 0.05
     const val HOTEL_LOAN_AMOUNT = 1_000_000.0
     private const val HOTEL_DEBT_PAYMENT_SHARE = 0.3
@@ -25,14 +24,18 @@ object GameRules {
         var opened = casesOpened.coerceAtLeast(0)
         var total = 0.0
         while (remaining > 0) {
-            total += calculateCaseCost(opened, type)
+            val price = calculateCaseCost(opened, type)
+            if (!price.isFinite() || !(total + price).isFinite()) return Double.POSITIVE_INFINITY
+            total += price
             opened++
+            if (opened < 0 && remaining > 1) return Double.POSITIVE_INFINITY
             remaining--
         }
         return total
     }
 
     fun maxAffordableCases(balance: Double, casesOpened: Int, type: CaseType): Int {
+        if (!balance.isFinite() || balance <= 0.0) return 0
         var remainingBalance = balance.coerceAtLeast(0.0)
         var opened = casesOpened.coerceAtLeast(0)
         var count = 0L
@@ -41,6 +44,7 @@ object GameRules {
             if (!price.isFinite() || remainingBalance < price) break
             remainingBalance -= price
             opened++
+            if (opened < 0) break
             count++
         }
         return count.coerceAtMost(Int.MAX_VALUE.toLong()).toInt()

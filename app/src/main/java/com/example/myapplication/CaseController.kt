@@ -1,6 +1,13 @@
 package com.example.myapplication
 
 object CaseController {
+    /** Older saves omitted the displayed reward, leaving paid bundle cases stranded. */
+    fun restoreOpening(state: GameState): GameState {
+        if (state.isOpeningCase || state.lastDroppedDroneId != null || state.showCaseBundleSummary ||
+            state.pendingCaseOpenings <= 0 || state.openingCaseType == null) return state
+        return state.copy(isOpeningCase = true, pendingCaseOpenings = state.pendingCaseOpenings - 1)
+    }
+
     fun purchaseCountsAfterOpening(state: GameState, type: CaseType): Map<CaseType, Int> =
         if (state.isRewardCaseOpening) state.casePurchasesByType
         else state.casePurchasesByType + (type to ((state.casePurchasesByType[type] ?: 0) + 1))
@@ -15,11 +22,15 @@ object CaseController {
         GameRules.maxAffordableCases(balance, casesPurchased, type)
 
     fun startOpening(state: GameState, type: CaseType, count: Int): GameState? {
-        val safeCount = count.coerceAtLeast(1)
+        if (count <= 0 || !state.totalDebris.isFinite() || state.totalDebris < 0.0) return null
+        val safeCount = count
         val price = bundleCost(state.casePurchasesByType[type] ?: 0, type, safeCount)
-        if (state.isOpeningCase || state.lastDroppedDroneId != null || state.totalDebris < price) return null
+        if (!price.isFinite() || price <= 0.0 || state.isOpeningCase ||
+            state.lastDroppedDroneId != null || state.showCaseBundleSummary || state.totalDebris < price) return null
+        val remainingDebris = state.totalDebris - price
+        if (!remainingDebris.isFinite() || remainingDebris >= state.totalDebris) return null
         return state.copy(
-            totalDebris = state.totalDebris - price,
+            totalDebris = remainingDebris,
             isOpeningCase = true,
             openingCaseType = type,
             pendingCaseOpenings = safeCount - 1,

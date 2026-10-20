@@ -4,6 +4,8 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -23,7 +25,6 @@ import androidx.compose.ui.layout.ContentScale
 import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,6 +39,7 @@ import com.example.myapplication.R
 import com.example.myapplication.Technology
 import com.example.myapplication.ui.GameConstants
 import com.example.myapplication.ui.theme.AppColors
+import com.example.myapplication.ui.theme.SpaceDisplayFont
 import com.example.myapplication.ui.theme.SpaceDesign
 import com.example.myapplication.utils.formatNum
 import kotlinx.coroutines.delay
@@ -214,7 +216,7 @@ private fun DroneCollectionHeader(state: GameState, viewModel: GameViewModel) {
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(stringResource(R.string.collection_milestone, nextMilestone), color = Color.White, fontSize = 12.sp)
-                    Text(stringResource(R.string.collection_reward_amount, formatNum(viewModel.collectionReward(nextMilestone))), color = AppColors.Secondary, fontSize = 10.sp)
+                    Text(stringResource(R.string.collection_reward_amount, formatNum(viewModel.collectionReward(nextMilestone))), color = AppColors.Secondary, fontSize = 11.sp)
                 }
                 Button(
                     onClick = { viewModel.claimCollectionReward(nextMilestone) },
@@ -224,7 +226,7 @@ private fun DroneCollectionHeader(state: GameState, viewModel: GameViewModel) {
                     style = CosmicButtonStyle.Reward,
                     compact = true,
                     generatedArtwork = true
-                ) { Text(stringResource(R.string.collection_claim), fontSize = 10.sp) }
+                ) { Text(stringResource(R.string.collection_claim), fontSize = 11.sp) }
             }
         }
     }
@@ -257,12 +259,12 @@ private fun MetaProgressPanel(viewModel: GameViewModel, state: GameState) {
                 formatNum(state.sessionStats.debrisEarned),
                 state.sessionStats.casesOpened
             ),
-            color = Color.LightGray,
+            color = AppColors.TextMuted,
             fontSize = 12.sp
         )
         val collectionPercent = (((MetaProgressEngine.collectionMultiplier(state.fleetCounts, viewModel.fleetById) *
             MetaProgressEngine.masteryMultiplier(state.droneParts)) - 1.0) * 100).toInt()
-        Text(stringResource(R.string.collection_bonus, collectionPercent), color = Color.LightGray)
+        Text(stringResource(R.string.collection_bonus, collectionPercent), color = AppColors.TextMuted)
         Surface(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(14.dp),
@@ -312,7 +314,7 @@ private fun MetaProgressPanel(viewModel: GameViewModel, state: GameState) {
             Spacer(Modifier.width(10.dp))
             Column {
                 Text(stringResource(R.string.achievements), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 17.sp)
-                Text(stringResource(R.string.achievements_subtitle), color = Color.Gray, fontSize = 10.sp)
+                Text(stringResource(R.string.achievements_subtitle), color = Color.Gray, fontSize = 11.sp)
             }
         }
         AchievementEngine.definitions.forEach { achievement ->
@@ -345,7 +347,7 @@ private fun MetaProgressPanel(viewModel: GameViewModel, state: GameState) {
                         Spacer(Modifier.width(6.dp))
                         Text(stringResource(achievementNameResource(achievement.id)), color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
                     }
-                    Text(rewardText, color = AppColors.Secondary, fontSize = 10.sp)
+                    Text(rewardText, color = AppColors.Secondary, fontSize = 11.sp)
                 }
                 Button(
                     onClick = { viewModel.claimAchievement(achievement.id) },
@@ -362,7 +364,7 @@ private fun MetaProgressPanel(viewModel: GameViewModel, state: GameState) {
                                 else -> R.string.achievement_locked
                             }
                         ),
-                        fontSize = 10.sp
+                        fontSize = 11.sp
                     )
                 }
             }
@@ -398,18 +400,18 @@ private fun MetaProgressPanel(viewModel: GameViewModel, state: GameState) {
                             color = Color.White,
                             fontSize = 11.sp
                         )
-                        Text(time, color = Color.Gray, fontSize = 10.sp)
+                        Text(time, color = Color.Gray, fontSize = 11.sp)
                     }
                     Text(
                         stringResource(eventLogOutcomeResource(entry.outcome)),
                         color = AppColors.Secondary,
-                        fontSize = 10.sp
+                        fontSize = 11.sp
                     )
                     if (entry.reward > 0.0) {
                         Text(
                             stringResource(R.string.event_log_reward, formatNum(entry.reward)),
                             color = AppColors.Primary,
-                            fontSize = 10.sp
+                            fontSize = 11.sp
                         )
                     }
                 }
@@ -457,27 +459,53 @@ fun MysteryCaseRow(viewModel: GameViewModel, state: GameState) {
 }
 
 @Composable
+private fun CaseOdds(type: CaseType) {
+    Text(stringResource(R.string.case_currency_notice), color = AppColors.TextMuted, fontSize = 11.sp)
+    com.example.myapplication.GameRules.caseRarityWeights(type).forEach { (rarity, chance) ->
+        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Text(stringResource(when (rarity) {
+                com.example.myapplication.Rarity.COMMON -> R.string.case_rarity_common
+                com.example.myapplication.Rarity.UNCOMMON -> R.string.case_rarity_uncommon
+                com.example.myapplication.Rarity.RARE -> R.string.case_rarity_rare
+                com.example.myapplication.Rarity.EPIC -> R.string.case_rarity_epic
+                com.example.myapplication.Rarity.LEGENDARY -> R.string.case_rarity_legendary
+                com.example.myapplication.Rarity.VOID -> R.string.case_rarity_void
+            }), color = rarity.color, fontSize = 12.sp)
+            Text("$chance%", color = Color.White, fontSize = 12.sp)
+        }
+    }
+    Text(stringResource(R.string.case_pool_notice), color = AppColors.TextMuted, fontSize = 11.sp)
+}
+
+@Composable
 private fun CaseTypeRow(viewModel: GameViewModel, state: GameState, type: CaseType, totalDrones: Int) {
     val typePurchases = state.casePurchasesByType[type] ?: 0
     val caseCost = viewModel.calculateCaseCost(typePurchases, type)
     val maxAffordable = viewModel.maxAffordableCases(state.totalDebris, typePurchases, type)
     var showBundleDialog by remember { mutableStateOf(false) }
+    var showInfoDialog by remember { mutableStateOf(false) }
     var selectedCaseCount by remember { mutableIntStateOf(1) }
     val accent = when (type) {
-        CaseType.COMMON -> AppColors.Primary
-        CaseType.RARE -> Color(0xFF42A5F5)
-        CaseType.LEGENDARY -> Color(0xFFFFB300)
+        CaseType.COMMON -> Color(0xFF9BBDC8)
+        CaseType.RARE -> Color(0xFF79C6F4)
+        CaseType.LEGENDARY -> Color(0xFFF0CB7D)
     }
     val title = when (type) {
         CaseType.COMMON -> R.string.common_case
         CaseType.RARE -> R.string.rare_case
         CaseType.LEGENDARY -> R.string.legendary_case
     }
+    val description = when (type) {
+        CaseType.COMMON -> R.string.case_common_description
+        CaseType.RARE -> R.string.case_rare_description
+        CaseType.LEGENDARY -> R.string.case_legendary_description
+    }
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .background(Brush.horizontalGradient(listOf(accent.copy(.12f), Color(0xFF0A1424))), RoundedCornerShape(14.dp))
+            .background(Color(0xFF17283D), RoundedCornerShape(14.dp))
+            .border(1.dp, accent.copy(alpha = .18f), RoundedCornerShape(14.dp))
             .padding(12.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
@@ -496,8 +524,21 @@ private fun CaseTypeRow(viewModel: GameViewModel, state: GameState, type: CaseTy
             Spacer(modifier = Modifier.width(12.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text(stringResource(title), color = accent, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                Text(stringResource(R.string.drones_owned_count, totalDrones), color = Color.Gray, fontSize = 11.sp)
-                Text(stringResource(R.string.premium_drop_chance, type.premiumChance), color = accent, fontSize = 9.sp)
+            }
+            IconButton(onClick = { showInfoDialog = true }, modifier = Modifier.size(48.dp)) {
+                Box(
+                    Modifier.size(28.dp)
+                        .background(accent.copy(alpha = .09f), CircleShape)
+                        .border(1.dp, accent.copy(alpha = .24f), CircleShape),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_case_info),
+                        contentDescription = stringResource(R.string.case_information, stringResource(title)),
+                        tint = accent.copy(alpha = .9f),
+                        modifier = Modifier.size(18.dp)
+                    )
+                }
             }
         }
         val caseEnabled = state.totalDebris >= caseCost
@@ -514,11 +555,32 @@ private fun CaseTypeRow(viewModel: GameViewModel, state: GameState, type: CaseTy
             }
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                GeneratedSheetIcon(R.drawable.shop_ui_minimal_sheet_v1, 4, 17.dp, columns = 4, rows = 4)
+                Icon(painterResource(R.drawable.ic_currency_debris_v2), null, Modifier.size(17.dp), tint = Color.Unspecified)
                 Spacer(Modifier.width(5.dp))
-                Text(formatNum(caseCost), color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
+                Text(formatNum(caseCost), color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = SpaceDisplayFont)
             }
         }
+    }
+    if (showInfoDialog) {
+        SpaceDialog(
+            title = stringResource(title),
+            onDismiss = { showInfoDialog = false },
+            content = {
+                Column(
+                    Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+                    Text(stringResource(description), color = Color.White, style = MaterialTheme.typography.bodyMedium)
+                    Text(stringResource(R.string.drones_owned_count, totalDrones), color = AppColors.TextMuted, fontSize = 12.sp)
+                    CaseOdds(type)
+                }
+            },
+            actions = {
+                TextButton(onClick = { showInfoDialog = false }) {
+                    Text(stringResource(R.string.close), color = accent)
+                }
+            }
+        )
     }
     if (showBundleDialog) {
         SpaceDialog(
@@ -526,20 +588,19 @@ private fun CaseTypeRow(viewModel: GameViewModel, state: GameState, type: CaseTy
             onDismiss = { showBundleDialog = false },
             content = {
                 Text(stringResource(title), color = accent, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                Text(stringResource(R.string.case_bundle_hint), color = Color.LightGray, fontSize = 11.sp)
                 Spacer(Modifier.height(14.dp))
                 Column(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(2.dp)
                 ) {
-                    Text("×$selectedCaseCount", color = accent, fontSize = 30.sp, fontWeight = FontWeight.Black, fontFamily = FontFamily.Monospace)
+                    Text("×$selectedCaseCount", color = accent, fontSize = 30.sp, fontWeight = FontWeight.Black, fontFamily = SpaceDisplayFont)
                     Text(
                         formatNum(viewModel.calculateCaseBundleCost(typePurchases, type, selectedCaseCount)),
                         color = Color.White,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = SpaceDisplayFont
                     )
                     Slider(
                         value = selectedCaseCount.toFloat(),
@@ -553,8 +614,8 @@ private fun CaseTypeRow(viewModel: GameViewModel, state: GameState, type: CaseTy
                         )
                     )
                     Row(Modifier.fillMaxWidth(0.82f), horizontalArrangement = Arrangement.SpaceBetween) {
-                        Text("1", color = Color.White.copy(alpha = 0.55f), fontSize = 10.sp)
-                        Text(stringResource(R.string.max_cases_short, maxAffordable), color = accent, fontSize = 10.sp)
+                        Text("1", color = Color.White.copy(alpha = 0.55f), fontSize = 11.sp)
+                        Text(stringResource(R.string.max_cases_short, maxAffordable), color = accent, fontSize = 11.sp)
                     }
                 }
             },
@@ -570,7 +631,7 @@ private fun CaseTypeRow(viewModel: GameViewModel, state: GameState, type: CaseTy
                         },
                         contentAlignment = Alignment.Center
                     ) {
-                        Text(stringResource(R.string.buy_cases_count, selectedCaseCount), color = Color.White, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
+                        Text(stringResource(R.string.buy_cases_count, selectedCaseCount), color = Color.White, fontWeight = FontWeight.Bold, fontFamily = SpaceDisplayFont)
                     }
                 }
             }
@@ -619,7 +680,7 @@ private fun DroneCollectionSets(state: GameState) {
                     Text(
                         stringResource(if (complete) R.string.collection_set_bonus_active else R.string.collection_set_bonus_locked, set.bonusPercent),
                         color = if (complete) AppColors.Secondary else Color.Gray,
-                        fontSize = 10.sp
+                        fontSize = 11.sp
                     )
                 }
             }
@@ -636,7 +697,7 @@ private fun LateGalaxyPreview(viewModel: GameViewModel) {
             .padding(12.dp)
     ) {
         Text(stringResource(R.string.late_galaxy_preview), color = AppColors.Primary, fontWeight = FontWeight.Bold)
-        Text(stringResource(R.string.late_galaxy_preview_desc), color = Color.White.copy(alpha = .62f), fontSize = 10.sp)
+        Text(stringResource(R.string.late_galaxy_preview_desc), color = Color.White.copy(alpha = .62f), fontSize = 11.sp)
         Spacer(Modifier.height(8.dp))
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
             (21..24).forEach { index ->
@@ -644,7 +705,7 @@ private fun LateGalaxyPreview(viewModel: GameViewModel) {
                 val planet = viewModel.planets[id] ?: return@forEach
                 Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
                     Image(painterResource(planet.imageRes), null, Modifier.size(58.dp), contentScale = ContentScale.Fit)
-                    Text(localizedPlanetName(id), color = Color.White, fontSize = 9.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(localizedPlanetName(id), color = Color.White, fontSize = 11.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
@@ -709,7 +770,7 @@ fun ShopRow(
                 if (name.isNotEmpty()) {
                     Text(name, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
-                Text(meta, color = Color.LightGray, fontSize = 11.sp, lineHeight = 14.sp)
+                Text(meta, color = AppColors.TextMuted, fontSize = 11.sp, lineHeight = 14.sp)
             }
         }
         Row(
@@ -726,7 +787,7 @@ fun ShopRow(
                     contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
                     generatedArtwork = true
                 ) {
-                    Text(fleetActionLabel, fontSize = 10.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(fleetActionLabel, fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
             }
             if (canSell) {
@@ -739,7 +800,7 @@ fun ShopRow(
                     style = CosmicButtonStyle.Danger,
                     generatedArtwork = true
                 ) {
-                    Text(stringResource(R.string.sell), fontSize = 10.sp, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.sell), fontSize = 11.sp, fontWeight = FontWeight.Bold)
                 }
             }
             Box(
@@ -755,7 +816,7 @@ fun ShopRow(
                     .clickable(enabled = canBuy, onClick = onBuy),
                 contentAlignment = Alignment.Center
             ) {
-                Text(formatNum(cost.toDouble()), color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
+                Text(formatNum(cost.toDouble()), color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold, fontFamily = SpaceDisplayFont)
             }
         }
     }
@@ -856,22 +917,22 @@ fun PlanetRow(
                             text = when { active -> stringResource(R.string.active); owned -> stringResource(R.string.owned); else -> stringResource(R.string.locked) },
                             modifier = Modifier.padding(horizontal = 7.dp, vertical = 3.dp),
                             color = accent,
-                            fontSize = 8.sp,
+                            fontSize = 11.sp,
                             fontWeight = FontWeight.Bold
                         )
                     }
                 }
                 Spacer(Modifier.height(3.dp))
-                Text(desc, color = AppColors.TextMuted, fontSize = 10.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                Text(desc, color = AppColors.TextMuted, fontSize = 11.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 Spacer(Modifier.height(5.dp))
-                Text(bonus, color = accent, fontSize = 9.sp, lineHeight = 12.sp, maxLines = 3, overflow = TextOverflow.Ellipsis)
+                Text(bonus, color = accent, fontSize = 11.sp, lineHeight = 15.sp, maxLines = 3, overflow = TextOverflow.Ellipsis)
             }
             }
         Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             if (!owned && !isLocked) {
                 Icon(painterResource(R.drawable.ic_currency_debris_v2), null, Modifier.size(20.dp), tint = Color.Unspecified)
                 Spacer(Modifier.width(6.dp))
-                Text(formatNum(price.toDouble()), color = AppColors.Warning, fontSize = 13.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace)
+                Text(formatNum(price.toDouble()), color = AppColors.Warning, fontSize = 13.sp, fontWeight = FontWeight.Bold, fontFamily = SpaceDisplayFont)
             } else {
                 Text(
                     if (active) stringResource(R.string.active) else stringResource(R.string.owned),

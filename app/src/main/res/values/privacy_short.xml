@@ -1,0 +1,5 @@
+<resources>
+    <string name="privacy_short_title">Do you agree to our privacy policy?</string>
+    <string name="privacy_short_accept">Agree and play</string>
+    <string name="privacy_short_decline">Exit</string>
+</resources>

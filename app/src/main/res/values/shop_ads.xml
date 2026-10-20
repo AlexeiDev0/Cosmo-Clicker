@@ -1,0 +1,10 @@
+<resources>
+    <string name="shop_tab_rewards">Rewards</string>
+    <string name="shop_ad_rewards">Rewards for watching ads</string>
+    <string name="shop_ad_notice">Tapping a reward loads an ad via Google. Only completed rewarded views count. Watching is optional.</string>
+    <string name="shop_ad_debris">Watch 1 ad · +%1$s debris</string>
+    <string name="shop_ad_scaling">The amount grows with unlocked planets and fleet income.</string>
+    <string name="shop_ad_case">Common case · %1$d/3 · Watch 1 ad</string>
+    <string name="shop_ad_unavailable">Ad unavailable. Try again later. No view counted.</string>
+    <string name="shop_ad_open_case">Open earned common case</string>
+</resources>

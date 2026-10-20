@@ -9,6 +9,24 @@ import org.junit.Test
 class GameRulesTest {
 
     @Test
+    fun everyPossibleRollMatchesPublishedOddsAndPremiumChance() {
+        CaseType.entries.forEach { type ->
+            val outcomes = (0..99).map { GameRules.rollCaseRarity(type, it) }.groupingBy { it }.eachCount()
+            GameRules.caseRarityWeights(type).forEach { (rarity, chance) ->
+                assertEquals("$type $rarity", chance, outcomes[rarity] ?: 0)
+            }
+            assertEquals(type.premiumChance, (outcomes[Rarity.EPIC] ?: 0) + (outcomes[Rarity.LEGENDARY] ?: 0))
+        }
+    }
+
+    @Test(timeout = 1000)
+    fun enormousBundlesAndInvalidBalancesCannotHang() {
+        assertEquals(Double.POSITIVE_INFINITY, GameRules.calculateCaseBundleCost(0, CaseType.COMMON, Int.MAX_VALUE), 0.0)
+        assertEquals(0, GameRules.maxAffordableCases(Double.POSITIVE_INFINITY, 0, CaseType.COMMON))
+        assertEquals(0, GameRules.maxAffordableCases(Double.NaN, 0, CaseType.COMMON))
+    }
+
+    @Test
     fun commonCaseCostGrowsByFifteenPercentAfterEveryPurchase() {
         assertEquals(25_000.0, GameRules.calculateCaseCost(0), 0.0001)
         assertEquals(28_750.0, GameRules.calculateCaseCost(1), 0.0001)

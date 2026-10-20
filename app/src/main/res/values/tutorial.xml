@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tutorial_title">Getting started</string>
+    <string name="tutorial_collect_title">Collect resources</string>
+    <string name="tutorial_collect_body">Tap the planet to collect resources. Spend them on your fleet and upgrades.</string>
+    <string name="tutorial_drones_title">Build your fleet</string>
+    <string name="tutorial_drones_body">Buy drones in the shop. They collect debris for you. Open the hangar to inspect your fleet; color shows a drone’s rarity.</string>
+    <string name="tutorial_upgrade_title">Upgrade your equipment</string>
+    <string name="tutorial_upgrade_body">Shop upgrades increase the resources you earn per tap. Compare the cost and bonus before buying.</string>
+    <string name="tutorial_explore_title">Explore space</string>
+    <string name="tutorial_explore_body">Unlock new worlds, complete quests and take part in events. Your expedition starts now.</string>
+    <string name="tutorial_next">Next</string>
+    <string name="tutorial_back">Back</string>
+    <string name="tutorial_skip">Skip</string>
+    <string name="tutorial_finish">Play</string>
+    <string name="tutorial_replay">Replay tutorial</string>
+</resources>

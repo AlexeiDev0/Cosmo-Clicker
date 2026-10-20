@@ -1,0 +1,28 @@
+# Space Salvage — visual update, 9 October 2026
+
+Generated with the built-in image_gen tool. New sprites preserve transparency. Existing assets remain available for rollback.
+
+Runtime files: `app/src/main/res/drawable-nodpi/` — `toon_drone_01_v4.png`, `toon_drone_08_v4.png`, `collection_lock_v4.png`, `toon_debris_03_v6.png`, `toon_debris_04_v6.png`, `toon_debris_25_v6.png`, `toon_debris_06_v6.png`, `bg_shop_v6.png`, `bg_hangar_v6.png`.
+
+Collection images increased from 48 to 64 dp, with three columns, subtle rarity borders and labels. Rare and higher salvage retains its original artwork colors. Floating debris increased to 44–64 dp according to rarity. App name, translated privacy policy headings and store descriptions use Space Salvage. Package name remains stable to preserve existing installs and saves.
+
+## Generation prompts
+
+Starter drone: Create a replacement game sprite matching the reference's rounded 3D hand-painted cartoon sci-fi style. Single compact salvage drone, front three-quarter view, pearl white spherical armor, dark navy panel seams, large cyan luminous central eye, two short side engine pods with restrained teal exhaust, small copper salvage claw underneath. Make silhouette clean and robust at 64px. Soft upper-left highlight, subtle material depth, polished readable shapes. Entire drone centered with 12 percent clear padding, transparent background. No text, no border, no UI, no ground shadow. This is the starter drone, friendly and simple.
+
+Heavy drone: Create a single new heavy salvage drone game sprite in exactly the reference's rounded 3D painted cartoon sci-fi style. Front three-quarter view, compact broad chassis, navy and ivory armor with muted golden shoulder plates, luminous amber central eye, two chunky side engine pods with small cyan exhaust, folded industrial grabber beneath. Strong distinct silhouette, readable at 64px, soft upper-left highlight, dark panel seams, restrained glows. Center whole drone with 12 percent padding on transparent background. No text, UI, border, ground shadow.
+
+collection_lock_v4: Single premium sci-fi padlock game icon, chunky navy metal body with pearl ivory beveled frame, curved silver shackle, luminous cyan keyhole and two tiny amber lights. Rounded painted 3D cartoon style matching a space salvage game. Large clean silhouette readable at 48 pixels. Entire object centered with 12 percent transparent padding. Premium hand-painted rounded 3D cartoon space game item sprite. Soft upper-left highlight, strong dark seams, clean silhouette, subtle scratches, restrained glow. Transparent background, no letters, no UI, no frame, no ground shadow.
+
+toon_debris_03_v6: Single uncommon salvaged ship module, chunky broken silver and navy circuit housing with luminous emerald core, a bent bracket and short exposed copper wires. Entire object centered with 12 percent transparent padding. Premium hand-painted rounded 3D cartoon space game item sprite. Soft upper-left highlight, strong dark seams, clean silhouette, subtle scratches, restrained glow. Transparent background, no letters, no UI, no frame, no ground shadow.
+
+toon_debris_04_v6: Single rare salvaged power cell, chunky silver and dark navy cylindrical battery with bright blue energy window, torn cable and worn copper end caps. Entire object centered with 12 percent transparent padding. Premium hand-painted rounded 3D cartoon space game item sprite. Soft upper-left highlight, strong dark seams, clean silhouette, subtle scratches, restrained glow. Transparent background, no letters, no UI, no frame, no ground shadow.
+
+toon_debris_05_v6 (saved as toon_debris_25_v6.png): Single epic salvaged alien artifact, angular violet crystal held in a broken ivory and dark navy mechanical ring, luminous purple energy core, chipped corners. Entire object centered with 12 percent transparent padding. Premium hand-painted rounded 3D cartoon space game item sprite. Soft upper-left highlight, strong dark seams, clean silhouette, subtle scratches, restrained glow. Transparent background, no letters, no UI, no frame, no ground shadow.
+
+toon_debris_06_v6: Single legendary salvaged star reactor, substantial gold and dark navy mechanical sphere with ornate but chunky segmented gold armor, luminous amber central core, two broken stabilizer fins. Entire object centered with 12 percent transparent padding. Premium hand-painted rounded 3D cartoon space game item sprite. Soft upper-left highlight, strong dark seams, clean silhouette, subtle scratches, restrained glow. Transparent background, no letters, no UI, no frame, no ground shadow.
+
+bg_shop_v6: Portrait mobile game background, premium hand-painted 3D cartoon sci-fi orbital salvage market interior with a few stacked metal cargo containers in bottom corners, warm amber equipment lights. Deep navy metal architecture, softly beveled panels, a curved panoramic window across the top revealing blue violet nebula and distant planet. Calm dark uncluttered center occupying 70 percent for readable interface overlay. Rich quality materials and subtle light, no text, logos, characters, interface or buttons. Vertical 9:16 composition.
+
+bg_hangar_v6: Portrait mobile game background, premium hand-painted 3D cartoon sci-fi drone hangar interior with a circular docking platform at the bottom, restrained cyan docking lights. Deep navy metal architecture, softly beveled panels, a curved panoramic window across the top revealing blue violet nebula and distant planet. Calm dark uncluttered center occupying 70 percent for readable interface overlay. Rich quality materials and subtle light, no text, logos, characters, interface or buttons. Vertical 9:16 composition.
+

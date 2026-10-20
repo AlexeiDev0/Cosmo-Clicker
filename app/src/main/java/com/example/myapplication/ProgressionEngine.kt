@@ -15,18 +15,16 @@ object DailyRewardEngine {
 
     fun preview(state: GameState, now: Long = System.currentTimeMillis()): DailyReward {
         val today = dayKey(now)
-        val continued = state.lastDailyRewardDay == previousDayKey(now)
         val day = when {
-            today <= state.lastDailyRewardDay -> state.dailyRewardStreak.coerceIn(1, 7)
-            continued -> state.dailyRewardStreak % 7 + 1
-            else -> 1
+            today <= state.lastDailyRewardDay -> state.dailyRewardStreak.coerceAtLeast(1)
+            else -> (state.dailyRewardStreak.toLong().coerceAtLeast(0L) + 1L).coerceAtMost(Int.MAX_VALUE.toLong()).toInt()
         }
         val highest = state.ownedPlanets.maxOfOrNull(EconomyBalance::planetIndex) ?: 1
         val priceFloor = if (highest > 1) EconomyBalance.planetPrice((highest + 1).coerceAtMost(39)) * .015 * day else 0.0
         return DailyReward(
             day = day,
             debris = maxOf(EconomyBalance.scaledReward(2_500.0 * day * day, "p$highest"), EconomyBalance.roundReward(priceFloor)),
-            prestigePoints = if (day == 7) 1 else 0
+            prestigePoints = if (day % 7 == 0) 1 else 0
         )
     }
 
@@ -41,11 +39,6 @@ object DailyRewardEngine {
         )
     }
 
-    private fun previousDayKey(now: Long): Long = Calendar.getInstance().run {
-        timeInMillis = now
-        add(Calendar.DAY_OF_YEAR, -1)
-        dayKey(timeInMillis)
-    }
 }
 
 object OverallProgressEngine {
@@ -110,7 +103,7 @@ data class GalacticCollectionProgress(
     val droneDiscoveries: Int,
     val totalDrones: Int,
     val debrisTypes: Int = 0,
-    val totalDebrisTypes: Int = 28
+    val totalDebrisTypes: Int = DebrisCatalog.TYPE_COUNT
 ) {
     val discoveredEntries: Int
         get() = planets + eventTypes + achievements + droneDiscoveries + debrisTypes

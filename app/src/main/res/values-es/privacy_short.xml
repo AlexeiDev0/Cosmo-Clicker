@@ -1,0 +1,5 @@
+<resources>
+    <string name="privacy_short_title">¿Aceptas nuestra política de privacidad?</string>
+    <string name="privacy_short_accept">Aceptar y jugar</string>
+    <string name="privacy_short_decline">Salir</string>
+</resources>

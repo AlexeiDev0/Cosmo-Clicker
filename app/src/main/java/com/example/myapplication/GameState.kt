@@ -9,10 +9,10 @@ enum class Rarity(
     val maxReward: Long
 ) {
     COMMON(Color(0xFFB0BEC5), 60, 1, 5_000),
-    UNCOMMON(Color(0xFF4CAF50), 25, 5_001, 10_000),
-    RARE(Color(0xFF2196F3), 10, 10_001, 20_000),
-    EPIC(Color(0xFF9C27B0), 4, 20_001, 50_000),
-    LEGENDARY(Color(0xFFFF9800), 1, 250_000, 1_000_000),
+    UNCOMMON(Color(0xFF8CDEA9), 25, 5_001, 10_000),
+    RARE(Color(0xFF79C6F4), 10, 10_001, 20_000),
+    EPIC(Color(0xFFC6A1FF), 4, 20_001, 50_000),
+    LEGENDARY(Color(0xFFF4D59D), 1, 250_000, 1_000_000),
     VOID(Color(0xFF6200EA), 0, 1_250_000, 5_000_000);
 
     fun canCollect(targetRarity: Rarity): Boolean = targetRarity.ordinal <= ordinal
@@ -42,10 +42,15 @@ enum class QuestType {
 enum class QuestCadence { DAILY, WEEKLY }
 enum class QuestDifficulty { EASY, MEDIUM, HARD }
 
-enum class CaseType(val priceMultiplier: Double, val growthMultiplier: Double, val premiumChance: Int) {
-    COMMON(1.0, 1.15, 1),
-    RARE(5.0, 1.25, 5),
-    LEGENDARY(20.0, 1.40, 20)
+enum class CaseType(val priceMultiplier: Double, val growthMultiplier: Double) {
+    COMMON(1.0, 1.15),
+    RARE(5.0, 1.25),
+    LEGENDARY(20.0, 1.40);
+
+    val premiumChance: Int
+        get() = GameRules.caseRarityWeights(this).filterKeys {
+            it == Rarity.EPIC || it == Rarity.LEGENDARY
+        }.values.sum()
 }
 
 enum class WeeklyRule { CLICKS_ONLY, FRAGILE_DRONES, VOLATILE_MARKET }
@@ -114,6 +119,11 @@ data class GameState(
     val activeEffects: Map<String, Long> = emptyMap(), // Type ID to expiresAt
     val lastOfflineReward: Double = 0.0,
     val lastOfflineSeconds: Long = 0L,
+    val offlineBonusOfferId: String? = null,
+    val shopCaseAdProgress: Int = 0,
+    val shopAdOfferId: String? = null,
+    val shopAdOfferType: ShopAdReward? = null,
+    val shopAdOfferAmount: Double = 0.0,
     val prestigePoints: Int = 0,
     val technologies: Set<Technology> = emptySet(),
     val dailyQuestDay: Long = -1L,
@@ -185,7 +195,12 @@ enum class TradeOffer {
     COMMON_CASE,
     RARE_CASE,
     LEGENDARY_CASE,
-    RANDOM_DRONE
+    RANDOM_DRONE,
+    MERCHANT_MANTA,
+    MERCHANT_CROWN,
+    DRONE_FOR_CASE,
+    PARTS_FOR_DRONE,
+    REPAIR_KIT
 }
 
 data class PendingEventChain(

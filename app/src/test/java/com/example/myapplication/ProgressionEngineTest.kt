@@ -28,14 +28,14 @@ class ProgressionEngineTest {
         assertNull(DailyRewardEngine.claim(claimedSecondDay, firstDay))
     }
 
-    @Test fun dailyRewardBuildsASevenDayStreakAndThenCycles() {
+    @Test fun dailyRewardGrowsPastSevenDaysAndKeepsWeeklyBonus() {
         var state = GameState()
         val start = 1_788_134_400_000L
         repeat(7) { offset -> state = DailyRewardEngine.claim(state, start + offset * 86_400_000L)!! }
         assertEquals(7, state.dailyRewardStreak)
         assertTrue(state.prestigePoints >= 1)
         state = DailyRewardEngine.claim(state, start + 7 * 86_400_000L)!!
-        assertEquals(1, state.dailyRewardStreak)
+        assertEquals(8, state.dailyRewardStreak)
     }
 
     @Test fun overallProgressIsBoundedAndReachesOneForCompletedInputs() {

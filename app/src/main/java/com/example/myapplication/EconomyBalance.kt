@@ -57,12 +57,6 @@ object EconomyBalance {
     fun nextPlanetIndex(ownedPlanets: Set<String>): Int? =
         (2..MAX_PLANET_INDEX).firstOrNull { index -> "p$index" !in ownedPlanets }
 
-    /** Every stage asks the player to build a fleet; the requirement grows slowly. */
-    fun requiredActiveDronesForPlanet(index: Int): Int = when {
-        index <= 1 -> 0
-        else -> (1 + (index - 2) / 6).coerceAtMost(7)
-    }
-
     fun requiredDroneIdForPlanet(index: Int): String? = when (index) {
         2 -> "drone_1"
         5 -> "drone_5"
@@ -79,8 +73,7 @@ object EconomyBalance {
 
     fun planetFleetObjectiveMet(state: GameState, index: Int): Boolean {
         val requiredDrone = requiredDroneIdForPlanet(index)
-        return state.activeFleetCounts.values.sum() >= requiredActiveDronesForPlanet(index) &&
-            (requiredDrone == null || requiredDrone in state.discoveredDroneIds) &&
+        return (requiredDrone == null || requiredDrone in state.discoveredDroneIds) &&
             state.lifetimeStats.prestiges >= requiredPrestigeForPlanet(index)
     }
 
@@ -91,10 +84,19 @@ object EconomyBalance {
         (base.coerceAtLeast(0.0) * 10.0 * 1.065.pow(level.coerceAtLeast(0).toDouble()) * marketMultiplier.coerceAtLeast(0.0))
             .let { if (it.isFinite()) kotlin.math.round(it) else Double.MAX_VALUE }
 
+    /** Permanent click upgrades also improve fleet productivity; temporary click effects do not. */
+    fun fleetProgressionMultiplier(state: GameState, clickItems: List<ItemConfig>): Double {
+        val upgradedClick = 1.0 + clickItems.sumOf {
+            (state.clickLevels[it.id] ?: 0).coerceAtLeast(0) * it.value.coerceAtLeast(0.0)
+        }
+        return maxOf(1.0, upgradedClick / 25.0)
+    }
+
     fun passiveIncome(
         state: GameState,
         fleetById: Map<String, FleetConfig>,
-        nowMillis: Long = System.currentTimeMillis()
+        nowMillis: Long = System.currentTimeMillis(),
+        clickItems: List<ItemConfig> = emptyList()
     ): Double {
         val incomeFleet = state.activeFleetCounts.ifEmpty { state.fleetCounts }
         val base = incomeFleet.entries.sumOf { (id, count) ->
@@ -114,7 +116,8 @@ object EconomyBalance {
             "p24" -> 2.0
             else -> 1.0
         }
-        return base * planetIncomeMultiplier(state.currentPlanetId) * planetSpecialMultiplier * planetFleetSpecial(state.currentPlanetId) *
+        return base * fleetProgressionMultiplier(state, clickItems) *
+            planetIncomeMultiplier(state.currentPlanetId) * planetSpecialMultiplier * planetFleetSpecial(state.currentPlanetId) *
             MetaProgressEngine.technologyMultiplier(state.technologies) *
             MetaProgressEngine.masteryMultiplier(state.droneParts) *
             MetaProgressEngine.collectionSetMultiplier(state.discoveredDroneIds) *

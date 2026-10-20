@@ -1,0 +1,31 @@
+<resources>
+    <string name="achievement_time_30m">30 minutes in space</string>
+    <string name="achievement_time_1h">1 hour in space</string>
+    <string name="achievement_time_3h">3 hours in space</string>
+    <string name="achievement_time_6h">6 hours in space</string>
+    <string name="achievement_time_12h">12 hours in space</string>
+    <string name="achievement_time_1d">1 day of active play</string>
+    <string name="achievement_time_3d">3 days of active play</string>
+    <string name="achievement_time_7d">1 week of active play</string>
+    <string name="achievement_time_14d">2 weeks of active play</string>
+    <string name="achievement_time_30d">1 month of active play (30 days)</string>
+    <string name="time_achievement_hint">Only active gameplay counts. Titles grow with claimed achievements.</string>
+    <string name="player_rank">Title: %1$s</string>
+    <string name="rank_noob">Noob</string>
+    <string name="rank_novice">Beginner</string>
+    <string name="rank_professional">Professional</string>
+    <string name="rank_veteran">Veteran</string>
+    <string name="rank_legend">Space legend</string>
+    <string name="trade_title_manta">Merchant Manta</string>
+    <string name="trade_title_crown">Caravan Crown</string>
+    <string name="trade_title_drone_swap">Spare drone → rare case</string>
+    <string name="trade_title_parts_swap">Parts → Caravan Crown</string>
+    <string name="trade_title_repair">Fleet repair kit</string>
+    <string name="trade_desc_exclusive">Exclusive merchant drone. Cannot drop from a case.</string>
+    <string name="trade_desc_drone_swap">Exchange one inactive duplicate drone. Your last copy is protected.</string>
+    <string name="trade_desc_parts_swap">Exchange 20 drone parts for a special drone.</string>
+    <string name="trade_desc_repair">Repair all broken drones on the field.</string>
+    <string name="trade_cost_drone">1 spare drone</string>
+    <string name="trade_cost_parts">20 parts</string>
+    <string name="daily_reward_growth">Rewards grow with every claimed day, including after day 7. Missing a day keeps your progress.</string>
+</resources>

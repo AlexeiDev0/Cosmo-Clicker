@@ -23,7 +23,6 @@ import androidx.compose.ui.layout.ContentScale
 import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,6 +30,7 @@ import com.example.myapplication.R
 import com.example.myapplication.GameState
 import com.example.myapplication.EconomyBalance
 import com.example.myapplication.ui.theme.AppColors
+import com.example.myapplication.ui.theme.SpaceDisplayFont
 import com.example.myapplication.ui.theme.SpaceDesign
 import com.example.myapplication.utils.formatNum
 import kotlinx.coroutines.delay
@@ -101,12 +101,13 @@ fun Header(
                     modifier = Modifier.weight(1f),
                     fontSize = 23.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace,
-                    color = Color.White,
+                    fontFamily = SpaceDisplayFont,
+                    color = AppColors.Warning,
+                    style = androidx.compose.ui.text.TextStyle(shadow = androidx.compose.ui.graphics.Shadow(AppColors.Warning.copy(alpha = .45f), blurRadius = 10f)),
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
-                Text(text = stringResource(R.string.debris), color = AppColors.TextMuted, fontSize = 9.sp, maxLines = 1)
+                Text(text = stringResource(R.string.debris), color = AppColors.TextMuted, fontSize = 11.sp, maxLines = 1)
             }
             Spacer(Modifier.width(6.dp))
             HeaderAction(
@@ -127,7 +128,7 @@ fun Header(
                 Icon(painterResource(R.drawable.ic_drone_energy_cell_v2), null, Modifier.size(25.dp), tint = Color.Unspecified)
                 Spacer(Modifier.width(6.dp))
                 Column {
-                    Text(stringResource(R.string.drone_income), color = AppColors.TextMuted, fontSize = 9.sp, lineHeight = 10.sp)
+                    Text(stringResource(R.string.drone_income), color = AppColors.TextMuted, fontSize = 11.sp, lineHeight = 15.sp)
                     Text(stringResource(R.string.per_second, formatNum(dps)), color = AppColors.Secondary, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, lineHeight = 14.sp)
                 }
             }
@@ -155,7 +156,7 @@ fun Header(
                                 .background(AppColors.SurfaceRaised, CircleShape)
                                 .padding(horizontal = 4.dp),
                             color = Color.White,
-                            fontSize = 9.sp,
+                            fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
                             maxLines = 1
                         )
@@ -164,7 +165,7 @@ fun Header(
                 Text(
                     stringResource(R.string.prestige),
                     color = AppColors.TextMuted,
-                    fontSize = 9.sp,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1
                 )
@@ -173,13 +174,12 @@ fun Header(
 
         if (nextPlanetIndex != null && nextPlanetPrice != null) {
             val requiredDrone = EconomyBalance.requiredDroneIdForPlanet(nextPlanetIndex)
-            val requiredFleet = EconomyBalance.requiredActiveDronesForPlanet(nextPlanetIndex)
-            val activeFleet = state.activeFleetCounts.values.sum()
+            val requiredPrestige = EconomyBalance.requiredPrestigeForPlanet(nextPlanetIndex)
             val needsDrone = requiredDrone != null && requiredDrone !in state.discoveredDroneIds
-            val needsFleet = !needsDrone && activeFleet < requiredFleet
+            val needsPrestige = state.lifetimeStats.prestiges < requiredPrestige
             val progress = when {
                 needsDrone -> 0f
-                needsFleet -> (activeFleet.toFloat() / requiredFleet.coerceAtLeast(1)).coerceIn(0f, 1f)
+                needsPrestige -> 0f
                 else -> EconomyBalance.planetUnlockProgress(state.totalDebris, nextPlanetPrice)
             }
             Row(
@@ -200,23 +200,23 @@ fun Header(
                     Text(
                         stringResource(R.string.goal_step_to_planet, nextPlanetIndex),
                         color = Color.White,
-                        fontSize = 10.sp,
+                        fontSize = 11.sp,
                         fontWeight = FontWeight.SemiBold
                     )
                     Text(
                         stringResource(R.string.goal_open_route),
                         color = AppColors.Primary,
-                        fontSize = 9.sp
+                        fontSize = 11.sp
                     )
                 }
                 Text(
                     when {
                         needsDrone -> stringResource(R.string.goal_action_open_case)
-                        needsFleet -> stringResource(R.string.goal_action_deploy, requiredFleet, activeFleet)
+                        needsPrestige -> stringResource(R.string.goal_action_prestige)
                         else -> stringResource(R.string.goal_action_save, formatNum((nextPlanetPrice - state.totalDebris).coerceAtLeast(0.0)))
                     },
                     color = Color.White.copy(alpha = .82f),
-                    fontSize = 10.sp,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.Medium
                 )
                 LinearProgressIndicator(

@@ -60,9 +60,9 @@ fun CaseOpeningOverlay(
     var currentFrame by remember { mutableIntStateOf(1) }
     var displayedCaseType by remember { mutableStateOf(caseType) }
     val caseAccent = when (displayedCaseType) {
-        CaseType.COMMON -> Color(0xFF83F3E1)
-        CaseType.RARE -> Color(0xFFC0ADFF)
-        CaseType.LEGENDARY -> Color(0xFFFFD88C)
+        CaseType.COMMON -> Color(0xFF9BBDC8)
+        CaseType.RARE -> Color(0xFF79C6F4)
+        CaseType.LEGENDARY -> Color(0xFFF0CB7D)
     }
 
     // Сброс состояния при закрытии
@@ -166,13 +166,7 @@ fun CaseOpeningOverlay(
                         contentAlignment = Alignment.Center
                     ) {
                         Box(
-                            Modifier.fillMaxSize().background(
-                                androidx.compose.ui.graphics.Brush.radialGradient(listOf(
-                                    caseAccent.copy(alpha = .32f),
-                                    Color(0xFFB8A8DE).copy(alpha = .10f),
-                                    Color.Transparent
-                                )), CircleShape
-                            )
+                            Modifier.fillMaxSize().background(caseAccent.copy(alpha = .05f), CircleShape)
                         )
                         Canvas(Modifier.fillMaxSize()) {
                             val rim = Size(size.width * .88f, size.height * .88f)
@@ -228,7 +222,7 @@ fun CaseOpeningOverlay(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(Color.Black)
+                    .background(Color.Black.copy(alpha = .65f))
                     .clickable(interactionSource = remember { MutableInteractionSource() }, indication = null) {},
                 contentAlignment = Alignment.Center
             ) {
@@ -237,12 +231,13 @@ fun CaseOpeningOverlay(
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.FillBounds,
-                    alpha = .46f
+                    alpha = .12f
                 )
                 Box(Modifier.fillMaxSize().background(Color.Black.copy(alpha = .54f)))
                 lastDroppedDrone?.let { drone ->
                     Column(
-                        modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp),
+                        modifier = Modifier.padding(24.dp).widthIn(max = 300.dp).fillMaxWidth()
+                            .background(AppColors.CardBackground, RoundedCornerShape(22.dp)).padding(20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
@@ -254,29 +249,29 @@ fun CaseOpeningOverlay(
                         Text(
                             stringResource(R.string.unlocked),
                             color = Color.White,
-                            fontSize = 32.sp,
+                            fontSize = 22.sp,
                             fontWeight = FontWeight.Black
                         )
-                        Spacer(modifier = Modifier.height(32.dp))
+                        Spacer(modifier = Modifier.height(14.dp))
                         
                         Box(contentAlignment = Alignment.Center) {
-                            Box(modifier = Modifier.size(200.dp).shadow(60.dp, CircleShape, ambientColor = drone.rarity.color, spotColor = drone.rarity.color))
-                            FleetIcon(item = drone, iconSize = 180.dp)
+                            Box(modifier = Modifier.size(116.dp).shadow(16.dp, CircleShape, ambientColor = drone.rarity.color, spotColor = drone.rarity.color))
+                            FleetIcon(item = drone, iconSize = 104.dp)
                         }
 
-                        Spacer(modifier = Modifier.height(24.dp))
+                        Spacer(modifier = Modifier.height(12.dp))
                         Text(
-                            drone.name,
+                            localizedDroneName(drone),
                             modifier = Modifier.fillMaxWidth(),
                             color = drone.rarity.color,
-                            fontSize = 30.sp,
-                            lineHeight = 32.sp,
+                            fontSize = 20.sp,
+                            lineHeight = 26.sp,
                             fontWeight = FontWeight.ExtraBold,
                             textAlign = TextAlign.Center,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
                         )
-                        Spacer(modifier = Modifier.height(36.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
                         Button(
                             onClick = onClearReward,
                             colors = ButtonDefaults.buttonColors(containerColor = drone.rarity.color),
@@ -327,8 +322,8 @@ fun CaseOpeningOverlay(
                                         FleetIcon(item = drone, iconSize = 58.dp)
                                         Spacer(Modifier.width(12.dp))
                                         Column(Modifier.weight(1f)) {
-                                            Text(drone.name, color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Bold)
-                                            Text(rarityLabel(drone.rarity), color = drone.rarity.color, fontSize = 10.sp)
+                                            Text(localizedDroneName(drone), color = drone.rarity.color, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                                            Text(rarityLabel(drone.rarity), color = drone.rarity.color, fontSize = 11.sp)
                                         }
                                         Text("×$count", color = drone.rarity.color, fontSize = 24.sp, fontWeight = FontWeight.Black)
                                     }

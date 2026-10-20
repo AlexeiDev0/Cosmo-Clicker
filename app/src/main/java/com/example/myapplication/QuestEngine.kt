@@ -1,10 +1,16 @@
 package com.example.myapplication
 
 object QuestEngine {
+    fun ordered(quests: List<Quest>, difficulty: QuestDifficulty): List<Quest> =
+        quests.filter { it.difficulty == difficulty }.sortedWith(
+            compareBy<Quest> { it.isClaimed }.thenByDescending { it.isCompleted }
+                .thenByDescending { (it.progress / it.target.coerceAtLeast(1.0)).coerceIn(0.0, 1.0) }
+                .thenBy { it.id }
+        )
     fun collectTypes(quests: List<Quest>, ids: Set<Int>): List<Quest> = quests.map { quest ->
         if (quest.type != QuestType.COLLECT_DEBRIS_TYPES || quest.isCompleted || quest.isClaimed) quest
         else {
-            val collected = quest.collectedDebrisIds + ids.filter { it in 1..28 }
+            val collected = quest.collectedDebrisIds + ids.filter { it in DebrisCatalog.ids }
             val progress = collected.size.toDouble().coerceAtMost(quest.target)
             quest.copy(collectedDebrisIds = collected, progress = progress, isCompleted = progress >= quest.target)
         }

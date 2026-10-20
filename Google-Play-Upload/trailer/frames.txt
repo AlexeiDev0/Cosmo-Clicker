@@ -1,0 +1,13 @@
+file 'C:/Users/User/AndroidStudioProjects/MyApplication4/Google-Play-Upload/phone-screenshots/01-MAIN-Salvage-the-Galaxy.png'
+duration 3
+file 'C:/Users/User/AndroidStudioProjects/MyApplication4/Google-Play-Upload/phone-screenshots/02-Build-Your-Drone-Fleet.png'
+duration 3
+file 'C:/Users/User/AndroidStudioProjects/MyApplication4/Google-Play-Upload/phone-screenshots/03-Open-Reward-Cases.png'
+duration 3
+file 'C:/Users/User/AndroidStudioProjects/MyApplication4/Google-Play-Upload/phone-screenshots/04-Upgrade-Your-Ship.png'
+duration 3
+file 'C:/Users/User/AndroidStudioProjects/MyApplication4/Google-Play-Upload/phone-screenshots/05-Explore-New-Worlds.png'
+duration 3
+file 'C:/Users/User/AndroidStudioProjects/MyApplication4/Google-Play-Upload/phone-screenshots/06-Complete-Daily-Missions.png'
+duration 3
+file 'C:/Users/User/AndroidStudioProjects/MyApplication4/Google-Play-Upload/phone-screenshots/06-Complete-Daily-Missions.png'

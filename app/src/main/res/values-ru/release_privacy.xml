@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_disclosure_title">Загрузить рекламу за бонус?</string>
+    <string name="ad_disclosure_body">Если разрешить загрузку, Google AdMob и UMP могут передавать Google IP-адрес (включая примерное местоположение), доступные идентификаторы устройства, действия с рекламой, диагностику и настройки рекламной приватности для показа рекламы, измерений и защиты от мошенничества. Это не разрешение на персонализированную рекламу. Можно продолжить игру и получить обычную награду без загрузки рекламы. Разрешение действует в этой сессии; новые запросы можно остановить в настройках. Остановка не удаляет сведения, уже обработанные Google.</string>
+    <string name="ad_disclosure_allow">Разрешить и загрузить</string>
+    <string name="ad_disclosure_decline">Продолжить без рекламы</string>
+    <string name="ad_stop_requests">Остановить новые запросы рекламы</string>
+    <string name="case_currency_notice">За игровой мусор или добровольные просмотры рекламы. Без покупок за деньги и денежных призов.</string>
+    <string name="case_pool_notice">Это шансы редкости, а не гарантия награды. В пакете среди дронов выбранной редкости предпочтение получают ещё не выпавшие в этом пакете.</string>
+    <string name="case_rarity_common">Обычный</string>
+    <string name="case_rarity_uncommon">Необычный</string>
+    <string name="case_rarity_rare">Редкий</string>
+    <string name="case_rarity_epic">Эпический</string>
+    <string name="case_rarity_legendary">Легендарный</string>
+    <string name="case_rarity_void">Пустота</string>
+</resources>

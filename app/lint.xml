@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <lint>
+    <!-- Additional locales intentionally translate core controls only. Permit
+         English fallback for these locales while still requiring RU/ES coverage. -->
+    <issue id="MissingTranslation">
+        <ignore regexp="^&quot;[^&quot;]+&quot; is not translated in (?:&quot;(?:de|fr|it|pl|pt|tr|uk|nl|sv)&quot; \([^)]*\)(?:, )?)+$" />
+    </issue>
     <!-- Release builds shrink unused resources. Keeping source assets makes it
          possible to switch artwork without restoring deleted binary files. -->
     <issue id="UnusedResources" severity="ignore" />

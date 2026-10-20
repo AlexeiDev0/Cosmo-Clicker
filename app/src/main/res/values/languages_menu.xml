@@ -1,0 +1,7 @@
+<resources>
+    <string name="languages_expand">More languages</string>
+    <string name="languages_collapse">Hide languages</string>
+    <string name="language_ukrainian" translatable="false">Українська</string>
+    <string name="language_dutch" translatable="false">Nederlands</string>
+    <string name="language_swedish" translatable="false">Svenska</string>
+</resources>

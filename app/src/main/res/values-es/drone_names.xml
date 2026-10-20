@@ -1,0 +1,10 @@
+<resources><string-array name="drone_display_names">
+<item>Recolector de chatarra</item><item>Nube de cobre</item><item>Explorador oxidado</item><item>As azur</item><item>Recolector de cobalto</item>
+<item>Rayo azul</item><item>Fantasma del bosque</item><item>Saltador de jade</item><item>Ojo esmeralda</item><item>Triturador carmesí</item>
+<item>Segador rubí</item><item>Aguijón solar</item><item>Cumbre ámbar</item><item>Buitre del vacío</item><item>Viajero sombrío</item>
+<item>Planeador fantasma</item><item>Cazador de plasma</item><item>Roedor de neón</item><item>Cigarra cibernética</item><item>Garra titánica</item>
+<item>Ícaro de hierro</item><item>Guardián dorado</item><item>Gólem dorado</item><item>Pluma de cuarzo</item><item>Espectro plateado</item>
+<item>Buzo diamante</item><item>Orbe de ónice</item><item>Búho de obsidiana</item><item>Quark cuántico</item><item>Mantis exploradora</item>
+<item>Raya cometa</item><item>Centinela prisma</item><item>Corona aurora</item><item>Manta de marea</item><item>Cometa iónica</item>
+<item>Avispa nebular</item><item>Remolcador solar</item><item>Halcón helado</item><item>Monarca del eclipse</item><item>Manta mercante</item><item>Corona de caravana</item>
+</string-array></resources>

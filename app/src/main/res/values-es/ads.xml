@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_offline_double">Ver anuncio · ingresos sin conexión ×2</string>
+    <string name="ad_loading">Cargando anuncio…</string>
+    <string name="ad_showing">Anuncio en curso…</string>
+    <string name="ad_retry">Cargar anuncio para ingresos ×2</string>
+    <string name="ad_unavailable">No hay anuncio disponible. La recompensa normal ya está acreditada.</string>
+    <string name="ad_test_mode">Anuncio de prueba · sin ingresos publicitarios</string>
+    <string name="ad_reward_save_error">No se pudo guardar la recompensa adicional. Inténtalo de nuevo.</string>
+    <string name="ad_privacy_options">Opciones de privacidad publicitaria</string>
+</resources>

@@ -14,6 +14,8 @@ import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -55,6 +57,12 @@ import com.example.myapplication.StationChoice
 import com.example.myapplication.TradeOffer
 import com.example.myapplication.R
 import com.example.myapplication.SoundManager
+import com.example.myapplication.BuildConfig
+import com.example.myapplication.RewardedAdsController
+import com.example.myapplication.RewardedAdStatus
+import com.example.myapplication.RewardedBonusEngine
+import com.example.myapplication.ShopAdReward
+import android.widget.Toast
 import com.example.myapplication.ui.components.*
 import com.example.myapplication.ui.theme.AppColors
 import com.example.myapplication.utils.formatNum
@@ -71,6 +79,7 @@ fun GameScreen(
     reducedMotion: Boolean = false,
     onReducedMotionChanged: (Boolean) -> Unit = {},
     onPrivacyWithdraw: () -> Unit = {},
+    rewardedAds: RewardedAdsController? = null,
     viewModel: GameViewModel = viewModel()
 ) {
     val state by viewModel.gameState.collectAsState()
@@ -86,11 +95,19 @@ fun GameScreen(
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
     val context = LocalContext.current
+    val adRewardSaveError by rememberUpdatedState(stringResource(R.string.ad_reward_save_error))
     val scope = rememberCoroutineScope()
-    val soundManager = remember(context) { SoundManager(context) }
+    val audioContext = context.applicationContext
+    val soundManager = remember(audioContext) { SoundManager(audioContext) }
     val currentSoundEnabled by rememberUpdatedState(soundEnabled)
-    LaunchedEffect(soundManager, soundEnabled) {
-        if (soundEnabled && lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+    val adStatus by (rewardedAds?.status ?: remember { kotlinx.coroutines.flow.MutableStateFlow(RewardedAdStatus.UNAVAILABLE) }).collectAsState()
+    val adPrivacyRequired by (rewardedAds?.privacyRequired ?: remember { kotlinx.coroutines.flow.MutableStateFlow(false) }).collectAsState()
+    val adRequestsAllowed by (rewardedAds?.requestsAllowed ?: remember { kotlinx.coroutines.flow.MutableStateFlow(false) }).collectAsState()
+    var pendingAdReward by remember { mutableStateOf<(() -> Unit)?>(null) }
+    val adShowing = adStatus == RewardedAdStatus.SHOWING
+    val currentAdShowing by rememberUpdatedState(adShowing)
+    LaunchedEffect(soundManager, soundEnabled, adShowing) {
+        if (soundEnabled && !adShowing && lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             soundManager.resumeBackgroundMusic()
         } else soundManager.pauseBackgroundMusic()
     }
@@ -101,38 +118,81 @@ fun GameScreen(
     var isShopOpen by remember { mutableStateOf(false) }
     var isHangarOpen by remember { mutableStateOf(false) }
     var isAchievementsOpen by remember { mutableStateOf(false) }
-    var isStatisticsOpen by remember { mutableStateOf(false) }
+    var isFusionOpen by remember { mutableStateOf(false) }
     var isQuestOpen by remember { mutableStateOf(false) }
     var isPrestigeShopOpen by remember { mutableStateOf(false) }
     var isGalaxyRouteOpen by rememberSaveable { mutableStateOf(false) }
     // Settings must survive Activity recreation when the app locale changes.
     var showSettings by rememberSaveable { mutableStateOf(false) }
+    var showTradeMarket by remember { mutableStateOf(false) }
+    LaunchedEffect(state.activeEvent?.startedAt) { showTradeMarket = false }
     var unlockedPlanetId by remember { mutableStateOf<String?>(null) }
 
     // Состояние стартового экрана
     var showStartScreen by rememberSaveable { mutableStateOf(true) }
+    val tutorialPreferences = remember(context) {
+        context.getSharedPreferences("settings", android.content.Context.MODE_PRIVATE)
+    }
+    var tutorialCompleted by rememberSaveable {
+        mutableStateOf(tutorialPreferences.getBoolean("tutorial_completed", false))
+    }
+    var startTransitionRunning by remember { mutableStateOf(false) }
+    val showTutorial = !showStartScreen && !tutorialCompleted
     var showStartPrivacy by rememberSaveable { mutableStateOf(false) }
     val startScreenOffset = remember { Animatable(0f) }
     val startScreenAlpha = remember { Animatable(1f) }
 
+    fun showRewardAd(reward: () -> Unit) {
+        val shown = rewardedAds?.show(
+            onStarted = { viewModel.beginRewardedAd(); soundManager.pauseBackgroundMusic() },
+            onReward = reward,
+            onFinished = {
+                viewModel.finishRewardedAd()
+                if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    viewModel.resumeSimulation()
+                    if (currentSoundEnabled) soundManager.resumeBackgroundMusic()
+                }
+            }
+        )
+        if (shown == false && rewardedAds?.status?.value == RewardedAdStatus.LOADING) pendingAdReward = reward
+    }
+
+    fun requestRewardAd(reward: () -> Unit) {
+        if (rewardedAds == null || pendingAdReward != null || adShowing || adStatus == RewardedAdStatus.LOADING) return
+        if (adStatus == RewardedAdStatus.READY && adRequestsAllowed) showRewardAd(reward)
+        else {
+            pendingAdReward = reward
+            rewardedAds.allowRequests()
+        }
+    }
+
+    LaunchedEffect(adStatus, sceneActive, adRequestsAllowed) {
+        if (adStatus == RewardedAdStatus.UNAVAILABLE || !adRequestsAllowed) pendingAdReward = null
+        else if (adStatus == RewardedAdStatus.READY && sceneActive) {
+            val reward = pendingAdReward
+            pendingAdReward = null
+            if (reward != null) showRewardAd(reward)
+        }
+    }
+
     BackHandler(
         enabled = showSettings ||
-            (!showStartScreen && state.lastOfflineReward > 0.0) ||
+            (!showStartScreen && !showTutorial && state.lastOfflineReward > 0.0) ||
             isShopOpen ||
             isHangarOpen ||
             isAchievementsOpen ||
-            isStatisticsOpen ||
+            isFusionOpen ||
             isPrestigeShopOpen ||
             isGalaxyRouteOpen ||
             isQuestOpen
     ) {
         when {
             showSettings -> showSettings = false
-            !showStartScreen && state.lastOfflineReward > 0.0 -> viewModel.clearOfflineReward()
+            !showStartScreen && !showTutorial && state.lastOfflineReward > 0.0 -> viewModel.clearOfflineReward()
             isShopOpen -> isShopOpen = false
             isHangarOpen -> isHangarOpen = false
             isAchievementsOpen -> isAchievementsOpen = false
-            isStatisticsOpen -> isStatisticsOpen = false
+            isFusionOpen -> isFusionOpen = false
             isPrestigeShopOpen -> isPrestigeShopOpen = false
             isGalaxyRouteOpen -> isGalaxyRouteOpen = false
             isQuestOpen -> isQuestOpen = false
@@ -192,12 +252,12 @@ fun GameScreen(
         previousClaimedAchievements = state.claimedAchievementIds
     }
 
-    DisposableEffect(lifecycleOwner, viewModel) {
+    DisposableEffect(lifecycleOwner, viewModel, soundManager) {
         val observer = LifecycleEventObserver { _, event ->
             when (event) {
                 Lifecycle.Event.ON_START -> {
                     viewModel.resumeSimulation()
-                    if (currentSoundEnabled) soundManager.resumeBackgroundMusic()
+                    if (currentSoundEnabled && !currentAdShowing) soundManager.resumeBackgroundMusic()
                 }
                 Lifecycle.Event.ON_STOP -> {
                     viewModel.pauseSimulation()
@@ -209,7 +269,7 @@ fun GameScreen(
         lifecycleOwner.lifecycle.addObserver(observer)
         if (lifecycleOwner.lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             viewModel.resumeSimulation()
-            if (currentSoundEnabled) soundManager.resumeBackgroundMusic()
+            if (currentSoundEnabled && !currentAdShowing) soundManager.resumeBackgroundMusic()
         }
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
@@ -245,6 +305,9 @@ fun GameScreen(
         }
     }
 
+    CompositionLocalProvider(LocalButtonSound provides {
+        if (currentSoundEnabled) soundManager.playButtonClick()
+    }) {
     val spaceMotion = if (!reducedMotion && sceneActive) rememberInfiniteTransition(label = "space_background") else null
     val galaxyPhase = spaceMotion?.animateFloat(
         initialValue = 0f, targetValue = 1f,
@@ -283,7 +346,8 @@ fun GameScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         // ДИНАМИЧЕСКИЙ ФОН
-        MinimalCosmicBackground(Modifier.fillMaxSize())
+        Image(painterResource(R.drawable.background_cosmic_v5), null,
+            Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
 
         if (!reducedMotion) CosmicParticleTrails(cosmicParticlePhase)
         val planetColors = com.example.myapplication.ui.theme.PlanetPalette.forPlanet(state.currentPlanetId)
@@ -332,8 +396,8 @@ fun GameScreen(
                     ComboIndicator(
                         combo = combo,
                         modifier = Modifier
-                            .align(Alignment.Center)
-                            .offset(y = (-150).dp)
+                            .align(Alignment.TopCenter)
+                            .padding(top = if (state.activeEvent != null || state.pendingEventChain != null) 76.dp else 8.dp)
                     )
                 }
 
@@ -364,17 +428,15 @@ fun GameScreen(
                             target,
                             maxWidth,
                             maxHeight,
-                            onClick = null
+                            onClick = null,
+                            planetId = state.currentPlanetId
                         )
                     }
                 }
 
                 state.drones.forEachIndexed { index, drone ->
                     key(drone.id) {
-                        ScavengingDrone(drone, fleetMap, maxWidth, maxHeight, sharedRotorPhase) {
-                            if (soundEnabled) soundManager.playDroneAction()
-                            viewModel.onDroneClick(it)
-                        }
+                        ScavengingDrone(drone, fleetMap, maxWidth, maxHeight, sharedRotorPhase, planetId = state.currentPlanetId)
                     }
                 }
 
@@ -436,7 +498,8 @@ fun GameScreen(
                             event = event,
                             hullLeft = state.eventTapsLeft,
                             gameAreaWidth = maxWidth,
-                            gameAreaHeight = maxHeight
+                            gameAreaHeight = maxHeight,
+                            onOpenMarket = { showTradeMarket = true }
                         )
                         GameEventType.CYBER_VIRUS -> CyberVirusField(
                             event = event,
@@ -462,7 +525,21 @@ fun GameScreen(
                 viewModel = viewModel,
                 state = state,
                 onClose = { isShopOpen = false },
-                modifier = Modifier.align(Alignment.BottomCenter)
+                modifier = Modifier.align(Alignment.BottomCenter),
+                adRewards = {
+                    if (BuildConfig.ADS_ENABLED && rewardedAds != null) ShopAdRewards(
+                        state = state, amount = viewModel.shopAdDebrisReward(state), status = adStatus,
+                        onWatch = { type, amount ->
+                            val offerId = if (pendingAdReward == null && !adShowing && adStatus != RewardedAdStatus.LOADING)
+                                viewModel.beginShopAdOffer(type, amount) else null
+                            if (offerId != null) requestRewardAd {
+                                if (!viewModel.claimShopAdReward(offerId))
+                                    Toast.makeText(context, adRewardSaveError, Toast.LENGTH_LONG).show()
+                            }
+                        },
+                        onOpenCase = { viewModel.openShopAdCase() }
+                    )
+                }
             )
         } else if (isHangarOpen) {
             DroneHangarPanel(
@@ -478,12 +555,12 @@ fun GameScreen(
                 onClose = { isAchievementsOpen = false },
                 modifier = Modifier.align(Alignment.BottomCenter)
             )
-        } else if (isStatisticsOpen) {
-            StatisticsPanel(
-                viewModel = viewModel,
+        } else if (isFusionOpen) {
+            DroneFusionDialog(
                 state = state,
-                onClose = { isStatisticsOpen = false },
-                modifier = Modifier.align(Alignment.BottomCenter)
+                fleet = viewModel.fleetItems,
+                onFuse = viewModel::fuseDrones,
+                onClose = { isFusionOpen = false }
             )
         } else if (isPrestigeShopOpen) {
             PrestigeShopPanel(
@@ -533,10 +610,10 @@ fun GameScreen(
                     modifier = Modifier.weight(1f)
                 )
                 GameNavigationButton(
-                    icon = R.drawable.ic_nav_stats_minimal,
-                    label = R.string.statistics,
-                    description = R.string.open_statistics,
-                    onClick = { isStatisticsOpen = true },
+                    icon = R.drawable.ic_nav_fusion,
+                    label = R.string.fusion_title,
+                    description = R.string.open_fusion,
+                    onClick = { isFusionOpen = true },
                     modifier = Modifier.weight(1f)
                 )
             }
@@ -603,6 +680,10 @@ fun GameScreen(
 
         if (showSettings) {
             SettingsScreen(
+                adPrivacyRequired = adPrivacyRequired,
+                onAdPrivacy = { rewardedAds?.showPrivacyOptions() },
+                adRequestsAllowed = adRequestsAllowed,
+                onStopAdRequests = { rewardedAds?.stopRequests() },
                 onPrivacyWithdraw = onPrivacyWithdraw,
                 selectedLanguage = selectedLanguage,
                 onLanguageSelected = onLanguageSelected,
@@ -610,24 +691,16 @@ fun GameScreen(
                 onSoundEnabledChanged = onSoundEnabledChanged,
                 reducedMotion = reducedMotion,
                 onReducedMotionChanged = onReducedMotionChanged,
-                onAchievements = {
-                    showSettings = false
-                    isAchievementsOpen = true
-                },
-                onResetGame = {
-                    viewModel.resetGame()
-                    showSettings = false
-                },
                 onBack = { showSettings = false }
             )
         }
 
         // СТАРТОВЫЙ ЭКРАН
-        if (!showStartScreen && state.lastOfflineReward > 0.0) {
+        if (!showStartScreen && !showTutorial && state.lastOfflineReward > 0.0) {
             SpaceDialog(
                 title = stringResource(R.string.offline_reward_title),
-                onDismiss = viewModel::clearOfflineReward,
-                modifier = Modifier.widthIn(max = 360.dp),
+                onDismiss = { if (!adShowing) viewModel.clearOfflineReward() },
+                modifier = Modifier.widthIn(max = 300.dp),
                 backgroundRes = R.drawable.bg_offline_reward_space_v1,
                 content = {
                     Column(
@@ -637,7 +710,7 @@ fun GameScreen(
                     ) {
                         Box(
                             modifier = Modifier
-                                .size(132.dp)
+                                .size(80.dp)
                                 .background(AppColors.Primary.copy(alpha = .10f), CircleShape)
                                 .border(2.dp, AppColors.Primary.copy(alpha = .62f), CircleShape)
                                 .padding(5.dp)
@@ -666,7 +739,7 @@ fun GameScreen(
                         )
                         Text(
                             stringResource(R.string.offline_time_away, formatOfflineDuration(state.lastOfflineSeconds)),
-                            color = Color.LightGray,
+                            color = AppColors.TextMuted,
                             textAlign = TextAlign.Center,
                             fontSize = 12.sp,
                             lineHeight = 16.sp,
@@ -675,8 +748,35 @@ fun GameScreen(
                     }
                 },
                 actions = {
+                    Column(Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+                    if (BuildConfig.ADS_ENABLED && rewardedAds != null && RewardedBonusEngine.isEligible(state)) {
+                        val offerId = state.offlineBonusOfferId!!
+                        Button(
+                            onClick = {
+                                requestRewardAd {
+                                    if (!viewModel.claimOfflineAdBonus(offerId)) Toast.makeText(context,
+                                        adRewardSaveError, Toast.LENGTH_LONG).show()
+                                }
+                            },
+                            enabled = adStatus != RewardedAdStatus.LOADING && !adShowing,
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                        ) {
+                            Text(stringResource(when (adStatus) {
+                                RewardedAdStatus.READY -> R.string.ad_offline_double
+                                RewardedAdStatus.LOADING -> R.string.ad_loading
+                                RewardedAdStatus.SHOWING -> R.string.ad_showing
+                                else -> R.string.ad_retry
+                            }), fontSize = 12.sp)
+                        }
+                        if (BuildConfig.TEST_ADS) Text(stringResource(R.string.ad_test_mode),
+                            color = AppColors.TextMuted, fontSize = 11.sp)
+                        if (adStatus == RewardedAdStatus.UNAVAILABLE) Text(stringResource(R.string.ad_unavailable),
+                            color = AppColors.TextMuted, fontSize = 11.sp)
+                        Spacer(Modifier.height(6.dp))
+                    }
                     Button(
                         onClick = viewModel::clearOfflineReward,
+                        enabled = !adShowing,
                         modifier = Modifier.fillMaxWidth().height(48.dp),
                         contentPadding = PaddingValues(horizontal = 18.dp, vertical = 0.dp)
                     ) {
@@ -687,10 +787,22 @@ fun GameScreen(
                             maxLines = 1
                         )
                     }
+                    }
                 }
             )
         }
 
+        val merchant = state.activeEvent?.takeIf { it.type == GameEventType.TRADING_SHIP }
+        if (showTradeMarket && merchant != null) {
+            TradingShipMarket(
+                event = merchant, totalDebris = state.totalDebris, phase = state.stormRound,
+                sequence = state.stormSequence, progress = state.stormProgress, priceMultiplier = state.eventMultiplier,
+                onChannelClick = viewModel::onTradeChannelClick,
+                onBuy = { offer -> viewModel.buyTradeOffer(offer); showTradeMarket = false },
+                onDismiss = { showTradeMarket = false },
+                canBuy = { com.example.myapplication.EventEngine.canBuyTradeOffer(state, it) }
+            )
+        }
         if (isGalaxyRouteOpen) {
             GalaxyRouteDialog(viewModel, state) { isGalaxyRouteOpen = false }
         }
@@ -726,11 +838,18 @@ fun GameScreen(
                         alpha = startScreenAlpha.value
                     }
                     .clickable(
+                        enabled = !startTransitionRunning,
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null
                     ) {
+                        startTransitionRunning = true
                         scope.launch {
                             if (soundEnabled) soundManager.playClick()
+                            if (reducedMotion) {
+                                showStartScreen = false
+                                startTransitionRunning = false
+                                return@launch
+                            }
                             // Анимация ухода вверх и исчезновения
                             launch {
                                 startScreenOffset.animateTo(
@@ -746,6 +865,7 @@ fun GameScreen(
                             }
                             delay(800)
                             showStartScreen = false
+                            startTransitionRunning = false
                         }
                     }
             ) {
@@ -768,15 +888,14 @@ fun GameScreen(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(horizontal = 24.dp, vertical = 44.dp)
-                        .offset(y = promptOffset.dp)
-                        .graphicsLayer { alpha = promptAlpha },
+                        .offset(y = promptOffset.dp),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.icon_game),
+                        painter = painterResource(R.drawable.launcher_legacy_v4),
                         contentDescription = null,
-                        modifier = Modifier.size(86.dp),
+                        modifier = Modifier.size(96.dp).clip(RoundedCornerShape(22.dp)),
                         contentScale = ContentScale.Fit
                     )
                     Text(
@@ -786,12 +905,12 @@ fun GameScreen(
                         fontWeight = FontWeight.Black,
                         letterSpacing = 1.4.sp
                     )
-                    Box(modifier = Modifier.fillMaxWidth().height(86.dp), contentAlignment = Alignment.Center) {
+                    Box(modifier = Modifier.fillMaxWidth().height(76.dp).graphicsLayer { alpha = 0.78f + promptAlpha * 0.22f }, contentAlignment = Alignment.Center) {
                         Box(
                             Modifier.fillMaxSize()
                                 .clip(RoundedCornerShape(16.dp))
-                                .background(Brush.verticalGradient(listOf(Color(0xFF30465D), Color(0xFF142337), Color(0xFF1C3546))))
-                                .border(1.dp, Color(0xFF7899B4), RoundedCornerShape(16.dp))
+                                .background(Brush.verticalGradient(listOf(Color(0xFF226B8C), Color(0xFF163E68), Color(0xFF17314D))))
+                                .border(2.dp, Color(0xFF87E8F5), RoundedCornerShape(16.dp))
                         )
                         Text(
                             text = stringResource(R.string.tap_to_continue),
@@ -813,7 +932,15 @@ fun GameScreen(
                 onPrivacyWithdraw()
             })
         }
+        if (showTutorial) {
+            TutorialDialog(onFinish = {
+                tutorialPreferences.edit().putBoolean("tutorial_completed", true).apply()
+                tutorialCompleted = true
+            })
+        }
     }
+}
+
 }
 
 @Composable
@@ -843,6 +970,7 @@ private fun GameNavigationButton(
         R.drawable.ic_nav_shop_minimal -> Color(0xFFE8AB65)
         R.drawable.ic_nav_quests_minimal -> Color(0xFF83CDA7)
         R.drawable.ic_nav_hangar_minimal -> Color(0xFFF0A278)
+        R.drawable.ic_nav_fusion -> Color(0xFFC6A1FF)
         else -> Color(0xFF93B9EB)
     }
     Button(
@@ -872,7 +1000,7 @@ private fun GameNavigationButton(
             fontWeight = FontWeight.SemiBold,
             textAlign = TextAlign.Center,
             maxLines = 2,
-            lineHeight = 13.sp,
+            lineHeight = 15.sp,
             overflow = TextOverflow.Ellipsis
         )
     }

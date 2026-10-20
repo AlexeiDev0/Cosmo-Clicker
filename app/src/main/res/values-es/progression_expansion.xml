@@ -1,0 +1,31 @@
+<resources>
+    <string name="achievement_time_30m">30 minutos en el espacio</string>
+    <string name="achievement_time_1h">1 hora en el espacio</string>
+    <string name="achievement_time_3h">3 horas en el espacio</string>
+    <string name="achievement_time_6h">6 horas en el espacio</string>
+    <string name="achievement_time_12h">12 horas en el espacio</string>
+    <string name="achievement_time_1d">1 día de juego activo</string>
+    <string name="achievement_time_3d">3 días de juego activo</string>
+    <string name="achievement_time_7d">1 semana de juego activo</string>
+    <string name="achievement_time_14d">2 semanas de juego activo</string>
+    <string name="achievement_time_30d">1 mes de juego activo (30 días)</string>
+    <string name="time_achievement_hint">Solo cuenta el juego activo. Los títulos crecen con los logros reclamados.</string>
+    <string name="player_rank">Título: %1$s</string>
+    <string name="rank_noob">Novato</string>
+    <string name="rank_novice">Principiante</string>
+    <string name="rank_professional">Profesional</string>
+    <string name="rank_veteran">Veterano</string>
+    <string name="rank_legend">Leyenda espacial</string>
+    <string name="trade_title_manta">Manta mercante</string>
+    <string name="trade_title_crown">Corona de caravana</string>
+    <string name="trade_title_drone_swap">Dron duplicado → caja rara</string>
+    <string name="trade_title_parts_swap">Piezas → Corona de caravana</string>
+    <string name="trade_title_repair">Kit de reparación de flota</string>
+    <string name="trade_desc_exclusive">Dron exclusivo del mercader. No aparece en cajas.</string>
+    <string name="trade_desc_drone_swap">Cambia un dron duplicado inactivo. Conservas tu última copia.</string>
+    <string name="trade_desc_parts_swap">Cambia 20 piezas por un dron especial.</string>
+    <string name="trade_desc_repair">Repara todos los drones averiados del campo.</string>
+    <string name="trade_cost_drone">1 dron duplicado</string>
+    <string name="trade_cost_parts">20 piezas</string>
+    <string name="daily_reward_growth">La recompensa crece con cada día reclamado, incluso después del séptimo. Saltarse un día conserva el progreso.</string>
+</resources>

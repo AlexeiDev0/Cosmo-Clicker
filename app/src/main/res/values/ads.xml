@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_offline_double">Watch an ad · double offline income</string>
+    <string name="ad_loading">Loading ad…</string>
+    <string name="ad_showing">Ad in progress…</string>
+    <string name="ad_retry">Load an ad for ×2 income</string>
+    <string name="ad_unavailable">No ad available. Your regular reward is already credited.</string>
+    <string name="ad_test_mode">Test ad · no advertising revenue</string>
+    <string name="ad_reward_save_error">Could not save the extra reward. Please try again.</string>
+    <string name="ad_privacy_options">Advertising privacy choices</string>
+</resources>

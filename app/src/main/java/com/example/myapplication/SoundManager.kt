@@ -6,11 +6,13 @@ import android.media.MediaPlayer
 import android.media.SoundPool
 import android.os.Build
 import android.os.SystemClock
+import android.os.Handler
+import android.os.Looper
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
 
-/** Bundled CC0 effects and a looping music track; no network requests. */
+/** Bundled effects and a quiet three-track playlist; no network requests. */
 class SoundManager(context: Context) : AutoCloseable {
     private val lock = Any()
     private val appContext = context.applicationContext
@@ -25,6 +27,52 @@ class SoundManager(context: Context) : AutoCloseable {
     private val streams = ArrayDeque<Int>()
     private var lastCollectionAt = 0L
     private var backgroundPlayer: MediaPlayer? = null
+    private val musicTracks = intArrayOf(R.raw.music_orbit_ambient_1, R.raw.music_orbit_ambient_2, R.raw.music_orbit_ambient_3)
+    private val musicHandler = Handler(Looper.getMainLooper())
+    private var incomingPlayer: MediaPlayer? = null
+    private var fadePosition = 0f
+    private var fadeStart = 0L
+    private val musicVolume = .085f
+    private val transitionMillis = 5000L
+    private val musicTick = object : Runnable {
+        override fun run() {
+            synchronized(lock) {
+                if (closed || !foreground) return
+                try {
+                    val current = backgroundPlayer ?: return
+                    if (incomingPlayer == null && current.duration - current.currentPosition <= transitionMillis) {
+                        val next = createMusicPlayer((musicTrackIndex + 1) % musicTracks.size)
+                        if (next != null) {
+                            incomingPlayer = next
+                            fadeStart = SystemClock.elapsedRealtime()
+                            fadePosition = 0f
+                            next.setVolume(0f, 0f)
+                            next.start()
+                        }
+                    }
+                    incomingPlayer?.let { next ->
+                        fadePosition = ((SystemClock.elapsedRealtime() - fadeStart).toFloat() / transitionMillis).coerceIn(0f, 1f)
+                        val outgoingVolume = musicVolume * kotlin.math.cos(fadePosition * Math.PI.toFloat() / 2)
+                        val incomingVolume = musicVolume * kotlin.math.sin(fadePosition * Math.PI.toFloat() / 2)
+                        current.setVolume(outgoingVolume, outgoingVolume)
+                        next.setVolume(incomingVolume, incomingVolume)
+                        if (fadePosition >= 1f) {
+                            current.release()
+                            backgroundPlayer = next
+                            incomingPlayer = null
+                            musicTrackIndex = (musicTrackIndex + 1) % musicTracks.size
+                        }
+                    }
+                } catch (_: RuntimeException) {
+                    releaseMusic()
+                }
+                musicHandler.postDelayed(this, 50L)
+            }
+        }
+    }
+    private var musicTrackIndex = 0
+    private var clickVariant = 0
+    private var collectionVariant = 0
     private val vibrator: Vibrator? = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         (appContext.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as? VibratorManager)?.defaultVibrator
     } else {
@@ -36,13 +84,14 @@ class SoundManager(context: Context) : AutoCloseable {
         pool.setOnLoadCompleteListener { _, id, status ->
             synchronized(lock) { if (!closed && status == 0) loaded.add(id) }
         }
-        listOf(R.raw.sfx_click, R.raw.sfx_case_pulse, R.raw.sfx_case_reveal,
+        listOf(R.raw.sfx_click_soft, R.raw.sfx_case_pulse, R.raw.sfx_case_reveal,
             R.raw.sfx_event_start, R.raw.sfx_event_success, R.raw.sfx_event_failure,
-            R.raw.sfx_resource_collect, R.raw.sfx_drone_action, R.raw.sfx_prestige,
+            R.raw.sfx_collect_soft, R.raw.sfx_drone_action, R.raw.sfx_prestige,
             R.raw.sfx_planet_travel).forEach { sounds[it] = pool.load(appContext, it, 1) }
     }
 
-    fun playClick() { vibrate(15); play(R.raw.sfx_click, .22f, priority = 0) }
+    fun playClick() { vibrate(12); play(R.raw.sfx_click_soft, .22f, rate = .96f + (clickVariant++ % 3) * .04f, priority = 0) }
+    fun playButtonClick() = play(R.raw.sfx_click_soft, .16f, rate = 1.15f, priority = 0)
     fun playEventStart() { vibrate(40); play(R.raw.sfx_event_start) }
     fun playEventSuccess() { vibrate(60); play(R.raw.sfx_event_success) }
     fun playEventFailure() { vibrate(100); play(R.raw.sfx_event_failure, .35f) }
@@ -55,7 +104,7 @@ class SoundManager(context: Context) : AutoCloseable {
             val now = SystemClock.elapsedRealtime()
             if (now - lastCollectionAt < 350L) return
             lastCollectionAt = now
-            play(R.raw.sfx_resource_collect, .16f, priority = 0)
+            play(R.raw.sfx_collect_soft, .18f, rate = .96f + (collectionVariant++ % 4) * .035f, priority = 0)
         }
     }
 
@@ -81,7 +130,8 @@ class SoundManager(context: Context) : AutoCloseable {
             if (closed || !foreground) return
             val id = sounds[resource] ?: return
             if (id !in loaded) return
-            val stream = pool.play(id, volume, volume, priority, 0, rate)
+            val quietVolume = volume * .75f
+            val stream = pool.play(id, quietVolume, quietVolume, priority, 0, rate)
             if (stream != 0) {
                 streams.addLast(stream)
                 if (streams.size > 24) pool.stop(streams.removeFirst())
@@ -94,15 +144,20 @@ class SoundManager(context: Context) : AutoCloseable {
             if (closed) return
             foreground = true
             try {
-                val player = backgroundPlayer ?: MediaPlayer.create(appContext, R.raw.music_exploration)?.also {
-                    it.isLooping = true
-                    it.setVolume(.18f, .18f)
+                val player = backgroundPlayer ?: createMusicPlayer(musicTrackIndex)?.also {
+                    it.isLooping = false
+                    it.setVolume(musicVolume, musicVolume)
                     backgroundPlayer = it
                 }
                 if (player != null && !player.isPlaying) player.start()
+                incomingPlayer?.let {
+                    fadeStart = SystemClock.elapsedRealtime() - (fadePosition * transitionMillis).toLong()
+                    if (!it.isPlaying) it.start()
+                }
+                musicHandler.removeCallbacks(musicTick)
+                musicHandler.post(musicTick)
             } catch (_: RuntimeException) {
-                backgroundPlayer?.release()
-                backgroundPlayer = null
+                releaseMusic()
             }
         }
     }
@@ -111,10 +166,12 @@ class SoundManager(context: Context) : AutoCloseable {
         synchronized(lock) {
             if (closed) return
             foreground = false
+            musicHandler.removeCallbacks(musicTick)
             streams.forEach(pool::stop)
             streams.clear()
             vibrator?.cancel()
             try { backgroundPlayer?.takeIf { it.isPlaying }?.pause() } catch (_: IllegalStateException) { }
+            try { incomingPlayer?.takeIf { it.isPlaying }?.pause() } catch (_: IllegalStateException) { }
         }
     }
 
@@ -125,9 +182,29 @@ class SoundManager(context: Context) : AutoCloseable {
             foreground = false
             pool.release()
             loaded.clear()
-            backgroundPlayer?.release()
-            backgroundPlayer = null
+            musicHandler.removeCallbacks(musicTick)
+            releaseMusic()
             vibrator?.cancel()
         }
+    }
+
+    private fun createMusicPlayer(index: Int): MediaPlayer? = MediaPlayer.create(appContext, musicTracks[index])?.also { player ->
+        player.setOnCompletionListener { completed ->
+            synchronized(lock) {
+                if (closed || backgroundPlayer !== completed || incomingPlayer != null) return@setOnCompletionListener
+                completed.release()
+                backgroundPlayer = null
+                musicTrackIndex = (musicTrackIndex + 1) % musicTracks.size
+                if (foreground) resumeBackgroundMusic()
+            }
+        }
+    }
+
+    private fun releaseMusic() {
+        backgroundPlayer?.release()
+        incomingPlayer?.release()
+        backgroundPlayer = null
+        incomingPlayer = null
+        fadePosition = 0f
     }
 }

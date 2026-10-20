@@ -1,0 +1,24 @@
+<resources>
+    <string name="settings">Instellingen</string>
+    <string name="language">Taal</string>
+    <string name="language_system">Systeemtaal</string>
+    <string name="cancel">Annuleren</string>
+    <string name="close">Sluiten</string>
+    <string name="buy">Kopen</string>
+    <string name="collect">Verzamelen</string>
+    <string name="collect_reward">Beloning ophalen</string>
+    <string name="sound">Geluid</string>
+    <string name="reduced_motion">Minder beweging</string>
+    <string name="navigation_shop">Winkel</string>
+    <string name="navigation_hangar">Hangar</string>
+    <string name="shop_tab_upgrades">Verbeteringen</string>
+    <string name="shop_tab_cases">Kisten</string>
+    <string name="shop_tab_planets">Planeten</string>
+    <string name="shop_tab_systems">Systemen</string>
+    <string name="settings_preferences_section">Voorkeuren</string>
+    <string name="settings_about_section">Over het spel</string>
+    <string name="version">Versie</string>
+    <string name="developer">Ontwikkelaar</string>
+    <string name="languages_expand">Meer talen</string>
+    <string name="languages_collapse">Talen verbergen</string>
+</resources>

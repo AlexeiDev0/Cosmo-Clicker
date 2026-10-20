@@ -3,6 +3,20 @@ package com.example.myapplication.ui.components
 import com.example.myapplication.R
 
 internal fun achievementNameResource(id: String): Int = when (id) {
+    "time_30m" -> R.string.achievement_time_30m
+    "time_1h" -> R.string.achievement_time_1h
+    "time_3h" -> R.string.achievement_time_3h
+    "time_6h" -> R.string.achievement_time_6h
+    "time_12h" -> R.string.achievement_time_12h
+    "time_1d" -> R.string.achievement_time_1d
+    "time_3d" -> R.string.achievement_time_3d
+    "time_7d" -> R.string.achievement_time_7d
+    "time_14d" -> R.string.achievement_time_14d
+    "time_30d" -> R.string.achievement_time_30d
+    "rank_novice" -> R.string.rank_novice
+    "rank_professional" -> R.string.rank_professional
+    "rank_veteran" -> R.string.rank_veteran
+    "rank_legend" -> R.string.rank_legend
     "click_100" -> R.string.achievement_click_100
     "click_1000" -> R.string.achievement_click_1000
     "click_10000" -> R.string.achievement_click_10000

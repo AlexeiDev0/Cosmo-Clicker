@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -22,7 +23,6 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,6 +33,7 @@ import com.example.myapplication.QuestCadence
 import com.example.myapplication.QuestDifficulty
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.AppColors
+import com.example.myapplication.ui.theme.SpaceDisplayFont
 import com.example.myapplication.ui.theme.SpaceDesign
 import com.example.myapplication.utils.formatNum
 
@@ -44,6 +45,11 @@ fun QuestPanel(
     onClose: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var readyOnly by rememberSaveable { mutableStateOf(false) }
+    val readyCount = state.activeQuests.count { it.isCompleted && !it.isClaimed }
+    val visibleQuests = state.activeQuests.filter {
+        !it.isClaimed && (!readyOnly || it.isCompleted)
+    }
     var nowMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
     LaunchedEffect(Unit) {
         while (true) {
@@ -80,11 +86,26 @@ fun QuestPanel(
             )
             Spacer(Modifier.height(14.dp))
 
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                FilterChip(
+                    selected = !readyOnly,
+                    onClick = { readyOnly = false },
+                    label = { Text(stringResource(R.string.quest_filter_all)) }
+                )
+                FilterChip(
+                    selected = readyOnly,
+                    onClick = { readyOnly = true },
+                    label = { Text(stringResource(R.string.quest_filter_ready, readyCount)) }
+                )
+            }
+
                 LazyColumn(
                     modifier = Modifier.fillMaxSize(),
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    item(key = "debris_collection") { DebrisCollectionCard(state) }
                     item(key = "daily_reward") {
                         val reward = DailyRewardEngine.preview(state, nowMillis)
                         val available = DailyRewardEngine.canClaim(state, nowMillis)
@@ -96,6 +117,7 @@ fun QuestPanel(
                         ) {
                             Text(stringResource(R.string.daily_reward_title), color = Color.White, fontWeight = FontWeight.Bold)
                             Text(stringResource(R.string.daily_reward_day, reward.day, formatNum(reward.debris)), color = AppColors.TextMuted, fontSize = 11.sp)
+                            Text(stringResource(R.string.daily_reward_growth), color = AppColors.Secondary, fontSize = 12.sp, lineHeight = 17.sp)
                             if (reward.prestigePoints > 0) {
                                 Text(stringResource(R.string.reward_prestige_points, reward.prestigePoints), color = AppColors.Warning, fontSize = 11.sp)
                             }
@@ -109,25 +131,42 @@ fun QuestPanel(
                             }
                         }
                     }
-                    val daily = state.activeQuests.filter { it.cadence == QuestCadence.DAILY }
-                    val weekly = state.activeQuests.filter { it.cadence == QuestCadence.WEEKLY }
-                    item(key = "daily_header") {
-                        QuestSectionHeader(R.string.daily_quests, QuestCadence.DAILY)
-                    }
-                    items(daily, key = { it.id }) { quest ->
-                        QuestItemRow(quest, onClaim, com.example.myapplication.EconomyBalance.questReward(state, quest))
-                    }
-                    item(key = "weekly_header") {
-                        QuestSectionHeader(R.string.weekly_quests, QuestCadence.WEEKLY)
-                    }
-                    items(weekly, key = { it.id }) { quest ->
-                        QuestItemRow(quest, onClaim, com.example.myapplication.EconomyBalance.questReward(state, quest))
-                    }
-                    if (state.activeQuests.isEmpty()) {
-                        item(key = "empty_quests") {
-                            Text(stringResource(R.string.no_active_quests), color = AppColors.TextMuted)
+                    val daily = visibleQuests.filter { it.cadence == QuestCadence.DAILY }
+                    val weekly = visibleQuests.filter { it.cadence == QuestCadence.WEEKLY }
+                    if (daily.isNotEmpty()) {
+                        item(key = "daily_header") {
+                            QuestSectionHeader(R.string.daily_quests, QuestCadence.DAILY, nowMillis)
+                        }
+                        QuestDifficulty.entries.forEach { difficulty ->
+                            val group = com.example.myapplication.QuestEngine.ordered(daily, difficulty)
+                            if (group.isNotEmpty()) item(key = "daily_${difficulty}") { DifficultyHeading(difficulty) }
+                            items(group, key = { it.id }) { quest ->
+                                QuestItemRow(quest, onClaim, com.example.myapplication.EconomyBalance.questReward(state, quest))
+                            }
                         }
                     }
+                    if (weekly.isNotEmpty()) {
+                        item(key = "weekly_header") {
+                            QuestSectionHeader(R.string.weekly_quests, QuestCadence.WEEKLY, nowMillis)
+                        }
+                        QuestDifficulty.entries.forEach { difficulty ->
+                            val group = com.example.myapplication.QuestEngine.ordered(weekly, difficulty)
+                            if (group.isNotEmpty()) item(key = "weekly_${difficulty}") { DifficultyHeading(difficulty) }
+                            items(group, key = { it.id }) { quest ->
+                                QuestItemRow(quest, onClaim, com.example.myapplication.EconomyBalance.questReward(state, quest))
+                            }
+                        }
+                    }
+                    if (visibleQuests.isEmpty()) {
+                        item(key = "empty_quests") {
+                            Text(
+                                stringResource(if (readyOnly) R.string.quest_no_ready else R.string.no_active_quests),
+                                color = AppColors.TextMuted,
+                                modifier = Modifier.padding(vertical = 16.dp)
+                            )
+                        }
+                    }
+                    item(key = "debris_collection") { DebrisCollectionCard(state) }
                 }
             }
         }
@@ -135,14 +174,7 @@ fun QuestPanel(
 }
 
 @Composable
-private fun QuestSectionHeader(titleRes: Int, cadence: QuestCadence) {
-    var nowMillis by remember { mutableLongStateOf(System.currentTimeMillis()) }
-    LaunchedEffect(cadence) {
-        while (true) {
-            kotlinx.coroutines.delay(1_000L)
-            nowMillis = System.currentTimeMillis()
-        }
-    }
+private fun QuestSectionHeader(titleRes: Int, cadence: QuestCadence, nowMillis: Long) {
     val left = (nextQuestResetAt(nowMillis, cadence) - nowMillis).coerceAtLeast(0L)
     Column(
         modifier = Modifier.fillMaxWidth().padding(top = 8.dp, bottom = 2.dp),
@@ -172,9 +204,9 @@ private fun QuestResetTimer(time: String) {
         Text(
             text = time,
             color = AppColors.Warning,
-            fontSize = 10.sp,
+            fontSize = 11.sp,
             fontWeight = FontWeight.Bold,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = SpaceDisplayFont,
             letterSpacing = 0.25.sp
         )
     }
@@ -264,7 +296,7 @@ fun QuestItemRow(quest: Quest, onClaim: (String) -> Unit, debrisReward: Double =
             Text(
                 stringResource(difficultyLabel),
                 color = difficultyColor,
-                fontSize = 10.sp,
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(localizedQuestDescription(quest), color = Color.White, fontSize = 14.sp, fontWeight = FontWeight.Medium)
@@ -282,33 +314,33 @@ fun QuestItemRow(quest: Quest, onClaim: (String) -> Unit, debrisReward: Double =
                 Text(
                     text = "${formatNum(quest.progress)} / ${formatNum(quest.target)}",
                     color = Color.Gray,
-                    fontSize = 10.sp
+                    fontSize = 11.sp
                 )
                 if (quest.rewardPrestigePoints > 0) {
                     Text(
                         stringResource(R.string.reward_prestige_points, quest.rewardPrestigePoints),
                         color = AppColors.Warning,
-                        fontSize = 10.sp
+                        fontSize = 11.sp
                     )
                 }
                 if (debrisReward > 0) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(painterResource(R.drawable.ic_currency_debris_v2), null, Modifier.size(16.dp), tint = Color.Unspecified)
                         Spacer(Modifier.width(4.dp))
-                        Text(stringResource(R.string.reward_debris, formatNum(debrisReward)), color = AppColors.Primary, fontSize = 10.sp)
+                        Text(stringResource(R.string.reward_debris, formatNum(debrisReward)), color = AppColors.Primary, fontSize = 11.sp)
                     }
                 }
                 if (quest.rewardCases > 0) {
                     Text(
                         stringResource(R.string.reward_cases, quest.rewardCases),
                         color = AppColors.Secondary,
-                        fontSize = 10.sp
+                        fontSize = 11.sp
                     )
                 }
                 quest.rewardDroneId?.removePrefix("drone_")?.toIntOrNull()?.let { number ->
                     Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         Image(painterResource(com.example.myapplication.GameResourceRegistry.drone(number)), null, Modifier.size(32.dp))
-                        Text(stringResource(R.string.reward_drone_number, number), color = AppColors.Secondary, fontSize = 10.sp)
+                        Text(stringResource(R.string.reward_drone_number, number), color = AppColors.Secondary, fontSize = 11.sp)
                     }
                 }
             }

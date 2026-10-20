@@ -26,8 +26,8 @@ class DebrisEngineTest {
     @Test
     fun `image pools stay within registered debris range`() {
         Rarity.entries.forEach { rarity ->
-            for (index in 0..7) {
-                assertTrue(DebrisEngine.imageIndex(rarity, FixedRandom(intValue = index)) in 1..28)
+            for (index in 0 until DebrisCatalog.TYPE_COUNT) {
+                assertTrue(DebrisEngine.imageIndex(rarity, FixedRandom(intValue = index)) in DebrisCatalog.ids)
             }
         }
     }

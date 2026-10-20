@@ -1,6 +1,7 @@
 package com.example.myapplication.ui
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +24,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import com.example.myapplication.ui.components.Button
+import com.example.myapplication.ui.components.LocalButtonSound
 import com.example.myapplication.ui.components.CosmicButtonStyle
 import com.example.myapplication.ui.components.CosmicButtonState
 import androidx.compose.material3.Surface
@@ -36,6 +38,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -62,20 +65,31 @@ fun SettingsScreen(
     onSoundEnabledChanged: (Boolean) -> Unit,
     reducedMotion: Boolean,
     onReducedMotionChanged: (Boolean) -> Unit,
-    onAchievements: () -> Unit,
-    onResetGame: () -> Unit,
     onBack: () -> Unit,
-    onPrivacyWithdraw: () -> Unit = {}
+    onPrivacyWithdraw: () -> Unit = {},
+    adPrivacyRequired: Boolean = false,
+    onAdPrivacy: () -> Unit = {},
+    adRequestsAllowed: Boolean = false,
+    onStopAdRequests: () -> Unit = {}
 ) {
     var showLanguageDialog by remember { mutableStateOf(false) }
-    var showResetDialog by remember { mutableStateOf(false) }
+    var showMoreLanguages by remember { mutableStateOf(false) }
+    val playButtonSound = LocalButtonSound.current
     var showPrivacyDialog by remember { mutableStateOf(false) }
-    val uriHandler = LocalUriHandler.current
     val languages = listOf(
         LanguageOption(null, R.string.language_system),
         LanguageOption("en", R.string.language_english),
         LanguageOption("ru", R.string.language_russian),
-        LanguageOption("es", R.string.language_spanish)
+        LanguageOption("es", R.string.language_spanish),
+        LanguageOption("de", R.string.language_german),
+        LanguageOption("fr", R.string.language_french),
+        LanguageOption("pt", R.string.language_portuguese),
+        LanguageOption("it", R.string.language_italian),
+        LanguageOption("pl", R.string.language_polish),
+        LanguageOption("tr", R.string.language_turkish),
+        LanguageOption("uk", R.string.language_ukrainian),
+        LanguageOption("nl", R.string.language_dutch),
+        LanguageOption("sv", R.string.language_swedish)
     )
     val languageLabel = languages.firstOrNull { it.tag == selectedLanguage }?.label
         ?: R.string.language_system
@@ -84,7 +98,6 @@ fun SettingsScreen(
         when {
             showPrivacyDialog -> showPrivacyDialog = false
             showLanguageDialog -> showLanguageDialog = false
-            showResetDialog -> showResetDialog = false
             else -> onBack()
         }
     }
@@ -129,7 +142,10 @@ fun SettingsScreen(
             ) {
             Row(Modifier.padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
                 Surface(
-                    Modifier.size(48.dp).clickable(onClick = onBack),
+                    Modifier.size(48.dp).clickable {
+                        playButtonSound()
+                        onBack()
+                    },
                     RoundedCornerShape(13.dp),
                     color = AppColors.Surface,
                     border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Primary.copy(alpha = .25f))
@@ -157,7 +173,10 @@ fun SettingsScreen(
                 label = stringResource(R.string.language),
                 value = stringResource(languageLabel),
                 icon = R.drawable.ui_language_simple,
-                onClick = { showLanguageDialog = true }
+                onClick = {
+                    showMoreLanguages = selectedLanguage != null && selectedLanguage != "en"
+                    showLanguageDialog = true
+                }
             )
 
             Spacer(Modifier.height(10.dp))
@@ -178,33 +197,14 @@ fun SettingsScreen(
                 onCheckedChange = onReducedMotionChanged
             )
 
-            Spacer(Modifier.height(10.dp))
-            Button(
-                onClick = onAchievements,
-                modifier = Modifier.fillMaxWidth().height(68.dp),
-                style = CosmicButtonStyle.Primary,
-                generatedArtwork = false,
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 16.dp, vertical = 8.dp)
-            ) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(R.drawable.ic_achievement_medal),
-                        contentDescription = null,
-                        modifier = Modifier.size(34.dp)
-                    )
-                    Spacer(Modifier.width(12.dp))
-                    Text(
-                        stringResource(R.string.achievements),
-                        modifier = Modifier.weight(1f),
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Text("›", color = AppColors.Primary, fontSize = 22.sp)
-                }
-            }
-
             Spacer(Modifier.height(18.dp))
             SettingsSectionTitle(stringResource(R.string.settings_about_section), "02", AppColors.Secondary)
+            if (adPrivacyRequired) {
+                TextButton(onClick = onAdPrivacy) { Text(stringResource(R.string.ad_privacy_options)) }
+            }
+            if (adRequestsAllowed) {
+                TextButton(onClick = onStopAdRequests) { Text(stringResource(R.string.ad_stop_requests)) }
+            }
             Spacer(Modifier.height(8.dp))
 
             SettingsCard {
@@ -215,51 +215,6 @@ fun SettingsScreen(
                     "V"
                 )
                 SettingsRow(stringResource(R.string.developer), "Alexei Fitlin", "A")
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { uriHandler.openUri("https://t.me/AlexFitlin") }
-                        .padding(vertical = 12.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Image(
-                            painter = painterResource(R.drawable.ic_telegram),
-                            contentDescription = stringResource(R.string.telegram),
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Spacer(Modifier.width(10.dp))
-                        Text(stringResource(R.string.telegram), color = Color.White)
-                    }
-                    Text("@AlexFitlin  ›", color = AppColors.Primary, fontWeight = FontWeight.SemiBold)
-                }
-            }
-
-            Spacer(Modifier.height(18.dp))
-            SettingsSectionTitle(stringResource(R.string.settings_danger_section), "03", AppColors.Danger)
-            Spacer(Modifier.height(8.dp))
-
-            Button(
-                onClick = { showResetDialog = true },
-                modifier = Modifier.fillMaxWidth().height(68.dp),
-                style = CosmicButtonStyle.Danger,
-                generatedArtwork = false,
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 14.dp, vertical = 8.dp)
-            ) {
-                Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                    Image(
-                        painter = painterResource(R.drawable.ui_reset_simple),
-                        contentDescription = null,
-                        modifier = Modifier.size(32.dp)
-                    )
-                    Spacer(Modifier.width(11.dp))
-                    Column(Modifier.weight(1f)) {
-                        Text(stringResource(R.string.reset_game), color = AppColors.Danger, fontWeight = FontWeight.Bold)
-                        Text(stringResource(R.string.reset_game_description), color = AppColors.TextMuted, fontSize = 10.sp, lineHeight = 14.sp)
-                    }
-                    Text("›", color = AppColors.Danger, fontSize = 22.sp)
-                }
             }
 
         }
@@ -280,8 +235,11 @@ fun SettingsScreen(
             title = stringResource(R.string.language),
             onDismiss = { showLanguageDialog = false },
             modifier = Modifier.widthIn(max = 420.dp),
+            backgroundRes = R.drawable.flat_bg_main,
             content = {
-                languages.forEach { option ->
+                Column(Modifier.animateContentSize().heightIn(max = 380.dp).verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                languages.filterIndexed { index, _ -> index < 2 || showMoreLanguages }.forEach { option ->
                     val selected = selectedLanguage == option.tag
                     Button(
                         modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -296,47 +254,35 @@ fun SettingsScreen(
                     ) {
                         Row(modifier = Modifier.padding(10.dp), verticalAlignment = Alignment.CenterVertically) {
                             CosmicSelectionIndicator(selected)
-                            Text(stringResource(option.label), color = Color.White, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal)
+                            Column(Modifier.padding(start = 10.dp).weight(1f)) {
+                                Text(stringResource(option.label), color = if (selected) AppColors.Primary else AppColors.Secondary,
+                                    fontSize = 16.sp, fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium)
+                                option.tag?.let { tag ->
+                                    Text(tag.uppercase(java.util.Locale.ROOT), color = AppColors.TextMuted, fontSize = 12.sp)
+                                }
+                            }
+                        }
+                    }
+                    if (option.tag == "en") {
+                        TextButton(
+                            onClick = { playButtonSound(); showMoreLanguages = !showMoreLanguages },
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Image(
+                                painterResource(R.drawable.ui_chevron_right_v2),
+                                stringResource(if (showMoreLanguages) R.string.languages_collapse else R.string.languages_expand),
+                                Modifier.size(16.dp).rotate(if (showMoreLanguages) -90f else 90f)
+                            )
+                            Text(
+                                stringResource(if (showMoreLanguages) R.string.languages_collapse else R.string.languages_expand),
+                                Modifier.padding(start = 8.dp), color = AppColors.TextMuted, fontSize = 12.sp
+                            )
                         }
                     }
                 }
+                }
             },
             actions = {}
-        )
-    }
-
-    if (showResetDialog) {
-        SpaceDialog(
-            title = stringResource(R.string.reset_game_confirm_title),
-            onDismiss = { showResetDialog = false },
-            modifier = Modifier.widthIn(max = 420.dp),
-            content = {
-                Text(stringResource(R.string.reset_game_confirm_message), color = AppColors.TextMuted, lineHeight = 18.sp)
-            },
-            actions = {
-                Button(
-                    modifier = Modifier.weight(1f).height(SpaceDesign.MinTouchSize),
-                    onClick = { showResetDialog = false },
-                    style = CosmicButtonStyle.Secondary,
-                    compact = true,
-                    generatedArtwork = false
-                ) {
-                    Text(stringResource(R.string.cancel), fontSize = 11.sp, maxLines = 1)
-                }
-                Button(
-                    onClick = {
-                        showResetDialog = false
-                        onResetGame()
-                    },
-                    modifier = Modifier.weight(1f).height(SpaceDesign.MinTouchSize),
-                    style = CosmicButtonStyle.Danger,
-                    compact = true,
-                    generatedArtwork = false,
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 0.dp)
-                ) {
-                    Text(stringResource(R.string.reset_game_confirm), fontSize = 11.sp, maxLines = 1)
-                }
-            }
         )
     }
 
@@ -350,8 +296,12 @@ private fun SettingsToggleRow(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit
 ) {
+    val playButtonSound = LocalButtonSound.current
     Surface(
-        modifier = Modifier.fillMaxWidth().clickable { onCheckedChange(!checked) },
+        modifier = Modifier.fillMaxWidth().clickable {
+            playButtonSound()
+            onCheckedChange(!checked)
+        },
         shape = RoundedCornerShape(SpaceDesign.CardRadius),
         color = AppColors.Surface.copy(alpha = .92f),
         border = androidx.compose.foundation.BorderStroke(
@@ -368,7 +318,7 @@ private fun SettingsToggleRow(
             Spacer(Modifier.width(11.dp))
             Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                 Text(title, color = Color.White, fontWeight = FontWeight.Bold)
-                Text(description, color = AppColors.TextMuted, fontSize = 10.sp, lineHeight = 13.sp)
+                Text(description, color = AppColors.TextMuted, fontSize = 11.sp, lineHeight = 15.sp)
             }
             CosmicSwitch(checked)
         }
@@ -491,9 +441,9 @@ private fun SettingsRow(label: String, value: String, badge: String? = null, sho
 @Composable
 private fun SettingsSectionTitle(title: String, number: String, color: Color = AppColors.Primary) {
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(number, color = color, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+        Text(number, color = color, fontSize = 11.sp, fontWeight = FontWeight.Bold)
         Spacer(Modifier.width(8.dp))
-        Text(title.uppercase(), color = AppColors.TextMuted, fontSize = 10.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.1.sp)
+        Text(title.uppercase(), color = AppColors.TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, letterSpacing = 1.1.sp)
     }
 }
 

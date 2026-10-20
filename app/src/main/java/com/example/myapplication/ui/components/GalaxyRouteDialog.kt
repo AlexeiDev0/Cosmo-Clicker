@@ -68,7 +68,7 @@ fun GalaxyRouteDialog(viewModel: GameViewModel, state: GameState, onDismiss: () 
                         val isNext = index == nextIndex
                         val revealed = owned || isNext
                         val current = id == state.currentPlanetId
-                        val requiredFleet = EconomyBalance.requiredActiveDronesForPlanet(index)
+                        val requiredPrestige = EconomyBalance.requiredPrestigeForPlanet(index)
                         val requiredDrone = EconomyBalance.requiredDroneIdForPlanet(index)
                         val fleetReady = EconomyBalance.planetFleetObjectiveMet(state, index)
                         val canBuy = isNext && state.totalDebris >= planet.price && fleetReady
@@ -94,10 +94,11 @@ fun GalaxyRouteDialog(viewModel: GameViewModel, state: GameState, onDismiss: () 
                             alignRight = index % 2 == 0,
                             price = planet.price,
                             requirement = when {
+                                owned -> null
                                 requiredDrone != null && requiredDrone !in state.discoveredDroneIds ->
                                     stringResource(GameR.string.next_goal_drone)
-                                requiredFleet > 0 && !fleetReady ->
-                                    stringResource(GameR.string.next_goal_fleet, state.activeFleetCounts.values.sum(), requiredFleet)
+                                state.lifetimeStats.prestiges < requiredPrestige ->
+                                    stringResource(GameR.string.goal_action_prestige)
                                 else -> null
                             },
                             onClick = { viewModel.buyPlanet(id) }
@@ -198,18 +199,18 @@ private fun PlanetRouteNode(
                         compact = true,
                         generatedArtwork = true
                     ) {
-                        Text(actionText, fontSize = 10.sp, fontWeight = FontWeight.Black, maxLines = 1)
+                        Text(actionText, fontSize = 11.sp, fontWeight = FontWeight.Black, maxLines = 1)
                     }
                 } else {
                     RouteStatePill(actionText, accent)
                 }
             }
             if (revealed) {
-                Text(localizedPlanetBonus(id), color = AppColors.Secondary, fontSize = 11.sp, maxLines = 2, lineHeight = 13.sp)
+                Text(localizedPlanetBonus(id), color = AppColors.Secondary, fontSize = 11.sp, maxLines = 2, lineHeight = 15.sp)
             }
             if (requirement != null) {
                 Spacer(Modifier.height(5.dp))
-                Text(requirement, color = Color(0xFFFFB86B), fontSize = 11.sp, maxLines = 2, lineHeight = 13.sp)
+                Text(requirement, color = Color(0xFFFFB86B), fontSize = 11.sp, maxLines = 2, lineHeight = 15.sp)
             }
         }
     }
@@ -235,10 +236,10 @@ private fun RouteCheckpoint(iconRes: Int, text: String, completed: Boolean, visi
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(Modifier.weight(1f)) {
-                Text(stringResource(GameR.string.route_objective), color = accent, fontSize = 10.sp, fontWeight = FontWeight.Black)
+                Text(stringResource(GameR.string.route_objective), color = accent, fontSize = 11.sp, fontWeight = FontWeight.Black)
                 Text(if (visible) text else stringResource(GameR.string.unknown_sector), color = Color.White.copy(.82f), fontSize = 12.sp, lineHeight = 14.sp)
             }
-            Text(stringResource(if (completed) GameR.string.route_done else GameR.string.route_pending), color = accent, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(if (completed) GameR.string.route_done else GameR.string.route_pending), color = accent, fontSize = 11.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -249,7 +250,7 @@ private fun RouteStatePill(text: String, color: Color) {
         text,
         modifier = Modifier.background(color.copy(.14f), RoundedCornerShape(50)).padding(horizontal = 8.dp, vertical = 3.dp),
         color = color,
-        fontSize = 10.sp,
+        fontSize = 11.sp,
         fontWeight = FontWeight.Black
     )
 }

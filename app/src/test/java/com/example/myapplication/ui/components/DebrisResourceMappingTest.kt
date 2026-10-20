@@ -7,16 +7,16 @@ import org.junit.Test
 
 class DebrisResourceMappingTest {
     @Test
-    fun allTwentyEightDebrisIndicesHaveUniqueResources() {
-        val resources = (1..28).map(::debrisDrawable)
+    fun allFortyEightDebrisIndicesHaveUniqueResources() {
+        val resources = (1..48).map(::debrisDrawable)
 
-        assertEquals(28, resources.toSet().size)
+        assertEquals(48, resources.toSet().size)
         resources.forEach { assertNotEquals(0, it) }
     }
 
     @Test
     fun invalidIndexUsesFirstDebrisAsSafeFallback() {
-        assertEquals(R.drawable.debris_01_v2, debrisDrawable(0))
-        assertEquals(R.drawable.debris_01_v2, debrisDrawable(29))
+        assertEquals(R.drawable.minimal_debris_01_v7, debrisDrawable(0))
+        assertEquals(R.drawable.minimal_debris_01_v7, debrisDrawable(49))
     }
 }

@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Drona Salvage</string>
+    <string name="app_name">Space Salvage</string>
     <string name="autoclicker_detected">Слишком ровная или частая серия: клики по планете на паузе %1$d сек. Флот и встроенный автосбор работают.</string>
     <string name="settings">Настройки</string>
     <string name="reset_game">Сбросить прогресс</string>
-    <string name="reset_game_description">Удалить сохранение и начать сначала для тестирования</string>
+    <string name="reset_game_description">Удалить прогресс и начать новую экспедицию</string>
     <string name="reset_game_confirm_title">Сбросить весь прогресс?</string>
     <string name="reset_game_confirm_message">Планеты, дроны, улучшения, статистика, достижения и престиж будут удалены навсегда.</string>
     <string name="reset_game_confirm">Сбросить</string>
@@ -23,7 +23,7 @@
     <string name="developer">Разработчик</string>
     <string name="telegram">Telegram</string>
 <string name="close">Закрыть</string>
-    <string name="tap_to_continue">Нажми на меня, чтобы продолжить</string>
+    <string name="tap_to_continue">Нажмите, чтобы играть</string>
 <string name="debris">обломки</string>
     <string name="per_second">+%1$s / сек</string>
     <string name="drone_income">Доход дронов</string>
@@ -57,14 +57,14 @@
 <string name="hangar_drone_count">В наличии: %1$d</string>
     <string name="drones_in_flight">В полёте</string>
 <string name="choose_case_amount">Выберите количество кейсов</string>
-    <string name="case_bundle_hint">Выберите любое доступное количество. Цена повышается после каждых 20 открытых кейсов.</string>
+    <string name="case_bundle_hint">Выберите количество по своему балансу. Каждый следующий кейс этого типа стоит дороже; итоговая цена учитывает весь набор.</string>
 <string name="buy_cases_count">Купить ×%1$d</string>
     <string name="max_cases_short">макс. %1$d</string>
     <string name="open_all_cases">Открыть все ×%1$d</string>
     <string name="case_results_title">Результаты открытия</string>
     <string name="case_results_total">Получено из %1$d кейсов</string>
 <string name="upgrade_flight_slots">Слоты в полёте</string>
-    <string name="upgrade_spawn_speed">Сканер мусора</string>
+    <string name="upgrade_spawn_speed">Сканер обломков</string>
     <string name="upgrade_magnet_radius">Магнит обломков</string>
     <string name="utility_level">Уровень %1$d/%2$d</string>
     <string name="upgrade_autoclicker">Модуль автокликера</string>
@@ -76,7 +76,6 @@
 <string name="common_case">Обычный кейс</string>
     <string name="rare_case">Редкий кейс</string>
     <string name="legendary_case">Легендарный кейс</string>
-    <string name="premium_drop_chance">Шанс донатной награды: %1$d%%</string>
 <string name="planet_income_multiplier">Весь доход: ×%1$s</string>
     <string name="achievements">Достижения</string>
     <string name="statistics">Статистика</string>
@@ -104,7 +103,7 @@
     <string name="achievement_fleet_12">Собрать полный флот из 12 дронов</string>
     <string name="achievement_planets_5">Открыть 5 планет</string>
     <string name="achievement_planets_10">Открыть 10 планет</string>
-    <string name="achievement_planets_20">Открыть все 20 планет</string>
+    <string name="achievement_planets_20">Открыть 20 планет</string>
     <string name="achievement_events_10">Завершить 10 событий</string>
     <string name="achievement_prestige_1">Выполнить первый престиж</string>
     <string name="event_log">Журнал событий</string>
@@ -311,7 +310,7 @@
     <string name="session_stats">Сессия: %1$d кликов · %2$s обломков · %3$d кейсов</string>
     <string name="event_trading_ship">Торговый корабль</string>
     <string name="event_ship_hull">Прочность корабля: %1$d</string>
-    <string name="event_desc_trading_ship">Торговец предлагает один временный модуль. Сделка исчезнет после окончания события.</string>
+    <string name="event_desc_trading_ship">Нажмите на торговый корабль: внутри кейсы, дроны, груз, модули и обмен. За визит можно заключить одну сделку. Предложения исчезают после окончания события.</string>
     <string name="event_choose_trade">Выберите временный модуль</string>
 <string name="trade_market_title">Странствующий рынок</string>
     <string name="trade_docking_hint">Настройте три канала связи. Точный сигнал снижает цены, ошибка повышает наценку.</string>
@@ -428,7 +427,7 @@
     <string name="achievement_parts_25">Собрать 25 деталей мастерства</string><string name="achievement_parts_100">Собрать 75 деталей мастерства</string><string name="achievement_parts_300">Собрать 150 деталей мастерства</string>
     <string name="achievement_station_5">Получить 5 суммарных уровней станции</string><string name="achievement_station_10">Получить 10 суммарных уровней станции</string><string name="achievement_station_20">Полностью улучшить станцию</string>
     <string name="achievement_planets_21">Достичь Разлома Хроноса</string><string name="achievement_planets_22">Достичь Кузницы Авроры</string><string name="achievement_planets_23">Достичь Призматического святилища</string>
-    <string name="achievement_wealth_1t">Накопить 1 триллион обломков</string><string name="achievement_wealth_1q">Накопить 1 квадриллион обломков</string>
+    <string name="achievement_wealth_1t">Создать запас: 10 млн обломков</string><string name="achievement_wealth_1q">Создать запас: 100 млн обломков</string>
     <string name="achievement_tech_all">Открыть все технологии престижа</string><string name="achievement_achievements_40">Забрать 40 достижений</string>
     <string name="event_choice_instruction">Выберите вариант. Ниже точно указаны награда и возможный риск.</string>
     <string name="event_salvage_explained">Гарантированно: сразу получить %1$s обломков. Без риска и ожидания.</string>
@@ -481,4 +480,32 @@
     <string name="collection_drones">Находки дронов</string>
     <string name="progress_count">%1$d / %2$d</string>
     <string name="reward_drone_number">Награда: дрон №%1$d</string>
+    <string name="quest_filter_all">Все задания</string>
+    <string name="quest_filter_ready">Готово (%1$d)</string>
+    <string name="quest_no_ready">Пока нет готовых наград. Выполняйте задания, чтобы получить их!</string>
+    <string name="fusion_title">Слияние</string>
+    <string name="open_fusion">Открыть слияние дронов</string>
+    <string name="fusion_subtitle">Два дрона из резерва → один более редкий. Высшая ступень — легендарная.</string>
+    <string name="fusion_chance">Результат: %1$s · Шанс: %2$d%%</string>
+    <string name="fusion_select_two">Выберите двух исправных дронов одной редкости из резерва (%1$d/2). Можно выбрать одинаковые модели.</string>
+    <string name="fusion_available">Доступно: %1$d</string>
+    <string name="fusion_remove">Убрать</string>
+    <string name="fusion_empty">Нет исправных дронов этой редкости в резерве. Верните дронов в ангар или откройте кейсы.</string>
+    <string name="fusion_risk">Оба выбранных дрона исчезнут. При успехе вы получите одного случайного дрона указанной редкости, при неудаче — ничего.</string>
+    <string name="fusion_review">Перейти к слиянию</string>
+    <string name="fusion_confirm_title">Потратить этих двух дронов?</string>
+    <string name="fusion_confirm">Слить двух дронов</string>
+    <string name="fusion_success">Слияние удалось!</string>
+    <string name="fusion_failure">Слияние не удалось</string>
+    <string name="fusion_failure_details">Оба дрона потеряны. Новый дрон не создан.</string>
+    <string name="fusion_reward_reserve">Новый дрон в резерве. Отправьте его в полёт через ангар.</string>
+    <string name="fusion_again">Ещё одна попытка</string>
+    <string name="fusion_selection_changed">Слияние не выполнено. Выберите дронов заново: их доступность могла измениться.</string>
+    <string name="fusion_workshop_subtitle">Нажимайте на дронов, чтобы заполнить два слота.</string>
+    <string name="fusion_choose_pair">Выберите двух дронов одной редкости</string>
+    <string name="fusion_collection">Ваши дроны</string>
+    <string name="fusion_slot_empty">Дрон %1$d</string>
+    <string name="fusion_slot_remove">Убрать дрона %1$d: %2$s</string>
+    <string name="fusion_risk_short">Оба дрона расходуются. При неудаче награды нет.</string>
+    <string name="fusion_in_progress">Слияние дронов…</string>
 </resources>

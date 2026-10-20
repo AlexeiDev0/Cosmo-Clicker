@@ -12,13 +12,13 @@ class DebrisCollectionTest {
 
     @Test fun completeCollectionUnlocksFinalMilestonesAndCountsInGalaxy() {
         val empty = GameState()
-        val full = AchievementEngine.evaluate(empty.copy(discoveredDebrisIds = (1..28).toSet()))
+        val full = AchievementEngine.evaluate(empty.copy(discoveredDebrisIds = DebrisCatalog.ids.toSet()))
         assertTrue(full.unlockedAchievementIds.containsAll(setOf("salvage_10", "salvage_15", "salvage_20", "salvage_28")))
         val before = GalacticCollectionEngine.progress(empty, totalDrones = 29)
         val after = GalacticCollectionEngine.progress(full, totalDrones = 29)
-        assertEquals(28, after.debrisTypes)
-        assertEquals(28, after.totalDebrisTypes)
-        assertEquals(before.discoveredEntries + 28, after.discoveredEntries)
+        assertEquals(48, after.debrisTypes)
+        assertEquals(48, after.totalDebrisTypes)
+        assertEquals(before.discoveredEntries + 48, after.discoveredEntries)
         val claimed = AchievementEngine.claim(full, "salvage_28")!!
         assertEquals(full.prestigePoints + 5, claimed.prestigePoints)
         assertNull(AchievementEngine.claim(claimed, "salvage_28"))
@@ -49,8 +49,8 @@ class DebrisCollectionTest {
 
     @Test fun newCycleStartsFreshAndRejectsInvalidTypes() {
         val quest = TimedQuestFactory { _, _ -> "" }.daily(1, "p1").first { it.type == QuestType.COLLECT_DEBRIS_TYPES }
-        val result = QuestEngine.collectTypes(listOf(quest), setOf(-1, 0, 29, 28)).single()
-        assertEquals(setOf(28), result.collectedDebrisIds)
+        val result = QuestEngine.collectTypes(listOf(quest), setOf(-1, 0, 49, 48)).single()
+        assertEquals(setOf(48), result.collectedDebrisIds)
         assertEquals(1.0, result.progress, 0.0)
         assertEquals(0.0, TimedQuestFactory { _, _ -> "" }.daily(2, "p1").first { it.type == QuestType.COLLECT_DEBRIS_TYPES }.progress, 0.0)
     }
@@ -66,7 +66,7 @@ class DebrisCollectionTest {
 
     @Test fun everyTypeCanSpawnWithoutChangingRarityOdds() {
         val found = mutableSetOf<Int>()
-        for (rarity in Rarity.entries) for (index in 0..7) {
+        for (rarity in Rarity.entries) for (index in 0 until DebrisCatalog.TYPE_COUNT) {
             val random = object : RandomProvider {
                 override fun nextFloat() = 0f
                 override fun nextInt(until: Int) = index.coerceAtMost(until - 1)
@@ -75,6 +75,6 @@ class DebrisCollectionTest {
             }
             found += DebrisEngine.imageIndex(rarity, random)
         }
-        assertEquals((1..28).toSet(), found)
+        assertEquals(DebrisCatalog.ids.toSet(), found)
     }
 }

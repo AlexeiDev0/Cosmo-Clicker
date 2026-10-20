@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_offline_double">Смотреть рекламу · офлайн-доход ×2</string>
+    <string name="ad_loading">Реклама загружается…</string>
+    <string name="ad_showing">Идёт реклама…</string>
+    <string name="ad_retry">Загрузить рекламу для дохода ×2</string>
+    <string name="ad_unavailable">Реклама недоступна. Обычная награда уже начислена.</string>
+    <string name="ad_test_mode">Тестовая реклама · без рекламной выручки</string>
+    <string name="ad_reward_save_error">Не удалось сохранить дополнительную награду. Попробуйте снова.</string>
+    <string name="ad_privacy_options">Настройки рекламной конфиденциальности</string>
+</resources>

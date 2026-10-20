@@ -26,7 +26,6 @@ import androidx.compose.ui.draw.alpha
 import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
@@ -43,13 +42,15 @@ import com.example.myapplication.R
 import com.example.myapplication.Technology
 import com.example.myapplication.Rarity
 import com.example.myapplication.ui.theme.AppColors
+import com.example.myapplication.ui.theme.SpaceDisplayFont
 import com.example.myapplication.ui.theme.SpaceDesign
 import com.example.myapplication.utils.formatNum
 
 @Composable
-fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, modifier: Modifier = Modifier) {
+fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, modifier: Modifier = Modifier,
+    adRewards: (@Composable () -> Unit)? = null) {
     var selectedTab by remember { mutableIntStateOf(0) }
-    val tabColors = listOf(AppColors.Secondary, Color(0xFFC2AFE9), AppColors.Warning, AppColors.Primary)
+    val tabColors = listOf(AppColors.Secondary, Color(0xFFC2AFE9), AppColors.Warning, AppColors.Primary, Color(0xFF8CDEA9))
     val accent = tabColors[selectedTab]
     Card(
         modifier = modifier
@@ -63,7 +64,7 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
     ) {
         Box(Modifier.fillMaxSize()) {
             Image(
-                painter = painterResource(R.drawable.bg_shop_salvage_market_v3),
+                painter = painterResource(R.drawable.bg_shop_calm_v4),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
@@ -82,8 +83,10 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
                 SpaceSheetHeader(stringResource(R.string.case_shop_title), stringResource(R.string.case_shop_subtitle), onClose)
                 Spacer(Modifier.height(12.dp))
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(7.dp)) {
-                    listOf(R.string.shop_tab_upgrades, R.string.shop_tab_cases, R.string.shop_tab_planets, R.string.shop_tab_systems).forEachIndexed { index, title ->
-                        SpaceTab(stringResource(title), selectedTab == index, { selectedTab = index }, Modifier.weight(1f), accent = tabColors[index], iconSheetIndex = index)
+                    listOf(R.string.shop_tab_upgrades, R.string.shop_tab_cases, R.string.shop_tab_planets, R.string.shop_tab_systems, R.string.shop_tab_rewards).forEachIndexed { index, title ->
+                        SpaceTab(stringResource(title), selectedTab == index, { selectedTab = index }, Modifier.weight(1f),
+                            accent = tabColors[index], iconSheetIndex = index.takeIf { it < 4 },
+                            iconRes = if (index == 4) R.drawable.ic_currency_debris_v2 else null)
                     }
                 }
                 Spacer(Modifier.height(12.dp))
@@ -109,7 +112,10 @@ fun ShopBar(viewModel: GameViewModel, state: GameState, onClose: () -> Unit, mod
                             onBuy = { viewModel.buyClickUpgrade(upgrade.id) }
                         )
                     }
-                    1 -> item { MysteryCaseRow(viewModel, state) }
+                    1 -> {
+                        item { MysteryCaseRow(viewModel, state) }
+                    }
+                    4 -> item { adRewards?.invoke() }
                     2 -> items(viewModel.planets.toList(), key = { it.first }) { (id, planet) ->
                         val active = state.currentPlanetId == id
                         val owned = id in state.ownedPlanets
@@ -196,16 +202,17 @@ private fun ClickUpgradeRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 name,
-                color = Color.White,
-                fontSize = 13.sp,
+                color = accent,
+                style = androidx.compose.ui.text.TextStyle(shadow = androidx.compose.ui.graphics.Shadow(accent.copy(alpha = .4f), blurRadius = 8f)),
+                fontSize = 15.sp,
                 fontWeight = FontWeight.SemiBold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
             Text(
                 meta,
-                color = Color.LightGray,
-                fontSize = 10.sp,
+                color = AppColors.TextMuted,
+                fontSize = 12.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )
@@ -219,9 +226,9 @@ private fun ClickUpgradeRow(
             contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                GeneratedSheetIcon(R.drawable.shop_ui_minimal_sheet_v1, 4, 16.dp, columns = 4, rows = 4)
+                Icon(painterResource(R.drawable.ic_currency_debris_v2), null, Modifier.size(16.dp), tint = Color.Unspecified)
                 Spacer(Modifier.width(4.dp))
-                Text(formatNum(cost.toDouble()), color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold, fontFamily = FontFamily.Monospace, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(formatNum(cost.toDouble()), color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold, fontFamily = SpaceDisplayFont, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }
@@ -248,13 +255,13 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
             HangarFilter.OWNED -> (state.fleetCounts[drone.id] ?: 0) > 0
             HangarFilter.ACTIVE -> (state.activeFleetCounts[drone.id] ?: 0) > 0
         }
-    }
+    }.sortedWith(compareBy({ it.rarity.ordinal }, { it.base }))
     SpacePanel(
         stringResource(R.string.drone_hangar_title),
         stringResource(R.string.drone_hangar_subtitle),
         onClose,
         modifier,
-        backgroundRes = R.drawable.bg_hangar_fleet_command_v1
+        backgroundRes = R.drawable.bg_hangar_calm_v2
     ) {
         item {
             Card(
@@ -267,7 +274,7 @@ fun DroneHangarPanel(viewModel: GameViewModel, state: GameState, onClose: () -> 
                     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         Column {
                             Text(stringResource(R.string.hangar_overview), color = Color.White, fontSize = 15.sp, fontWeight = FontWeight.Bold)
-                            Text(stringResource(R.string.hangar_fleet_ready), color = AppColors.TextMuted, fontSize = 10.sp)
+                            Text(stringResource(R.string.hangar_fleet_ready), color = AppColors.TextMuted, fontSize = 11.sp)
                         }
                         Surface(shape = RoundedCornerShape(10.dp), color = AppColors.Primary.copy(alpha = .13f)) {
                             Text("$discovered / ${viewModel.fleetItems.size}", Modifier.padding(horizontal = 10.dp, vertical = 6.dp), color = AppColors.Primary, fontSize = 11.sp, fontWeight = FontWeight.Bold)
@@ -321,7 +328,7 @@ private fun HangarFilterChip(filter: HangarFilter, selected: Boolean, onClick: (
         contentPadding = PaddingValues(horizontal = 4.dp, vertical = 4.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
-            Text(stringResource(label), color = if (selected) AppColors.Primary else AppColors.TextMuted, fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(label), color = if (selected) AppColors.Primary else AppColors.TextMuted, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
         }
     }
 }
@@ -330,7 +337,7 @@ private fun HangarFilterChip(filter: HangarFilter, selected: Boolean, onClick: (
 private fun HangarMetric(label: String, value: String, color: Color, modifier: Modifier = Modifier) {
     Surface(modifier, shape = RoundedCornerShape(10.dp), color = Color.White.copy(alpha = .04f)) {
         Row(Modifier.padding(horizontal = 10.dp, vertical = 8.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(label, color = AppColors.TextMuted, fontSize = 10.sp)
+            Text(label, color = AppColors.TextMuted, fontSize = 11.sp)
             Text(value, color = color, fontSize = 11.sp, fontWeight = FontWeight.Bold)
         }
     }
@@ -362,13 +369,13 @@ internal fun CompactHangarDroneCard(
         Column(Modifier.padding(10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                 Surface(shape = RoundedCornerShape(8.dp), color = drone.rarity.color.copy(alpha = .14f)) {
-                    Text(if (discovered) rarityLabel(drone.rarity) else "—", Modifier.padding(horizontal = 7.dp, vertical = 3.dp), color = if (discovered) drone.rarity.color else AppColors.TextMuted, fontSize = 8.sp, fontWeight = FontWeight.Bold, maxLines = 1)
+                    Text(if (discovered) rarityLabel(drone.rarity) else "—", Modifier.padding(horizontal = 7.dp, vertical = 3.dp), color = if (discovered) drone.rarity.color else AppColors.TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold, maxLines = 1)
                 }
                 if (active > 0) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Box(Modifier.size(6.dp).background(AppColors.Primary, CircleShape))
                         Spacer(Modifier.width(4.dp))
-                        Text(stringResource(R.string.hangar_active_badge), color = AppColors.Primary, fontSize = 8.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.hangar_active_badge), color = AppColors.Primary, fontSize = 11.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -396,8 +403,8 @@ internal fun CompactHangarDroneCard(
                 )
             }
             Spacer(Modifier.height(4.dp))
-            Text(if (discovered) drone.name else stringResource(R.string.locked), color = if (discovered) Color.White else AppColors.TextMuted, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text(stringResource(R.string.hangar_drone_count, count), color = if (count > 0) AppColors.Secondary else AppColors.TextMuted, fontSize = 10.sp)
+            Text(if (discovered) localizedDroneName(drone) else stringResource(R.string.locked), color = if (discovered) drone.rarity.color else AppColors.TextMuted, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, maxLines = 2, overflow = TextOverflow.Ellipsis)
+            Text(stringResource(R.string.hangar_drone_count, count), color = if (count > 0) AppColors.Secondary else AppColors.TextMuted, fontSize = 11.sp)
             if (damaged > 0 && active == 0) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -413,7 +420,7 @@ internal fun CompactHangarDroneCard(
                     Text(
                         stringResource(R.string.drone_repair_cost, formatNum(repairCost)),
                         color = AppColors.Warning,
-                        fontSize = 9.sp
+                        fontSize = 11.sp
                     )
                 }
             }
@@ -476,7 +483,7 @@ private fun CosmicHangarAction(
             )
             if (primary) {
                 Spacer(Modifier.width(5.dp))
-                Text(text = text, color = accent, fontSize = 9.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text(text = text, color = accent, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
         }
     }
@@ -486,7 +493,7 @@ private fun CosmicHangarAction(
 private fun HangarCapacityLine(label: String, value: Int, maximum: Int, color: Color) {
     Column(verticalArrangement = Arrangement.spacedBy(5.dp)) {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(label, color = Color.LightGray, fontSize = 11.sp)
+            Text(label, color = AppColors.TextMuted, fontSize = 11.sp)
             Text("$value / $maximum", color = color, fontSize = 11.sp, fontWeight = FontWeight.Bold)
         }
         LinearProgressIndicator(
@@ -533,7 +540,7 @@ fun AchievementsPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
                         Text(stringResource(R.string.achievements), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                         Text("$claimedCount / $totalAchievements", color = AppColors.Warning, fontWeight = FontWeight.Bold, fontSize = 12.sp)
                     }
-                    Text(stringResource(R.string.overall_progress, overallProgress), color = AppColors.Secondary, fontSize = 10.sp)
+                    Text(stringResource(R.string.overall_progress, overallProgress), color = AppColors.Secondary, fontSize = 11.sp)
                     LinearProgressIndicator(
                         progress = { completion },
                         modifier = Modifier.fillMaxWidth().height(6.dp).clip(CircleShape),
@@ -549,13 +556,23 @@ fun AchievementsPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
                 GalacticCollectionCard(collection)
             }
             item(key = "debris_collection") { DebrisCollectionCard(state) }
-                items(AchievementEngine.definitions, key = { it.id }) { achievement ->
+            item(key = "player_rank") {
+                val rank = com.example.myapplication.MilestoneProgress.rank(state)
+                val title = listOf(R.string.rank_noob, R.string.rank_novice, R.string.rank_professional, R.string.rank_veteran, R.string.rank_legend)[rank]
+                Column(Modifier.fillMaxWidth().background(AppColors.Secondary.copy(alpha = .1f), RoundedCornerShape(14.dp)).padding(14.dp)) {
+                    Text(stringResource(R.string.player_rank, stringResource(title)), color = AppColors.Warning, fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.time_achievement_hint), color = AppColors.TextMuted, fontSize = 12.sp)
+                }
+            }
+            com.example.myapplication.QuestDifficulty.entries.forEach { difficulty ->
+                item(key = "difficulty_$difficulty") { DifficultyHeading(difficulty) }
+                items(com.example.myapplication.MilestoneProgress.ordered(state, difficulty), key = { it.id }) { achievement ->
             val unlocked = achievement.id in state.unlockedAchievementIds
             val claimed = achievement.id in state.claimedAchievementIds
             val reward = if (achievement.rewardPrestigePoints > 0) {
                 stringResource(R.string.achievement_reward_points, achievement.rewardPrestigePoints)
             } else {
-                stringResource(R.string.achievement_reward_debris, formatNum(EconomyBalance.scaledReward(achievement.rewardDebris, state.currentPlanetId)))
+                stringResource(R.string.achievement_reward_debris, formatNum(AchievementEngine.debrisReward(achievement, state)))
             }
             Row(
                 modifier = Modifier.fillMaxWidth()
@@ -579,18 +596,24 @@ fun AchievementsPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
                 ) {
                     Text(
                         stringResource(achievementTitle(achievement.id)),
-                        color = Color.White,
+                        color = AppColors.Secondary,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 12.sp,
+                        fontSize = 14.sp,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
+                    if (!claimed) {
+                        val fraction = com.example.myapplication.MilestoneProgress.fraction(achievement.id, state)
+                        LinearProgressIndicator(progress = { fraction }, modifier = Modifier.fillMaxWidth().height(4.dp),
+                            color = AppColors.Primary, trackColor = AppColors.Outline)
+                        Text("${(fraction * 100).toInt()}%", color = AppColors.Primary, fontSize = 11.sp)
+                    }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (achievement.rewardPrestigePoints == 0) {
                             Icon(painterResource(R.drawable.ic_currency_debris_v2), null, Modifier.size(14.dp), tint = Color.Unspecified)
                             Spacer(Modifier.width(4.dp))
                         }
-                        Text(reward, color = if (unlocked && !claimed) AppColors.Warning else AppColors.TextMuted, fontSize = 9.sp)
+                        Text(reward, color = if (unlocked && !claimed) AppColors.Warning else AppColors.TextMuted, fontSize = 11.sp)
                     }
                 }
                 Spacer(Modifier.width(8.dp))
@@ -606,13 +629,14 @@ fun AchievementsPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
                 ) {
                     Text(
                         stringResource(if (claimed) R.string.achievement_claimed else if (unlocked) R.string.achievement_claim else R.string.achievement_locked),
-                        fontSize = 10.sp,
+                        fontSize = 11.sp,
                         maxLines = 2,
-                        lineHeight = 12.sp,
+                        lineHeight = 15.sp,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
             }
+        }
         }
         }
     }
@@ -644,7 +668,7 @@ private fun ProgressBreakdown(categories: List<OverallProgressEngine.Category>) 
                 else -> R.string.progress_station
             }
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(title), Modifier.width(92.dp), color = AppColors.TextMuted, fontSize = 10.sp)
+                Text(stringResource(title), Modifier.width(92.dp), color = AppColors.TextMuted, fontSize = 11.sp)
                 LinearProgressIndicator(
                     progress = { category.fraction },
                     modifier = Modifier.weight(1f).height(5.dp).clip(CircleShape),
@@ -655,7 +679,7 @@ private fun ProgressBreakdown(categories: List<OverallProgressEngine.Category>) 
                     stringResource(R.string.progress_count, category.completed, category.total),
                     Modifier.width(58.dp),
                     color = Color.White,
-                    fontSize = 9.sp,
+                    fontSize = 11.sp,
                     fontWeight = FontWeight.SemiBold
                 )
             }
@@ -682,7 +706,7 @@ private fun GalacticCollectionCard(collection: GalacticCollectionProgress) {
             Spacer(Modifier.width(9.dp))
             Column(Modifier.weight(1f)) {
                 Text(stringResource(R.string.galactic_collection), color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.Bold)
-                Text(stringResource(R.string.galactic_collection_subtitle), color = AppColors.TextMuted, fontSize = 9.sp, lineHeight = 11.sp)
+                Text(stringResource(R.string.galactic_collection_subtitle), color = AppColors.TextMuted, fontSize = 11.sp, lineHeight = 15.sp)
             }
         }
         LinearProgressIndicator(
@@ -694,7 +718,7 @@ private fun GalacticCollectionCard(collection: GalacticCollectionProgress) {
         Text(
             stringResource(R.string.collection_entries, collection.discoveredEntries, collection.totalEntries),
             color = AppColors.Secondary,
-            fontSize = 10.sp,
+            fontSize = 11.sp,
             fontWeight = FontWeight.SemiBold
         )
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -715,8 +739,8 @@ private fun CollectionMetric(label: Int, value: Int, total: Int, modifier: Modif
         modifier.background(Color.White.copy(alpha = SpaceDesign.MutedSurfaceAlpha), RoundedCornerShape(10.dp)).padding(8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(stringResource(label), Modifier.weight(1f), color = AppColors.TextMuted, fontSize = 9.sp, maxLines = 2)
-        Text("$value/$total", color = Color.White, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+        Text(stringResource(label), Modifier.weight(1f), color = AppColors.TextMuted, fontSize = 11.sp, maxLines = 2)
+        Text("$value/$total", color = Color.White, fontSize = 11.sp, fontWeight = FontWeight.Bold)
     }
 }
 @Composable
@@ -736,7 +760,7 @@ fun PrestigeShopPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
                         Icon(painterResource(R.drawable.ic_prestige_hologram_v2), null, Modifier.size(24.dp), tint = Color.Unspecified)
                         Spacer(Modifier.width(9.dp))
                         Column {
-                            Text(stringResource(R.string.prestige_balance), color = AppColors.TextMuted, fontSize = 9.sp)
+                            Text(stringResource(R.string.prestige_balance), color = AppColors.TextMuted, fontSize = 11.sp)
                             Text("${state.prestigePoints}", color = Color(0xFFB8A7FF), fontSize = 18.sp, fontWeight = FontWeight.Bold)
                         }
                     }
@@ -779,7 +803,7 @@ fun PrestigeShopPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
                         Spacer(Modifier.width(10.dp))
                         Column(Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(2.dp)) {
                             Text(stringResource(name), color = Color.White, fontSize = 13.sp, fontWeight = FontWeight.SemiBold, lineHeight = 15.sp)
-                            Text(stringResource(description), color = AppColors.TextMuted, fontSize = 10.sp, lineHeight = 13.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                            Text(stringResource(description), color = AppColors.TextMuted, fontSize = 11.sp, lineHeight = 15.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
                         }
                     }
                     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
@@ -805,7 +829,7 @@ fun PrestigeShopPanel(viewModel: GameViewModel, state: GameState, onClose: () ->
                             )
                         ) {
                             Box(contentAlignment = Alignment.Center) {
-                                Text(stringResource(if (owned) R.string.prestige_owned else R.string.prestige_buy), color = if (owned) AppColors.TextMuted else accent, fontSize = 10.sp, fontWeight = FontWeight.SemiBold)
+                                Text(stringResource(if (owned) R.string.prestige_owned else R.string.prestige_buy), color = if (owned) AppColors.TextMuted else accent, fontSize = 11.sp, fontWeight = FontWeight.SemiBold)
                             }
                         }
                     }
@@ -876,7 +900,7 @@ private fun StatisticRow(label: String, value: String) {
     ) {
         Text(label, modifier = Modifier.weight(1f), color = Color.White.copy(alpha = .88f), fontSize = 12.sp, maxLines = 2, overflow = TextOverflow.Ellipsis)
         Spacer(Modifier.width(12.dp))
-        Text(value, color = Color.White, fontFamily = androidx.compose.ui.text.font.FontFamily.Monospace, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, maxLines = 1)
+        Text(value, color = Color.White, fontFamily = SpaceDisplayFont, fontWeight = FontWeight.SemiBold, fontSize = 13.sp, maxLines = 1)
     }
 }
 

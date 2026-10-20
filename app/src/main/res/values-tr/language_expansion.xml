@@ -1,0 +1,26 @@
+<resources>
+    <string name="settings">Ayarlar</string>
+    <string name="language">Dil</string>
+    <string name="language_system">Sistem dili</string>
+    <string name="cancel">İptal</string>
+    <string name="close">Kapat</string>
+    <string name="buy">Satın al</string>
+    <string name="collect">Topla</string>
+    <string name="collect_reward">Ödülü al</string>
+    <string name="sound">Ses</string>
+    <string name="reduced_motion">Azaltılmış hareket</string>
+    <string name="navigation_shop">Mağaza</string>
+    <string name="navigation_hangar">Hangar</string>
+    <string name="shop_tab_upgrades">Yükseltmeler</string>
+    <string name="shop_tab_cases">Kasalar</string>
+    <string name="shop_tab_planets">Gezegenler</string>
+    <string name="shop_tab_systems">Sistemler</string>
+    <string name="settings_preferences_section">Tercihler</string>
+    <string name="settings_about_section">Oyun hakkında</string>
+    <string name="privacy_title">Gizlilik</string>
+    <string name="rarity_common">Yaygın</string>
+    <string name="rarity_uncommon">Az yaygın</string>
+    <string name="rarity_rare">Nadir</string>
+    <string name="rarity_epic">Epik</string>
+    <string name="rarity_legendary">Efsanevi</string>
+</resources>

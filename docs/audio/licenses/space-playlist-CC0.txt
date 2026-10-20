@@ -1,0 +1,17 @@
+Source and license records checked 11 October 2026.
+
+Outer Space Loop
+Author: wipics
+Source: https://opengameart.org/content/outer-space-loop
+File: https://opengameart.org/sites/default/files/outer_space_2.mp3
+License displayed on source page: CC0; attribution notice: Public Domain.
+
+Another space background track / Observing The Star
+Author: yd
+Source: https://opengameart.org/content/another-space-background-track
+Archive: https://opengameart.org/sites/default/files/ObservingTheStar.zip
+License displayed on source page: CC0.
+Included file: ObservingTheStar.ogg (unchanged).
+
+CC0 legal code: https://creativecommons.org/publicdomain/zero/1.0/legalcode
+Downloaded assets are bundled and played locally, never streamed by the game.

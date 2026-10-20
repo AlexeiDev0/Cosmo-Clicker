@@ -36,20 +36,17 @@ fun SpaceSheetHeader(title: String, subtitle: String? = null, onClose: () -> Uni
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 title,
-                color = Color.White,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.headlineMedium.copy(shadow = androidx.compose.ui.graphics.Shadow(AppColors.Secondary.copy(alpha = .55f), blurRadius = 10f)),
+                color = AppColors.Secondary,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                lineHeight = 27.sp
+                overflow = TextOverflow.Ellipsis
             )
             if (subtitle != null) Text(
                 subtitle,
+                style = MaterialTheme.typography.bodyMedium,
                 color = AppColors.TextMuted,
-                fontSize = 12.sp,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                lineHeight = 14.sp
+                overflow = TextOverflow.Ellipsis
             )
         }
         IconButton(onClick = onClose, modifier = Modifier.size(48.dp)) {
@@ -75,7 +72,7 @@ fun SpaceTab(
 ) {
     Button(
         onClick = onClick,
-        modifier = modifier.height(48.dp),
+        modifier = modifier.heightIn(min = 64.dp),
         colors = ButtonDefaults.buttonColors(containerColor = accent),
         state = if (selected) CosmicButtonState.Selected else CosmicButtonState.Normal,
         style = if (selected) CosmicButtonStyle.Primary else CosmicButtonStyle.Secondary,
@@ -84,7 +81,7 @@ fun SpaceTab(
         contentPadding = PaddingValues(horizontal = 2.dp, vertical = 4.dp)
     ) {
         Box(contentAlignment = Alignment.Center) {
-        Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             if (iconSheetIndex != null) {
                 val atlasIndex = listOf(3, 2, 0, 9)[iconSheetIndex.coerceIn(0, 3)]
                 GeneratedSheetIcon(
@@ -94,7 +91,7 @@ fun SpaceTab(
                     columns = 4,
                     rows = 3
                 )
-                Spacer(Modifier.width(5.dp))
+                Spacer(Modifier.height(4.dp))
             } else if (iconRes != null) {
                 Icon(
                     painter = painterResource(iconRes),
@@ -102,18 +99,16 @@ fun SpaceTab(
                     tint = Color.Unspecified,
                     modifier = Modifier.size(18.dp)
                 )
-                Spacer(Modifier.width(5.dp))
+                Spacer(Modifier.height(4.dp))
             }
             Text(
                 text,
-                modifier = Modifier.padding(horizontal = 5.dp),
+                modifier = Modifier.padding(horizontal = 2.dp),
                 color = if (selected) Color.White else AppColors.TextMuted,
-                fontSize = 11.sp,
-                fontWeight = FontWeight.SemiBold,
+                style = MaterialTheme.typography.labelMedium,
                 textAlign = TextAlign.Center,
                 maxLines = 2,
-                overflow = TextOverflow.Ellipsis,
-                lineHeight = 13.sp
+                overflow = TextOverflow.Ellipsis
             )
         }
         }
@@ -195,7 +190,7 @@ fun ComboIndicator(combo: Int, modifier: Modifier = Modifier) {
         val message = when {
             combo >= 50 -> R.string.combo_cosmic_legend
             combo >= 40 -> R.string.combo_unstoppable
-            combo >= 25 -> R.string.combo_overdrive
+            combo >= 20 -> R.string.combo_overdrive
             combo >= 15 -> R.string.combo_perfect_chain
             combo >= 10 -> listOf(R.string.combo_impossible, R.string.combo_master, R.string.combo_signal_locked)[combo % 3]
             combo >= 5 -> listOf(R.string.combo_great, R.string.combo_clean_hit, R.string.combo_keep_going)[combo % 3]
@@ -203,7 +198,7 @@ fun ComboIndicator(combo: Int, modifier: Modifier = Modifier) {
         }
         val accent = when {
             combo >= 50 -> AppColors.Danger
-            combo >= 25 -> AppColors.Warning
+            combo >= 20 -> AppColors.Warning
             combo >= 15 -> Color(0xFFB987FF)
             combo >= 8 -> Color(0xFF55D9FF)
             else -> AppColors.Primary
@@ -216,8 +211,8 @@ fun ComboIndicator(combo: Int, modifier: Modifier = Modifier) {
         )
         Text(
             text = "x$combo",
-            color = Color.White,
-            fontSize = if (combo >= 25) 30.sp else 26.sp,
+            color = accent,
+            fontSize = if (combo >= 20) 30.sp else 26.sp,
             fontWeight = FontWeight.Bold
         )
     }

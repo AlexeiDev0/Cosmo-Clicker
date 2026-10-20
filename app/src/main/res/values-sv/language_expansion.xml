@@ -1,0 +1,24 @@
+<resources>
+    <string name="settings">Inställningar</string>
+    <string name="language">Språk</string>
+    <string name="language_system">Systemspråk</string>
+    <string name="cancel">Avbryt</string>
+    <string name="close">Stäng</string>
+    <string name="buy">Köp</string>
+    <string name="collect">Samla</string>
+    <string name="collect_reward">Hämta belöning</string>
+    <string name="sound">Ljud</string>
+    <string name="reduced_motion">Mindre rörelse</string>
+    <string name="navigation_shop">Butik</string>
+    <string name="navigation_hangar">Hangar</string>
+    <string name="shop_tab_upgrades">Förbättringar</string>
+    <string name="shop_tab_cases">Lådor</string>
+    <string name="shop_tab_planets">Planeter</string>
+    <string name="shop_tab_systems">System</string>
+    <string name="settings_preferences_section">Inställningar</string>
+    <string name="settings_about_section">Om spelet</string>
+    <string name="version">Version</string>
+    <string name="developer">Utvecklare</string>
+    <string name="languages_expand">Fler språk</string>
+    <string name="languages_collapse">Dölj språk</string>
+</resources>

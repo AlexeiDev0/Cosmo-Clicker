@@ -1,4 +1,3 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/ic_launcher_background" />
-    <item android:drawable="@drawable/ic_launcher_foreground" />
+    <item><bitmap android:src="@drawable/launcher_round_v4" android:gravity="fill" /></item>
 </layer-list>

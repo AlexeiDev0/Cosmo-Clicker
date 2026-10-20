@@ -1,0 +1,24 @@
+<resources>
+    <string name="settings">Налаштування</string>
+    <string name="language">Мова</string>
+    <string name="language_system">Системна мова</string>
+    <string name="cancel">Скасувати</string>
+    <string name="close">Закрити</string>
+    <string name="buy">Купити</string>
+    <string name="collect">Зібрати</string>
+    <string name="collect_reward">Отримати нагороду</string>
+    <string name="sound">Звук</string>
+    <string name="reduced_motion">Менше анімацій</string>
+    <string name="navigation_shop">Магазин</string>
+    <string name="navigation_hangar">Ангар</string>
+    <string name="shop_tab_upgrades">Покращення</string>
+    <string name="shop_tab_cases">Кейси</string>
+    <string name="shop_tab_planets">Планети</string>
+    <string name="shop_tab_systems">Системи</string>
+    <string name="settings_preferences_section">Налаштування гри</string>
+    <string name="settings_about_section">Про гру</string>
+    <string name="version">Версія</string>
+    <string name="developer">Розробник</string>
+    <string name="languages_expand">Інші мови</string>
+    <string name="languages_collapse">Згорнути мови</string>
+</resources>

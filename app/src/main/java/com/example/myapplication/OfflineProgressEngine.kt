@@ -2,17 +2,21 @@ package com.example.myapplication
 
 object OfflineProgressEngine {
     const val MAX_OFFLINE_SECONDS = 8 * 60 * 60L
-    private const val OFFLINE_EFFICIENCY = 0.25
+    private const val OFFLINE_EFFICIENCY = 0.75
 
     data class Result(val elapsedSeconds: Long, val reward: Double)
 
-    fun apply(state: GameState, result: Result): GameState =
-        if (result.elapsedSeconds <= 0L || result.reward <= 0.0 || !result.reward.isFinite()) state
-        else state.copy(
-            totalDebris = state.totalDebris + result.reward,
+    fun apply(state: GameState, result: Result): GameState {
+        val balance = state.totalDebris + result.reward
+        if (result.elapsedSeconds <= 0L || result.reward <= 0.0 || !result.reward.isFinite() ||
+            !balance.isFinite() || balance <= state.totalDebris) return state
+        return state.copy(
+            totalDebris = balance,
             lastOfflineReward = result.reward,
-            lastOfflineSeconds = result.elapsedSeconds
+            lastOfflineSeconds = result.elapsedSeconds,
+            offlineBonusOfferId = java.util.UUID.randomUUID().toString()
         )
+    }
 
     fun calculate(
         lastActiveAtMillis: Long,

@@ -4,9 +4,6 @@ package com.example.myapplication
 internal class StateSaveCoordinator<T> {
     private val lock = Any()
 
-    fun save(currentState: () -> T, write: (T) -> Unit) {
-        synchronized(lock) {
-            write(currentState())
-        }
-    }
+    fun <R> save(currentState: () -> T, write: (T) -> R): R =
+        synchronized(lock) { write(currentState()) }
 }

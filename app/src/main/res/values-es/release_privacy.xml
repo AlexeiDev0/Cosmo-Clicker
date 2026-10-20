@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_disclosure_title">¿Cargar un anuncio con recompensa?</string>
+    <string name="ad_disclosure_body">Si lo permites, Google AdMob y UMP pueden enviar a Google tu dirección IP (incluida la ubicación aproximada), identificadores disponibles del dispositivo, interacciones con anuncios, diagnósticos y preferencias de privacidad publicitaria para publicidad, medición y prevención del fraude. Esto no permite publicidad personalizada. Puedes seguir jugando y recibir la recompensa normal sin cargar anuncios. El permiso dura esta sesión; puedes detener nuevas solicitudes en Ajustes. Esto no elimina los datos ya tratados por Google.</string>
+    <string name="ad_disclosure_allow">Permitir y cargar</string>
+    <string name="ad_disclosure_decline">Continuar sin anuncio</string>
+    <string name="ad_stop_requests">Detener nuevas solicitudes de anuncios</string>
+    <string name="case_currency_notice">Usa restos del juego o anuncios voluntarios con recompensa. Sin compras con dinero real ni premios en efectivo.</string>
+    <string name="case_pool_notice">Son probabilidades de rareza, no una recompensa garantizada. En un lote se prefieren los drones de la rareza elegida que aún no han salido en ese lote.</string>
+    <string name="case_rarity_common">Común</string>
+    <string name="case_rarity_uncommon">Poco común</string>
+    <string name="case_rarity_rare">Raro</string>
+    <string name="case_rarity_epic">Épico</string>
+    <string name="case_rarity_legendary">Legendario</string>
+    <string name="case_rarity_void">Vacío</string>
+</resources>

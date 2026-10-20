@@ -8,6 +8,42 @@ import org.junit.Test
 
 class ControllerTest {
     @Test
+    fun restartRecoversOnlyUnopenedPaidCases() {
+        val waiting = GameState(openingCaseType = CaseType.RARE, pendingCaseOpenings = 2)
+        val recovered = CaseController.restoreOpening(waiting)
+        assertTrue(recovered.isOpeningCase)
+        assertEquals(1, recovered.pendingCaseOpenings)
+        assertEquals(recovered, CaseController.restoreOpening(recovered))
+        val displayed = waiting.copy(lastDroppedDroneId = "drone_1")
+        assertEquals(displayed, CaseController.restoreOpening(displayed))
+        val finished = waiting.copy(pendingCaseOpenings = 0)
+        assertEquals(finished, CaseController.restoreOpening(finished))
+    }
+    @Test
+    fun casePurchaseRejectsInvalidValuesAndUnfinishedResults() {
+        for (balance in listOf(Double.NaN, Double.POSITIVE_INFINITY, -1.0)) {
+            assertNull(CaseController.startOpening(GameState(totalDebris = balance), CaseType.COMMON, 1))
+        }
+        val funded = GameState(totalDebris = 1_000_000.0)
+        assertNull(CaseController.startOpening(funded, CaseType.COMMON, 0))
+        assertNull(CaseController.startOpening(funded, CaseType.COMMON, -1))
+        assertNull(CaseController.startOpening(funded.copy(showCaseBundleSummary = true), CaseType.COMMON, 1))
+        assertNull(CaseController.startOpening(funded.copy(casePurchasesByType = mapOf(CaseType.COMMON to Int.MAX_VALUE)), CaseType.COMMON, 1))
+        assertNull(CaseController.startOpening(funded.copy(totalDebris = Double.MAX_VALUE), CaseType.COMMON, 1))
+    }
+
+    @Test
+    fun caseBundleDeductsExactDisplayedCostAndCannotBePurchasedTwice() {
+        CaseType.entries.forEach { type ->
+            val balance = 10_000_000.0
+            val cost = CaseController.bundleCost(2, type, 3)
+            val initial = GameState(totalDebris = balance, casePurchasesByType = mapOf(type to 2))
+            val purchased = CaseController.startOpening(initial, type, 3)!!
+            assertEquals(balance - cost, purchased.totalDebris, 0.0)
+            assertNull(CaseController.startOpening(purchased, type, 3))
+        }
+    }
+    @Test
     fun fleetControllerKeepsOwnershipAndCapacityConsistent() {
         val item = FleetConfig("drone_1", "", 250.0, 0)
         val state = GameState(

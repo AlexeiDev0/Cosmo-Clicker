@@ -18,7 +18,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalWindowInfo
 import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.res.painterResource as debrisPainterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as debrisPainterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -48,8 +48,8 @@ fun Star(index: Int, twinklePhase: Float, reduceMotion: Boolean = false) {
 }
 
 @Composable
-fun DebrisTarget(target: ScavengeTarget, gameAreaWidth: Dp, gameAreaHeight: Dp, onClick: (() -> Unit)? = null) {
-    val targetSize = if (target.isMeteor) 38.dp else (38 + target.rarity.ordinal * 3).dp
+fun DebrisTarget(target: ScavengeTarget, gameAreaWidth: Dp, gameAreaHeight: Dp, onClick: (() -> Unit)? = null, planetId: String = "p1") {
+    val targetSize = if (target.isMeteor) 38.dp else (44 + target.rarity.ordinal * 4).dp
 
     Box(
         modifier = Modifier
@@ -76,6 +76,10 @@ fun DebrisTarget(target: ScavengeTarget, gameAreaWidth: Dp, gameAreaHeight: Dp, 
         } else {
             Image(
                 painter = debrisPainterResource(debrisDrawable(target.imageIndex)),
+                colorFilter = remember(planetId, target.rarity) {
+                    if (target.rarity.ordinal < com.example.myapplication.Rarity.RARE.ordinal)
+                        planetDebrisFilter(planetId) else null
+                },
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier
@@ -87,33 +91,53 @@ fun DebrisTarget(target: ScavengeTarget, gameAreaWidth: Dp, gameAreaHeight: Dp, 
 }
 
 internal fun debrisDrawable(index: Int): Int = when (index) {
-    1 -> R.drawable.debris_01_v2
-    2 -> R.drawable.debris_02_v2
-    3 -> R.drawable.debris_03_v2
-    4 -> R.drawable.debris_04_v2
-    5 -> R.drawable.debris_05_v2
-    6 -> R.drawable.debris_06_v2
-    7 -> R.drawable.debris_07_v2
-    8 -> R.drawable.debris_08_v2
-    9 -> R.drawable.debris_09_v2
-    10 -> R.drawable.debris_10_v2
-    11 -> R.drawable.debris_11_v2
-    12 -> R.drawable.debris_12_v2
-    13 -> R.drawable.debris_13_v2
-    14 -> R.drawable.debris_14_v2
-    15 -> R.drawable.debris_15_v2
-    16 -> R.drawable.debris_16_v2
-    17 -> R.drawable.debris_17_v2
-    18 -> R.drawable.debris_18_v2
-    19 -> R.drawable.debris_19_v2
-    20 -> R.drawable.debris_20_v2
-    21 -> R.drawable.debris_21_v2
-    22 -> R.drawable.debris_22_v2
-    23 -> R.drawable.debris_23_v2
-    24 -> R.drawable.debris_24_v2
-    25 -> R.drawable.debris_25_v2
-    26 -> R.drawable.debris_26_v2
-    27 -> R.drawable.debris_27_v2
-    28 -> R.drawable.debris_28_v2
-    else -> R.drawable.debris_01_v2
+    1 -> R.drawable.minimal_debris_01_v7
+    2 -> R.drawable.minimal_debris_02_v7
+    3 -> R.drawable.minimal_debris_03_v7
+    4 -> R.drawable.minimal_debris_04_v7
+    5 -> R.drawable.minimal_debris_05_v7
+    6 -> R.drawable.minimal_debris_06_v7
+    7 -> R.drawable.minimal_debris_07_v7
+    8 -> R.drawable.minimal_debris_08_v7
+    9 -> R.drawable.minimal_debris_09_v7
+    10 -> R.drawable.minimal_debris_10_v7
+    11 -> R.drawable.minimal_debris_11_v7
+    12 -> R.drawable.minimal_debris_12_v7
+    13 -> R.drawable.minimal_debris_13_v7
+    14 -> R.drawable.minimal_debris_14_v7
+    15 -> R.drawable.minimal_debris_15_v7
+    16 -> R.drawable.minimal_debris_16_v7
+    17 -> R.drawable.minimal_debris_17_v7
+    18 -> R.drawable.minimal_debris_18_v7
+    19 -> R.drawable.minimal_debris_19_v7
+    20 -> R.drawable.minimal_debris_20_v7
+    21 -> R.drawable.minimal_debris_21_v7
+    22 -> R.drawable.minimal_debris_22_v7
+    23 -> R.drawable.minimal_debris_23_v7
+    24 -> R.drawable.minimal_debris_24_v7
+    25 -> R.drawable.minimal_debris_25_v7
+    26 -> R.drawable.minimal_debris_26_v7
+    27 -> R.drawable.minimal_debris_27_v7
+    28 -> R.drawable.minimal_debris_28_v7
+    29 -> R.drawable.minimal_debris_29_v7
+    30 -> R.drawable.minimal_debris_30_v7
+    31 -> R.drawable.minimal_debris_31_v7
+    32 -> R.drawable.minimal_debris_32_v7
+    33 -> R.drawable.minimal_debris_33_v7
+    34 -> R.drawable.minimal_debris_34_v7
+    35 -> R.drawable.minimal_debris_35_v7
+    36 -> R.drawable.minimal_debris_36_v7
+    37 -> R.drawable.minimal_debris_37_v7
+    38 -> R.drawable.minimal_debris_38_v7
+    39 -> R.drawable.minimal_debris_39_v7
+    40 -> R.drawable.minimal_debris_40_v7
+    41 -> R.drawable.minimal_debris_41_v7
+    42 -> R.drawable.minimal_debris_42_v7
+    43 -> R.drawable.minimal_debris_43_v7
+    44 -> R.drawable.minimal_debris_44_v7
+    45 -> R.drawable.minimal_debris_45_v7
+    46 -> R.drawable.minimal_debris_46_v7
+    47 -> R.drawable.minimal_debris_47_v7
+    48 -> R.drawable.minimal_debris_48_v7
+    else -> R.drawable.minimal_debris_01_v7
 }

@@ -1,0 +1,10 @@
+<resources><string-array name="drone_display_names">
+<item>Scrap Bot</item><item>Copper Cloud</item><item>Rusty Rover</item><item>Azure Ace</item><item>Cobalt Collector</item>
+<item>Blue Beam</item><item>Forest Phantom</item><item>Jade Jumper</item><item>Emerald Eye</item><item>Crimson Crusher</item>
+<item>Ruby Reaper</item><item>Solar Stinger</item><item>Amber Apex</item><item>Void Vulture</item><item>Shadow Shifter</item>
+<item>Ghost Glider</item><item>Plasma Prowler</item><item>Neon Nibbler</item><item>Cyber Cicada</item><item>Titan Talon</item>
+<item>Iron Icarus</item><item>Gold Guardian</item><item>Gilded Golem</item><item>Quartz Quill</item><item>Silver Spectre</item>
+<item>Diamond Diver</item><item>Onyx Orb</item><item>Obsidian Owl</item><item>Quantum Quark</item><item>Mantis Scout</item>
+<item>Comet Ray</item><item>Prism Sentinel</item><item>Aurora Crown</item><item>Tidal Manta</item><item>Ion Kite</item>
+<item>Nebula Wasp</item><item>Helios Tug</item><item>Frost Falcon</item><item>Eclipse Monarch</item><item>Merchant Manta</item><item>Caravan Crown</item>
+</string-array></resources>

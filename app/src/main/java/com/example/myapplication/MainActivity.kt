@@ -16,6 +16,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalResources
 import com.example.myapplication.ui.GameScreen
 import com.example.myapplication.ui.PrivacyScreen
 import androidx.compose.runtime.rememberCoroutineScope
@@ -23,6 +24,7 @@ import kotlinx.coroutines.launch
 import com.example.myapplication.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
+    private var rewardedAds: RewardedAdsController? = null
     override fun attachBaseContext(newBase: Context) {
         val language = newBase.getSharedPreferences(PREFERENCES_NAME, MODE_PRIVATE)
             .getString(LANGUAGE_KEY, null)
@@ -41,6 +43,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         val privacyConsent = PrivacyConsent(this)
+        val ads = RewardedAdsController(this)
+        rewardedAds = ads
         setContent {
             var privacyAccepted by remember { mutableStateOf(privacyConsent.isAccepted()) }
             var privacyBusy by remember { mutableStateOf(false) }
@@ -49,17 +53,20 @@ class MainActivity : ComponentActivity() {
             var selectedLanguage by remember { mutableStateOf(getSelectedLanguage()) }
             var soundEnabled by remember { mutableStateOf(getBooleanSetting(SOUND_KEY, true)) }
             var reducedMotion by remember { mutableStateOf(getBooleanSetting(REDUCED_MOTION_KEY, false)) }
-            val localizedConfiguration = remember(selectedLanguage) {
+            val deviceConfiguration = LocalConfiguration.current
+            val localizedConfiguration = remember(selectedLanguage, deviceConfiguration) {
                 Configuration(resources.configuration).apply {
-                    setLocale(selectedLanguage?.let(Locale::forLanguageTag) ?: Locale.getDefault())
+                    setLocale(selectedLanguage?.let(Locale::forLanguageTag)
+                        ?: android.content.res.Resources.getSystem().configuration.locales[0])
                 }
             }
-            val localizedContext = remember(selectedLanguage) {
+            val localizedContext = remember(localizedConfiguration) {
                 createConfigurationContext(localizedConfiguration)
             }
             CompositionLocalProvider(
                 LocalContext provides localizedContext,
-                LocalConfiguration provides localizedConfiguration
+                LocalConfiguration provides localizedConfiguration,
+                LocalResources provides localizedContext.resources
             ) {
                 MyApplicationTheme(reducedMotion = reducedMotion) {
                     if (!privacyAccepted) {
@@ -78,9 +85,11 @@ class MainActivity : ComponentActivity() {
                         )
                     } else {
                     GameScreen(
+                        rewardedAds = ads,
                         onPrivacyWithdraw = {
                             privacyScope.launch {
                                 if (privacyConsent.withdraw()) {
+                                    ads.stopRequests()
                                     privacyAccepted = false
                                     privacyFailed = false
                                 } else {
@@ -120,6 +129,12 @@ class MainActivity : ComponentActivity() {
             .edit {
                 if (language == null) remove(LANGUAGE_KEY) else putString(LANGUAGE_KEY, language)
             }
+    }
+
+    override fun onDestroy() {
+        rewardedAds?.close()
+        rewardedAds = null
+        super.onDestroy()
     }
 
     private fun getBooleanSetting(key: String, defaultValue: Boolean): Boolean =

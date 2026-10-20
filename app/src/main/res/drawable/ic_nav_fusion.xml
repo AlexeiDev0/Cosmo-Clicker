@@ -1,0 +1,26 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="32dp" android:height="32dp"
+    android:viewportWidth="32" android:viewportHeight="32">
+    <path android:pathData="M5,1H27L31,5V27L27,31H5L1,27V5Z"
+        android:strokeColor="#C6A1FF" android:strokeAlpha="0.5" android:strokeWidth="0.7">
+        <aapt:attr name="android:fillColor">
+            <gradient android:startX="2" android:startY="1" android:endX="30" android:endY="32" android:type="linear">
+                <item android:color="#E0352B55" android:offset="0"/>
+                <item android:color="#F00D1528" android:offset="1"/>
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- Two reserve drones converge into an upgraded drone. -->
+    <path android:fillColor="#8CDCF0" android:pathData="M3.5,6H6V8H10V6H12.5V12H10V10H6V12H3.5Z M19.5,6H22V8H26V6H28.5V12H26V10H22V12H19.5Z"/>
+    <path android:fillColor="#1A2D48" android:strokeColor="#D8EEFF" android:strokeWidth="0.7"
+        android:pathData="M6,7H10V11H6Z M22,7H26V11H22Z"/>
+    <path android:fillColor="#8CDEA9" android:pathData="M7,8.5H9V9.5H7Z M23,8.5H25V9.5H23Z"/>
+    <path android:fillColor="#00000000" android:strokeColor="#C6A1FF" android:strokeWidth="1.5"
+        android:strokeLineCap="round" android:strokeLineJoin="round"
+        android:pathData="M8,13L16,18L24,13 M16,16V20 M13.5,18L16,20.5L18.5,18"/>
+    <path android:fillColor="#C6A1FF" android:pathData="M8,22H11V24H21V22H24V28H21V26H11V28H8Z"/>
+    <path android:fillColor="#293354" android:strokeColor="#E4D4FF" android:strokeWidth="0.8"
+        android:pathData="M12,22H20L21,24L20,28H12L11,24Z"/>
+    <path android:fillColor="#F4D59D" android:pathData="M16,22.5L17,24H18.5L17.3,25L17.8,26.7L16,25.8L14.2,26.7L14.7,25L13.5,24H15Z"/>
+</vector>

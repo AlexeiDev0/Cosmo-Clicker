@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tutorial_title">Первые шаги</string>
+    <string name="tutorial_collect_title">Собирай ресурсы</string>
+    <string name="tutorial_collect_body">Нажимай на планету, чтобы получать ресурсы. Трать их на дронов и улучшения.</string>
+    <string name="tutorial_drones_title">Создай свой флот</string>
+    <string name="tutorial_drones_body">Покупай дронов в магазине — они собирают обломки за тебя. В ангаре можно посмотреть свой флот. Цвет дрона показывает его редкость.</string>
+    <string name="tutorial_upgrade_title">Улучшай оборудование</string>
+    <string name="tutorial_upgrade_body">Улучшения в магазине увеличивают количество ресурсов за нажатие. Перед покупкой сравни стоимость и бонус.</string>
+    <string name="tutorial_explore_title">Исследуй космос</string>
+    <string name="tutorial_explore_body">Открывай новые миры, выполняй задания и участвуй в событиях. Твоя экспедиция начинается сейчас.</string>
+    <string name="tutorial_next">Далее</string>
+    <string name="tutorial_back">Назад</string>
+    <string name="tutorial_skip">Пропустить</string>
+    <string name="tutorial_finish">Играть</string>
+    <string name="tutorial_replay">Повторить обучение</string>
+</resources>

@@ -1,6 +1,8 @@
 package com.example.myapplication.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,16 +17,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.layout.ContentScale
 import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
-import androidx.compose.ui.res.painterResource as cargoPainterResource
+import com.example.myapplication.ui.components.cosmicIconPainter as cargoPainterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
@@ -42,11 +41,8 @@ fun FleetIcon(item: FleetConfig, iconSize: Dp, inFlight: Boolean = false) {
     Box(
         modifier = Modifier
             .size(iconSize)
-            .background(Brush.radialGradient(listOf(
-                rarityColor.copy(alpha = 0.20f),
-                rarityColor.copy(alpha = 0.06f),
-                Color.Transparent
-            )), CircleShape)
+            .then(if (inFlight) Modifier else Modifier.background(
+                rarityColor.copy(alpha = .06f), RoundedCornerShape(12.dp)))
             .then(if (inFlight) Modifier else Modifier.border(0.5.dp, rarityColor.copy(alpha = 0.28f), RoundedCornerShape(12.dp))),
         contentAlignment = Alignment.Center
     ) {
@@ -70,9 +66,10 @@ fun ScavengingDrone(
     gameAreaWidth: Dp,
     gameAreaHeight: Dp,
     rotorPhase: Float = 0f,
-    onDroneClick: (Long) -> Unit = {}
+    planetId: String = "p1"
 ) {
     val fleetItem = fleetItems[drone.type]
+    val droneDescription = fleetItem?.let { localizedDroneName(it) } ?: drone.type
     val reducedMotion = com.example.myapplication.ui.theme.LocalReducedMotion.current
     val displayX = if (reducedMotion) .12f + (drone.id % 7).toFloat() * .12f else drone.x
     val displayY = if (reducedMotion) .18f + (drone.id % 5).toFloat() * .14f else drone.y
@@ -104,10 +101,9 @@ fun ScavengingDrone(
                 else it
             }
             .semantics {
-                role = Role.Button
-                contentDescription = fleetItem?.name ?: drone.type
+                contentDescription = droneDescription
             }
-            .clickable { onDroneClick(drone.id) },
+            .pointerInput(Unit) { detectTapGestures(onTap = {}) },
         contentAlignment = Alignment.Center
     ) {
         if (fleetItem != null) {
@@ -116,12 +112,10 @@ fun ScavengingDrone(
                 val pulse = if (reducedMotion) .65f else .65f + .18f * sin(rotorPhase + drone.id.toFloat())
                 for (x in listOf(.31f, .69f)) {
                     val exhaust = Offset(size.width * x, size.height * .82f)
-                    drawOval(
-                        Brush.radialGradient(listOf(engineColor.copy(alpha = pulse), Color.Transparent), exhaust, size.width * .17f),
-                        Offset(exhaust.x - size.width * .13f, exhaust.y - size.height * .04f),
-                        Size(size.width * .26f, size.height * .24f)
-                    )
-                    drawCircle(Color(0xFFE2FAFF), size.width * .025f, exhaust)
+                    drawLine(engineColor.copy(alpha = pulse), exhaust,
+                        Offset(exhaust.x, exhaust.y + size.height * .09f),
+                        strokeWidth = size.width * .05f,
+                        cap = androidx.compose.ui.graphics.StrokeCap.Round)
                 }
             }
             FleetIcon(fleetItem, droneSize, inFlight = true)
@@ -133,6 +127,7 @@ fun ScavengingDrone(
             Image(
                 painter = drone.cargoDebrisId?.let { cargoPainterResource(debrisDrawable(it)) }
                     ?: painterResource(R.drawable.cargo_crate_space_v2),
+                colorFilter = remember(planetId) { planetDebrisFilter(planetId) },
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
                 modifier = Modifier

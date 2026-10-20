@@ -16,6 +16,9 @@ Drona Salvage is a single-player incremental Android game about collecting space
   grants debris; failure costs resources and temporarily disables the infected drone.
 - Open Common, Rare, and Legendary cases with different prices and rarity odds.
   Every case has a stable eight-frame opening animation and tier-specific artwork.
+- Fuse two healthy reserve drones of the same rarity for a chance at a higher
+  rarity. Both inputs are consumed; failed attempts give no reward. Chances fall
+  from 25% for common pairs to 5% for epic pairs, with legendary as the top tier.
 - Purchase 19 click upgrades, including ten late-game technologies, and manage debt while growing the space operation.
 - Keep progress between sessions with local Android storage.
 - Claim a seven-day login reward cycle, complete rotating daily and weekly quests, claim achievements, build permanent
@@ -80,8 +83,9 @@ The current release uses two values defined in `gradle.properties`:
 
 Increase `APP_VERSION_CODE` for every published build and update `APP_VERSION_NAME` when preparing a new release. Record the same values and a short English summary in [`news.md`](news.md).
 
-The current project version is **1.18.0 (37)**. Work completed after that release is
-listed under **Unreleased** until the next version is assigned.
+The current project version is **1.20.1 (42)**. The signed release bundle and
+store assets are prepared in [`Google-Play-Upload/`](Google-Play-Upload/README.txt).
+The bundle is kept locally and is not committed to GitHub.
 
 ## Release notes
 

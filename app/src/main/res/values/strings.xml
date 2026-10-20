@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Drona Salvage</string>
+    <string name="app_name">Space Salvage</string>
     <string name="autoclicker_detected">Repeated or excessive input: planet taps paused for %1$d s. Fleet and built-in auto-collection continue.</string>
     <string name="settings">Settings</string>
     <string name="reset_game">Reset game progress</string>
-    <string name="reset_game_description">Erase the save and start from the beginning for testing</string>
+    <string name="reset_game_description">Delete your progress and start a new journey</string>
     <string name="reset_game_confirm_title">Reset all progress?</string>
     <string name="reset_game_confirm_message">Planets, drones, upgrades, statistics, achievements and prestige will be permanently erased.</string>
     <string name="reset_game_confirm">Reset</string>
@@ -23,7 +23,7 @@
     <string name="developer">Developer</string>
     <string name="telegram">Telegram</string>
 <string name="close">Close</string>
-    <string name="tap_to_continue">Tap me to continue</string>
+    <string name="tap_to_continue">Tap to play</string>
 <string name="debris">debris</string>
     <string name="per_second">+%1$s / sec</string>
     <string name="drone_income">Drone income</string>
@@ -57,7 +57,7 @@
 <string name="hangar_drone_count">Owned: %1$d</string>
     <string name="drones_in_flight">In flight</string>
 <string name="choose_case_amount">Choose case amount</string>
-    <string name="case_bundle_hint">Choose any amount your balance can afford. The price increases after every 20 opened cases.</string>
+    <string name="case_bundle_hint">Choose an amount within your balance. Each next case of this type costs more; the total includes every case in the bundle.</string>
 <string name="buy_cases_count">Buy ×%1$d</string>
     <string name="max_cases_short">max %1$d</string>
     <string name="open_all_cases">Open all ×%1$d</string>
@@ -76,7 +76,6 @@
 <string name="common_case">Common Case</string>
     <string name="rare_case">Rare Case</string>
     <string name="legendary_case">Legendary Case</string>
-    <string name="premium_drop_chance">Premium reward chance: %1$d%%</string>
 <string name="planet_income_multiplier">All income: ×%1$s</string>
     <string name="achievements">Achievements</string>
     <string name="statistics">Statistics</string>
@@ -104,7 +103,7 @@
     <string name="achievement_fleet_12">Build a full fleet of 12 drones</string>
     <string name="achievement_planets_5">Unlock 5 planets</string>
     <string name="achievement_planets_10">Unlock 10 planets</string>
-    <string name="achievement_planets_20">Unlock all 20 planets</string>
+    <string name="achievement_planets_20">Unlock 20 planets</string>
     <string name="achievement_events_10">Complete 10 events</string>
     <string name="achievement_prestige_1">Complete the first prestige</string>
     <string name="event_log">Event log</string>
@@ -311,7 +310,7 @@
     <string name="session_stats">Session: %1$d clicks · %2$s debris · %3$d cases</string>
     <string name="event_trading_ship">Trading ship</string>
     <string name="event_ship_hull">Ship hull: %1$d</string>
-    <string name="event_desc_trading_ship">A merchant offers one temporary module. The deal closes when the event expires.</string>
+    <string name="event_desc_trading_ship">Tap the merchant ship to browse cases, drones, cargo, modules and barter offers. One deal per visit; offers expire with the event.</string>
     <string name="event_choose_trade">Choose a temporary module</string>
 <string name="trade_market_title">Wandering Market</string>
     <string name="trade_docking_hint">Tune three communication channels. A precise signal lowers prices; a mistake raises the markup.</string>
@@ -428,7 +427,7 @@
     <string name="achievement_parts_25">Collect 25 mastery parts</string><string name="achievement_parts_100">Collect 75 mastery parts</string><string name="achievement_parts_300">Collect 150 mastery parts</string>
     <string name="achievement_station_5">Reach 5 total station levels</string><string name="achievement_station_10">Reach 10 total station levels</string><string name="achievement_station_20">Fully upgrade the station</string>
     <string name="achievement_planets_21">Reach Chronos Rift</string><string name="achievement_planets_22">Reach Aurora Forge</string><string name="achievement_planets_23">Reach Prism Sanctuary</string>
-    <string name="achievement_wealth_1t">Hold 1 trillion debris</string><string name="achievement_wealth_1q">Hold 1 quadrillion debris</string>
+    <string name="achievement_wealth_1t">Build a reserve of 10 million debris</string><string name="achievement_wealth_1q">Build a reserve of 100 million debris</string>
     <string name="achievement_tech_all">Unlock every prestige technology</string><string name="achievement_achievements_40">Claim 40 achievements</string>
     <string name="event_choice_instruction">Choose an option. Its reward and risk are shown below.</string>
     <string name="event_salvage_explained">Guaranteed: receive %1$s debris immediately. No risk and no waiting.</string>
@@ -481,4 +480,32 @@
     <string name="collection_drones">Drone discoveries</string>
     <string name="progress_count">%1$d / %2$d</string>
     <string name="reward_drone_number">Reward: drone №%1$d</string>
+    <string name="quest_filter_all">All missions</string>
+    <string name="quest_filter_ready">Ready (%1$d)</string>
+    <string name="quest_no_ready">No rewards ready yet. Complete missions to collect them!</string>
+    <string name="fusion_title">Fusion</string>
+    <string name="open_fusion">Open drone fusion</string>
+    <string name="fusion_subtitle">Two reserve drones → one higher rarity. Legendary is the highest tier.</string>
+    <string name="fusion_chance">Result: %1$s · Chance: %2$d%%</string>
+    <string name="fusion_select_two">Choose two healthy reserve drones of the same rarity (%1$d/2). Identical models are allowed.</string>
+    <string name="fusion_available">Available: %1$d</string>
+    <string name="fusion_remove">Remove</string>
+    <string name="fusion_empty">No healthy reserve drones of this rarity. Recall drones in the hangar or open cases.</string>
+    <string name="fusion_risk">Both selected drones are consumed. Success gives one random drone of the target rarity; failure gives nothing.</string>
+    <string name="fusion_review">Review fusion</string>
+    <string name="fusion_confirm_title">Consume these two drones?</string>
+    <string name="fusion_confirm">Fuse two drones</string>
+    <string name="fusion_success">Fusion succeeded!</string>
+    <string name="fusion_failure">Fusion failed</string>
+    <string name="fusion_failure_details">Both drones were lost. No drone was created.</string>
+    <string name="fusion_reward_reserve">The new drone is in reserve. Deploy it in the hangar.</string>
+    <string name="fusion_again">Another fusion</string>
+    <string name="fusion_selection_changed">Fusion was not performed. Choose the drones again: their availability may have changed.</string>
+    <string name="fusion_workshop_subtitle">Tap drones to fill both slots.</string>
+    <string name="fusion_choose_pair">Choose two drones of the same rarity</string>
+    <string name="fusion_collection">Your drones</string>
+    <string name="fusion_slot_empty">Drone %1$d</string>
+    <string name="fusion_slot_remove">Remove drone %1$d: %2$s</string>
+    <string name="fusion_risk_short">Both drones are consumed. A failed attempt gives nothing.</string>
+    <string name="fusion_in_progress">Fusing drones…</string>
 </resources>

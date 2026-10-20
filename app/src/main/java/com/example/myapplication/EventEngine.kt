@@ -35,12 +35,7 @@ object EventEngine {
     private val eventWeights = linkedMapOf(
         // Other enum values stay readable for old saves and event-log entries.
         // Only events played directly on the game field are generated.
-        GameEventType.METEOR_SHOWER to 32,
-        GameEventType.SOLAR_FLARE to 20,
-        GameEventType.CYBER_VIRUS to 12,
-        GameEventType.PIRATE_RAID to 12,
-        // Roughly 4% of field events: visible often enough to feel real, still genuinely rare.
-        GameEventType.TRADING_SHIP to 3
+        GameEventType.TRADING_SHIP to 1
     )
 
     private val negativeTypes = setOf(
@@ -77,6 +72,7 @@ object EventEngine {
     fun selectType(planetId: String, random: RandomProvider): GameEventType? {
         val modifiers = PlanetEventModifiers.forPlanet(planetId)
         val availableWeights = eventWeights.filterKeys { it !in modifiers.blockedEvents }
+        if (availableWeights.isEmpty()) return null
         val totalWeight = availableWeights.values.sum()
         var roll = random.nextInt(totalWeight)
         var selectedType = availableWeights.entries.first().key
@@ -196,7 +192,11 @@ object EventEngine {
                 GameEventType.CYBER_VIRUS -> listOf(random.nextInt(4))
             },
             stormProgress = 0,
-            stormRound = if (actualType == GameEventType.BLACK_HOLE) 0 else 1
+            stormRound = when (actualType) {
+                GameEventType.BLACK_HOLE -> 0
+                GameEventType.TRADING_SHIP -> 2
+                else -> 1
+            }
         )
     }
 
@@ -319,6 +319,9 @@ object EventEngine {
     ): GameState {
         val event = state.activeEvent
         if (event?.type != GameEventType.TRADING_SHIP) return state
+
+        // Visiting merchants trade peacefully; legacy combat states remain readable.
+        if (state.stormRound == 2) return state
 
         val attackers = state.drones.count { it.state != DroneState.BROKEN && it.disabledUntil <= nowMillis }
         val damage = (attackers / 2).coerceAtLeast(if (attackers > 0) 1 else 0)
@@ -628,8 +631,21 @@ object EventEngine {
         val event = state.activeEvent
         if (event?.type != GameEventType.TRADING_SHIP || state.stormRound != 2) return state
         val cost = tradeOfferCost(event, offer, state.eventMultiplier)
-        if (state.totalDebris < cost) return state
-        val paid = state.copy(totalDebris = state.totalDebris - cost)
+        if (!canBuyTradeOffer(state, offer)) return state
+        var paid = state.copy(totalDebris = state.totalDebris - cost)
+        if (offer == TradeOffer.DRONE_FOR_CASE) {
+            val id = spareTradeDrone(state) ?: return state
+            paid = paid.copy(fleetCounts = paid.fleetCounts + (id to (paid.fleetCounts.getValue(id) - 1)))
+        }
+        if (offer == TradeOffer.PARTS_FOR_DRONE) {
+            var remaining = 20
+            val parts = paid.droneParts.toSortedMap().mapValues { (_, count) ->
+                val consumed = minOf(count, remaining)
+                remaining -= consumed
+                count - consumed
+            }
+            paid = paid.copy(droneParts = parts.filterValues { it > 0 })
+        }
         val rewarded = when (offer) {
             TradeOffer.POWER_CORE -> paid.withTradeEffect(SkillType.TRADE_POWER, nowMillis + TRADE_POWER_DURATION_MS)
             TradeOffer.LUCK_SCANNER -> paid.withTradeEffect(SkillType.TRADE_LUCK, nowMillis + TRADE_LUCK_DURATION_MS)
@@ -640,6 +656,12 @@ object EventEngine {
             TradeOffer.RARE_CASE -> paid.copy(isOpeningCase = true, openingCaseType = CaseType.RARE, lastDroppedDroneId = null)
             TradeOffer.LEGENDARY_CASE -> paid.copy(isOpeningCase = true, openingCaseType = CaseType.LEGENDARY, lastDroppedDroneId = null)
             TradeOffer.RANDOM_DRONE -> grantTradeDrone(paid, event)
+            TradeOffer.MERCHANT_MANTA -> grantSpecificTradeDrone(paid, "drone_40")
+            TradeOffer.MERCHANT_CROWN, TradeOffer.PARTS_FOR_DRONE -> grantSpecificTradeDrone(paid, "drone_41")
+            TradeOffer.DRONE_FOR_CASE -> paid.copy(isOpeningCase = true, openingCaseType = CaseType.RARE, lastDroppedDroneId = null)
+            TradeOffer.REPAIR_KIT -> paid.copy(drones = paid.drones.map {
+                if (it.state == DroneState.BROKEN) it.copy(state = DroneState.IDLE, targetId = null, disabledUntil = 0L) else it
+            })
         }
         return finishEvent(
             rewarded,
@@ -648,10 +670,38 @@ object EventEngine {
         )
     }
 
-    fun tradeOffers(event: GameEvent, count: Int = 3): List<TradeOffer> =
-        TradeOffer.entries
+    fun tradeOffers(event: GameEvent, count: Int = 3): List<TradeOffer> {
+        val rareRoll = ((mixTradeSeed(event.startedAt + 41_171L) ushr 1) % 100).toInt()
+        val special = when {
+            rareRoll < 2 -> TradeOffer.MERCHANT_CROWN
+            rareRoll < 6 -> TradeOffer.MERCHANT_MANTA
+            else -> null
+        }
+        val common = TradeOffer.entries.filter {
+            it != TradeOffer.MERCHANT_CROWN && it != TradeOffer.MERCHANT_MANTA &&
+                (it != TradeOffer.PARTS_FOR_DRONE || rareRoll < 5)
+        }
             .sortedBy { offer -> mixTradeSeed(event.startedAt + offer.ordinal * 9_973L) }
-            .take(count.coerceIn(1, TradeOffer.entries.size))
+        return (listOfNotNull(special) + common).take(count.coerceIn(1, common.size))
+    }
+
+    private fun spareTradeDrone(state: GameState): String? = state.fleetCounts.toSortedMap().entries
+        .firstOrNull { (id, count) -> count > 1 && count > (state.activeFleetCounts[id] ?: 0) }?.key
+
+    fun canBuyTradeOffer(state: GameState, offer: TradeOffer): Boolean {
+        val event = state.activeEvent ?: return false
+        if (event.type != GameEventType.TRADING_SHIP || state.stormRound != 2) return false
+        if (state.totalDebris < tradeOfferCost(event, offer, state.eventMultiplier)) return false
+        if (offer == TradeOffer.DRONE_FOR_CASE && spareTradeDrone(state) == null) return false
+        if (offer == TradeOffer.PARTS_FOR_DRONE && state.droneParts.values.sumOf { it.toLong() } < 20) return false
+        if (offer == TradeOffer.REPAIR_KIT && state.drones.none { it.state == DroneState.BROKEN }) return false
+        if (offer in setOf(TradeOffer.MERCHANT_MANTA, TradeOffer.MERCHANT_CROWN, TradeOffer.PARTS_FOR_DRONE) &&
+            state.fleetCounts.values.sumOf { it.toLong() } >= EconomyBalance.MAX_DRONES) return false
+        val caseOffer = offer in setOf(TradeOffer.COMMON_CASE, TradeOffer.RARE_CASE, TradeOffer.LEGENDARY_CASE, TradeOffer.DRONE_FOR_CASE)
+        if ((caseOffer || offer in setOf(TradeOffer.RANDOM_DRONE, TradeOffer.MERCHANT_MANTA, TradeOffer.MERCHANT_CROWN, TradeOffer.PARTS_FOR_DRONE)) &&
+            (state.isOpeningCase || state.lastDroppedDroneId != null || state.pendingCaseOpenings > 0 || state.showCaseBundleSummary)) return false
+        return true
+    }
 
     fun tradeOfferCost(event: GameEvent, offer: TradeOffer): Double = when (offer) {
         TradeOffer.POWER_CORE -> event.reward
@@ -663,6 +713,10 @@ object EventEngine {
         TradeOffer.RARE_CASE -> maxOf(4_500.0, event.reward * 1.4)
         TradeOffer.LEGENDARY_CASE -> maxOf(18_000.0, event.reward * 3.5)
         TradeOffer.RANDOM_DRONE -> maxOf(25_000.0, event.reward * 6.0)
+        TradeOffer.MERCHANT_MANTA -> maxOf(75_000.0, event.reward * 8.0)
+        TradeOffer.MERCHANT_CROWN -> maxOf(150_000.0, event.reward * 12.0)
+        TradeOffer.REPAIR_KIT -> maxOf(500.0, event.reward * .5)
+        TradeOffer.DRONE_FOR_CASE, TradeOffer.PARTS_FOR_DRONE -> 0.0
     }
 
     fun tradeOfferCost(event: GameEvent, offer: TradeOffer, priceMultiplier: Double): Double =
@@ -701,7 +755,11 @@ object EventEngine {
         copy(activeEffects = activeEffects + (type.id to expiresAt))
 
     private fun grantTradeDrone(state: GameState, event: GameEvent): GameState {
-        val droneId = "drone_${((mixTradeSeed(event.startedAt) ushr 1) % 29L).toInt() + 1}"
+        val droneId = "drone_${((mixTradeSeed(event.startedAt) ushr 1) % 39L).toInt() + 1}"
+        return grantSpecificTradeDrone(state, droneId)
+    }
+
+    private fun grantSpecificTradeDrone(state: GameState, droneId: String): GameState {
         val owned = state.fleetCounts[droneId] ?: 0
         val canStoreDrone = state.fleetCounts.values.sum() < EconomyBalance.MAX_DRONES
         if (!canStoreDrone) {

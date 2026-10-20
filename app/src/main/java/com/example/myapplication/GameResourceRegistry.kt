@@ -1,6 +1,7 @@
 package com.example.myapplication
 
 object GameResourceRegistry {
+    const val DRONE_COUNT = 41
     private val droneDrawables = intArrayOf(
         R.drawable.drone_01_v2, R.drawable.drone_02_v2, R.drawable.drone_03_v2,
         R.drawable.drone_04_v2, R.drawable.drone_05_v2, R.drawable.drone_06_v2,
@@ -11,7 +12,11 @@ object GameResourceRegistry {
         R.drawable.drone_19_v2, R.drawable.drone_20_v2, R.drawable.drone_21_v2,
         R.drawable.drone_22_v2, R.drawable.drone_23_v2, R.drawable.drone_24_v2,
         R.drawable.drone_25_v2, R.drawable.drone_26_v2, R.drawable.drone_27_v2,
-        R.drawable.drone_28_v2, R.drawable.drone_29_v2
+        R.drawable.drone_28_v2, R.drawable.drone_29_v2,
+        R.drawable.minimal_drone_30_v5, R.drawable.minimal_drone_31_v5,
+        R.drawable.minimal_drone_32_v5, R.drawable.minimal_drone_33_v5,
+        R.drawable.drone_34_v6, R.drawable.drone_35_v6, R.drawable.drone_36_v6, R.drawable.drone_37_v6, R.drawable.drone_38_v6, R.drawable.drone_39_v6,
+        R.drawable.drone_40_v6, R.drawable.drone_41_v6
     )
 
     private val caseDrawables = intArrayOf(

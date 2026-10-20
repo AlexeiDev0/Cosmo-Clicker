@@ -1,5 +1,63 @@
 # News
 
+## 1.20.1 (versionCode 42) — 2026-10-20
+
+- Added the drone Fusion workshop, ready-reward mission filtering, and optional
+  rewarded shop bonuses.
+- Updated the launcher and Play Store icon and feature graphic to v4 artwork.
+- Updated the privacy policy to version 11 and prepared a matching Play upload
+  bundle and localized store descriptions.
+
+- Updated the privacy policy and local consent to version 10 (13 October 2026)
+  in English, Russian and Spanish, including local fusion outcomes, temporary
+  selection and animation state, and the existing backup/deletion rules.
+- Made policy exports read the in-app text and verify its consent version,
+  instead of rewriting policy dates and versions during export.
+- Redesigned Fusion as a compact drone grid with purple selection highlights,
+  two removable input slots and an adaptive layout. Added a short convergence
+  animation and result reveal, with immediate outcomes in reduced-motion mode.
+- Replaced Statistics in the bottom navigation with a new vector Fusion icon
+  and a drone fusion workshop, localized in English, Russian and Spanish.
+- Fusion consumes two healthy reserve drones of the same rarity, including
+  identical models. Common/uncommon pairs can produce a rare drone at 25%/20%,
+  rare pairs an epic at 12%, and epic pairs a legendary at 5%. Failed attempts
+  lose both drones. The workshop previews the chance and confirms the pair.
+- Fusion rewards update discoveries and obtain-drone quests, stay in reserve,
+  and use existing inventory persistence. Event-exclusive drones are excluded
+  from fusion rewards, and legendary drones cannot be fused further.
+- Added a ready-rewards filter and live mission count to the Goals screen, with
+  English, Russian and Spanish labels and a saved filter selection.
+- Moved the debris collection below missions, hid empty mission sections and
+  shared a single clock between daily rewards and mission reset timers.
+
+## 1.20.0 (versionCode 41) — 2026-10-05
+
+### Readiness fixes — 2026-10-06
+
+- Added bundled Exo 2 and Manrope fonts across headings, controls, body text and
+  counters, with Cyrillic support, offline loading and OFL licences in the APK.
+- Lowered the two banked-debris milestones to 10 million and 100 million;
+  preserved existing achievement IDs and claimed rewards.
+- Prevented offline balance overflow and blank rewarded-offer identifiers.
+- Moved the rewarded loading timeout after consent and prevented concurrent
+  loading while advertising privacy options are open.
+- Corrected planet-achievement and reset wording and prepared EN/RU/ES store descriptions.
+- Updated privacy policy to version 6, separated permission for advertising
+  requests, removed advertising-ID permissions, and blocked release builds
+  without production AdMob identifiers. The earlier version-5 notes below
+  describe the initial integration.
+
+- Added optional rewarded advertising to double offline income after absences
+  of at least one minute. Regular income remains available without watching.
+- Added persistent offer identifiers, duplicate-callback protection and a
+  confirmed balance write for advertising bonuses; advertising time is excluded
+  from new offline income, and simulation and music pause during a showing.
+- Debug uses Google demo ads. Release ad requests stay disabled until both
+  production AdMob identifiers are supplied; production requests use UMP.
+- Applied conservative age restrictions for the declared 13+ audience and
+  updated privacy policy version 5 in English, Russian, Spanish and HTML.
+- Added setup and manual validation instructions in docs/ADMOB_SETUP.md.
+
 ## 1.19.2 (versionCode 40) — 2026-10-03
 
 - Added 29 new drone designs and 24 case frames in a simpler industrial style
@@ -18,7 +76,7 @@
   corrected atlas thumbnail rendering. Reduced-motion mode keeps engine light steady.
 - Unified 14 primary control icons with crisp metallic vectors and accent lighting.
 - Retained the bundled CC0 audio and version 3 privacy policy from 1.19.0.
-
+v
 ## 1.19.0 (versionCode 38) — 2026-10-03
 
 - Added bundled CC0 interface and sci-fi effects for tapping, salvage, drones,

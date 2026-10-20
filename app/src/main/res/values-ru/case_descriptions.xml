@@ -1,0 +1,6 @@
+<resources>
+    <string name="case_information">Информация: %1$s</string>
+    <string name="case_common_description">Первый шаг к своему флоту. Открой кейс и получи случайного дрона для новых экспедиций.</string>
+    <string name="case_rare_description">Расширь коллекцию. Этот кейс даёт больше шансов получить эпического или легендарного дрона.</string>
+    <string name="case_legendary_description">Для охотников за особенными дронами. Самый высокий среди кейсов шанс эпической или легендарной находки.</string>
+</resources>

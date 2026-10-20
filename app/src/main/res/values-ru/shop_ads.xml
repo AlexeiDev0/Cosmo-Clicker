@@ -1,0 +1,10 @@
+<resources>
+    <string name="shop_tab_rewards">Награды</string>
+    <string name="shop_ad_rewards">Награды за рекламу</string>
+    <string name="shop_ad_notice">Нажатие на награду загружает рекламу Google. Засчитываются только просмотры с подтверждённой наградой. Просмотр добровольный.</string>
+    <string name="shop_ad_debris">Смотреть 1 рекламу · +%1$s обломков</string>
+    <string name="shop_ad_scaling">Сумма растёт с открытыми планетами и доходом флота.</string>
+    <string name="shop_ad_case">Обычный кейс · %1$d/3 · Смотреть рекламу</string>
+    <string name="shop_ad_unavailable">Реклама недоступна. Попробуйте позже. Просмотр не засчитан.</string>
+    <string name="shop_ad_open_case">Открыть заработанный обычный кейс</string>
+</resources>

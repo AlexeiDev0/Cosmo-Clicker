@@ -1,14 +1,7 @@
 package com.example.myapplication
 
 internal object DebrisEngine {
-    fun imageIndex(rarity: Rarity, random: RandomProvider): Int = when (rarity) {
-        Rarity.COMMON -> random.choose(listOf(1, 2, 7, 8, 15, 16, 17, 18))
-        Rarity.UNCOMMON -> random.choose(listOf(3, 9, 10, 19, 20, 21))
-        Rarity.RARE -> random.choose(listOf(4, 11, 12, 22, 23, 24))
-        Rarity.EPIC -> random.choose(listOf(5, 13, 25, 26))
-        Rarity.LEGENDARY -> random.choose(listOf(6, 14, 27, 28))
-        Rarity.VOID -> 6
-    }
+    fun imageIndex(rarity: Rarity, random: RandomProvider): Int = random.choose(DebrisCatalog.idsFor(rarity))
 
     fun reward(rarity: Rarity, planetId: String, random: RandomProvider): Double {
         var reward = random.nextLong(rarity.minReward, rarity.maxReward + 1).toDouble()

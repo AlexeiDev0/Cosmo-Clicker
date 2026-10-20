@@ -19,8 +19,9 @@ object AppColors {
     val SurfaceRaised = Color(0xFF344661)
     val Outline = Color(0xFF5C708C)
     val OutlineActive = Primary
-    val TextMuted = Color(0xFFCBD7E6)
-    val TextDisabled = Color(0xFF7F90AC)
+    val TextPrimary = Color(0xFFF3F6FC)
+    val TextMuted = Color(0xFFBCCBDD)
+    val TextDisabled = Color(0xFF9AAAC0)
     val CargoColor = Color(0xFFE7B679)
 
     val RarityCommon = Color(0xFFB8C5D1)

@@ -42,7 +42,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         "Ruby Reaper", "Solar Stinger", "Amber Apex", "Void Vulture", "Shadow Shifter",
         "Ghost Glider", "Plasma Prowler", "Neon Nibbler", "Cyber Cicada", "Titan Talon",
         "Iron Icarus", "Gold Guardian", "Gilded Golem", "Quartz Quill", "Silver Spectre",
-        "Diamond Diver", "Onyx Orb", "Obsidian Owl", "Quantum Quark"
+        "Diamond Diver", "Onyx Orb", "Obsidian Owl", "Quantum Quark",
+        "Mantis Scout", "Comet Ray", "Prism Sentinel", "Aurora Crown", "Tidal Manta", "Ion Kite", "Nebula Wasp", "Helios Tug", "Frost Falcon", "Eclipse Monarch", "Merchant Manta", "Caravan Crown"
     )
 
     val clickItems = listOf(
@@ -67,8 +68,16 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         ItemConfig("omega_core", "Omega Core", 380_000_000_000.0, 220_000_000.0, R.drawable.upgrade_omega_core_v1)
     )
 
-    val fleetItems = (1..29).map { i ->
+    val fleetItems = (1..GameResourceRegistry.DRONE_COUNT).map { i ->
         val rarity = when {
+            i == 40 -> Rarity.RARE
+            i == 41 -> Rarity.EPIC
+            i == 34 -> Rarity.UNCOMMON
+            i == 35 || i == 38 -> Rarity.RARE
+            i == 36 -> Rarity.EPIC
+            i == 30 -> Rarity.UNCOMMON
+            i == 31 -> Rarity.RARE
+            i == 32 -> Rarity.EPIC
             i <= 10 -> Rarity.COMMON
             i <= 18 -> Rarity.UNCOMMON
             i <= 24 -> Rarity.RARE
@@ -78,7 +87,11 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         FleetConfig(
             id = "drone_$i",
             name = droneNames.getOrElse(i-1) { "Drone #$i" },
-            base = 250.0 * 1.45.pow(i.toDouble() - 1),
+            base = when (i) {
+                40 -> 75_000.0
+                41 -> 150_000.0
+                else -> 250.0 * 1.45.pow(i.toDouble() - 1)
+            },
             iconRes = GameResourceRegistry.drone(i),
             spriteIndex = -1,
             rarity = rarity
@@ -204,8 +217,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             activeQuests.add(
                 Quest(
                     id = id,
-                    collectedDebrisIds = prefs.getStringSet("quest_${id}_debrisTypes", emptySet()).orEmpty()
-                        .mapNotNull { it.toIntOrNull()?.takeIf { value -> value in 1..28 } }.toSet(),
+                    collectedDebrisIds = DebrisCatalog.decodeIds(prefs.getStringSet("quest_${id}_debrisTypes", emptySet()).orEmpty()),
                     type = type,
                     description = desc,
                     target = target,
@@ -232,6 +244,15 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
         val loadedState = GameState(
             totalDebris = loadPreciseDouble("totalDebris", 50.0).finiteOr(50.0).coerceAtLeast(0.0),
+            offlineBonusOfferId = prefs.getString("offlineBonusOfferId", null),
+            shopCaseAdProgress = prefs.getInt("shopCaseAdProgress", 0).coerceIn(0, ShopAdRewardEngine.CASE_ADS),
+            shopAdOfferId = prefs.getString("shopAdOfferId", null),
+            shopAdOfferType = ShopAdReward.entries.firstOrNull { it.name == prefs.getString("shopAdOfferType", null) },
+            shopAdOfferAmount = loadPreciseDouble("shopAdOfferAmount", 0.0).finiteOr(0.0),
+            lastOfflineReward = prefs.getString("offlineBonusOfferId", null)?.let {
+                loadPreciseDouble("offlineBonusAmount", 0.0).finiteOr(0.0).coerceAtLeast(0.0)
+            } ?: 0.0,
+            lastOfflineSeconds = prefs.getLong("offlineBonusSeconds", 0L).coerceIn(0L, OfflineProgressEngine.MAX_OFFLINE_SECONDS),
             clickLevels = clickLevels,
             fleetCounts = fleetCounts,
             activeFleetCounts = activeFleetCounts,
@@ -239,8 +260,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 item.id to prefs.getInt("damagedFleet_${item.id}", 0).coerceIn(0, fleetCounts[item.id] ?: 0)
             },
             discoveredDroneIds = discoveredDroneIds,
-            discoveredDebrisIds = prefs.getStringSet("discoveredDebrisIds", emptySet()).orEmpty()
-                .mapNotNull { it.toIntOrNull()?.takeIf { value -> value in 1..28 } }.toSet(),
+            discoveredDebrisIds = DebrisCatalog.decodeIds(prefs.getStringSet("discoveredDebrisIds", emptySet()).orEmpty()),
             droneParts = droneParts,
             claimedCollectionMilestones = prefs.getStringSet("claimedCollectionMilestones", emptySet()).orEmpty(),
             currentPlanetId = currentPlanetId,
@@ -248,6 +268,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             isHotelDebtActive = prefs.getBoolean("isHotelDebtActive", false),
             currentHotelDebt = loadPreciseDouble("currentHotelDebt", 0.0).finiteOr(0.0).coerceAtLeast(0.0),
             isOpeningCase = prefs.getBoolean("isOpeningCase", false),
+            lastDroppedDroneId = prefs.getString("lastDroppedDroneId", null)?.takeIf { it in fleetById },
             openingCaseType = prefs.getString("openingCaseType", null)
                 ?.let { storedType -> CaseType.entries.firstOrNull { it.name == storedType } },
             pendingCaseOpenings = prefs.getInt("pendingCaseOpenings", 0).coerceAtLeast(0),
@@ -275,14 +296,15 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             dailyQuestsCompletedAt = prefs.getLong("dailyQuestsCompletedAt", -1L),
             weeklyQuestsCompletedAt = prefs.getLong("weeklyQuestsCompletedAt", -1L),
             lastDailyRewardDay = prefs.getLong("lastDailyRewardDay", -1L),
-            dailyRewardStreak = prefs.getInt("dailyRewardStreak", 0).coerceIn(0, 7),
+            dailyRewardStreak = prefs.getInt("dailyRewardStreak", 0).coerceAtLeast(0),
             lifetimeStats = LifetimeStats(
                 clicks = prefs.getLong("lifetimeClicks", 0L).coerceAtLeast(0L),
                 bestCombo = prefs.getInt("lifetimeBestCombo", 0).coerceIn(0, MAX_COMBO),
                 debrisCollected = prefs.getLong("lifetimeDebrisCollected", 0L).coerceAtLeast(0L),
                 casesOpened = prefs.getInt("lifetimeCasesOpened", 0).coerceAtLeast(0),
                 eventsCompleted = prefs.getInt("lifetimeEventsCompleted", 0).coerceAtLeast(0),
-                prestiges = prefs.getInt("lifetimePrestiges", 0).coerceAtLeast(0)
+                prestiges = prefs.getInt("lifetimePrestiges", 0).coerceAtLeast(0),
+                playTimeMillis = prefs.getLong("lifetimePlayTimeMillis", 0L).coerceAtLeast(0L)
             ),
             unlockedAchievementIds = prefs.getStringSet("unlockedAchievementIds", emptySet()) ?: emptySet(),
             claimedAchievementIds = prefs.getStringSet("claimedAchievementIds", emptySet()) ?: emptySet(),
@@ -317,15 +339,22 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             fleetRarities = fleetById.mapValues { it.value.rarity },
             rewardMultiplier = offlineRewardMultiplier(restoredState)
         )
-        return OfflineProgressEngine.apply(FeatureEngine.refreshWeekly(restoredState), offline)
+        return OfflineProgressEngine.apply(FeatureEngine.refreshWeekly(CaseController.restoreOpening(restoredState)), offline)
     }
 
-    private fun saveGameState() {
+    private fun saveGameState(durable: Boolean = false): Boolean =
         saveCoordinator.save({ _gameState.value }) { state ->
-            prefs.edit {
+            prefs.edit(durable) {
             putInt(SAVE_VERSION_KEY, CURRENT_SAVE_VERSION)
             putLong(LAST_ACTIVE_AT_KEY, System.currentTimeMillis())
             putLong("totalDebrisBits", GameRules.encodeDouble(state.totalDebris))
+            putString("offlineBonusOfferId", state.offlineBonusOfferId)
+            putInt("shopCaseAdProgress", state.shopCaseAdProgress)
+            putString("shopAdOfferId", state.shopAdOfferId)
+            putString("shopAdOfferType", state.shopAdOfferType?.name)
+            putLong("shopAdOfferAmountBits", GameRules.encodeDouble(state.shopAdOfferAmount))
+            putLong("offlineBonusAmountBits", GameRules.encodeDouble(state.lastOfflineReward))
+            putLong("offlineBonusSeconds", state.lastOfflineSeconds)
             state.clickLevels.forEach { (id, lvl) -> putInt("click_$id", lvl) }
             state.fleetCounts.forEach { (id, count) -> putInt("fleet_$id", count) }
             putBoolean("activeFleetInitialized", true)
@@ -339,6 +368,8 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             putBoolean("isHotelDebtActive", state.isHotelDebtActive)
             putLong("currentHotelDebtBits", GameRules.encodeDouble(state.currentHotelDebt))
             putBoolean("isOpeningCase", state.isOpeningCase)
+            if (state.lastDroppedDroneId == null) remove("lastDroppedDroneId")
+            else putString("lastDroppedDroneId", state.lastDroppedDroneId)
             if (state.openingCaseType == null) remove("openingCaseType")
             else putString("openingCaseType", state.openingCaseType.name)
             putInt("pendingCaseOpenings", state.pendingCaseOpenings)
@@ -364,6 +395,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             putInt("lifetimeCasesOpened", state.lifetimeStats.casesOpened)
             putInt("lifetimeEventsCompleted", state.lifetimeStats.eventsCompleted)
             putInt("lifetimePrestiges", state.lifetimeStats.prestiges)
+            putLong("lifetimePlayTimeMillis", state.lifetimeStats.playTimeMillis)
             putStringSet("unlockedAchievementIds", state.unlockedAchievementIds)
             putStringSet("claimedAchievementIds", state.claimedAchievementIds)
             putString("eventLog", EventLogCodec.encode(state.eventLog))
@@ -406,8 +438,6 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             
         }
     }
-    }
-
     private fun loadPreciseDouble(key: String, defaultValue: Double): Double {
         val preciseKey = "${key}Bits"
         return if (prefs.contains(preciseKey)) {
@@ -419,8 +449,12 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    private var lastPlayTickAt = 0L
+
     fun resumeSimulation() {
+        if (rewardedAdShowing) return
         if (simulationJobs.isRunning()) return
+        lastPlayTickAt = SystemClock.elapsedRealtime()
         val now = System.currentTimeMillis()
         applyOfflineProgress(now)
         _gameState.update { EventEngine.expireEventIfNeeded(it, now) }
@@ -599,6 +633,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
 
     private fun offlineRewardMultiplier(state: GameState): Double =
         (if (Technology.OFFLINE_AI in state.technologies) 1.35 else 1.0) *
+            EconomyBalance.fleetProgressionMultiplier(state, clickItems) *
             EconomyBalance.planetIncomeMultiplier(state.currentPlanetId) *
             EconomyBalance.planetSalvageSpecial(state.currentPlanetId)
 
@@ -663,6 +698,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     fun buyTradeOffer(offer: TradeOffer) {
         val now = System.currentTimeMillis()
         _gameState.update { EventEngine.buyTradeOffer(it, offer, now) }
+        saveGameState()
     }
 
     fun clearEventChainResult() {
@@ -1056,12 +1092,18 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         DroneEngine.distanceSquared(x1, y1, x2, y2)
 
     private fun processEconomyTick() {
+        val monotonicNow = SystemClock.elapsedRealtime()
+        val playedMillis = (monotonicNow - lastPlayTickAt).coerceIn(0L, 5_000L)
+        lastPlayTickAt = monotonicNow
         val passiveIncome = calculateDPS()
         val autoClicks = utilityUpgradeLevel("autoclick").coerceIn(0, utilityUpgradeMaxLevel("autoclick"))
         val autoClickIncome = if (autoClicks > 0) calculateClickValue() * autoClicks else 0.0
         val now = System.currentTimeMillis()
         _gameState.update {
             var next = EconomyEngine.processTick(it, now, passiveIncome)
+            next = next.copy(lifetimeStats = next.lifetimeStats.copy(
+                playTimeMillis = next.lifetimeStats.playTimeMillis + playedMillis
+            ))
             val incomeJammed = next.activeEvent?.type == GameEventType.PIRATE_RAID
             if (autoClicks > 0 && !incomeJammed) {
                 val payment = if (next.isHotelDebtActive) {
@@ -1112,7 +1154,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         val state = _gameState.value
         if (state.weeklyGalaxy.active && state.weeklyGalaxy.rule == WeeklyRule.CLICKS_ONLY) return 0.0
         val weeklyMultiplier = if (state.weeklyGalaxy.active && state.weeklyGalaxy.rule == WeeklyRule.FRAGILE_DRONES) 0.5 else 1.0
-        return EconomyBalance.passiveIncome(state, fleetById) *
+        return EconomyBalance.passiveIncome(state, fleetById, clickItems = clickItems) *
             FeatureEngine.stationDpsMultiplier(state) * weeklyMultiplier
     }
 
@@ -1146,9 +1188,9 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         }
         if (_gameState.value.activeEvent?.type == GameEventType.PIRATE_RAID) return 0.0
         val now = monotonicNow
-        val isCombo = now - lastClickMillis < 160
+        val nextCombo = ComboRules.nextLevel(_combo.value, now - lastClickMillis, lastClickMillis > 0L)
         lastClickMillis = now
-        _combo.update { if (isCombo) (it + 1).coerceAtMost(MAX_COMBO) else 1 }
+        _combo.value = nextCombo
         
         val comboBonus = 1.0 + (_combo.value * COMBO_BONUS_PER_LEVEL)
         val clickPower = calculateClickValue() * comboBonus
@@ -1324,7 +1366,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
             val caseType = state.openingCaseType ?: return state
             if (!state.isOpeningCase) return state
             val rolledRarity = GameRules.rollCaseRarity(caseType, randomProvider.nextInt(100))
-            val availableDrones = fleetItems.filter { it.rarity == rolledRarity }
+            val availableDrones = fleetItems.filter { it.rarity == rolledRarity && it.id !in setOf("drone_40", "drone_41") }
             val notYetDropped = availableDrones.filterNot { it.id in state.caseBundleRewards }
             val selectionPool = notYetDropped.ifEmpty { availableDrones }
             // The first progression objective teaches case opening without trapping
@@ -1350,7 +1392,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                 state.droneParts + (droneId to ((state.droneParts[droneId] ?: 0) + 1))
             } else state.droneParts
             val activeCount = state.activeFleetCounts.values.sum()
-            val updatedActiveFleet = if (isNewDiscovery && activeCount < activeDroneCapacity(state)) {
+            val updatedActiveFleet = if (!fleetIsFull && isNewDiscovery && activeCount < activeDroneCapacity(state)) {
                 state.activeFleetCounts + (droneId to ((state.activeFleetCounts[droneId] ?: 0) + 1))
             } else state.activeFleetCounts
             return state.copy(
@@ -1370,6 +1412,22 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
                     casesOpened = state.lifetimeStats.casesOpened + 1
                 )
             )
+    }
+
+    fun fuseDrones(sources: List<String>): DroneFusionResult? {
+        val first = sources.firstOrNull()?.let(fleetById::get) ?: return null
+        val recipe = DroneFusionEngine.recipe(first.rarity) ?: return null
+        val rewards = DroneFusionEngine.rewards(fleetItems, recipe)
+        if (rewards.isEmpty()) return null
+        // Simulation can race the state update; retries must keep the same outcome.
+        val successRoll = randomProvider.nextInt(100)
+        val rewardIndex = randomProvider.nextInt(rewards.size)
+        var result: DroneFusionResult? = null
+        val applied = updateStoreState("fusion") { state ->
+            DroneFusionEngine.fuse(state, sources, fleetItems, successRoll, rewardIndex)
+                .also { result = it }?.state
+        }
+        return if (applied) result else null
     }
 
     fun deployDrone(id: String) {
@@ -1421,7 +1479,77 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun clearOfflineReward() {
-        _gameState.update { it.copy(lastOfflineReward = 0.0, lastOfflineSeconds = 0L) }
+        _gameState.update { it.copy(lastOfflineReward = 0.0, lastOfflineSeconds = 0L, offlineBonusOfferId = null) }
+        saveGameState()
+    }
+
+    fun shopAdDebrisReward(state: GameState = _gameState.value): Double =
+        ShopAdRewardEngine.debrisReward(state, fleetById, clickItems)
+
+    fun beginShopAdOffer(type: ShopAdReward, amount: Double): String? {
+        val state = _gameState.value
+        if (type == ShopAdReward.DEBRIS && (!amount.isFinite() || amount < 5_000.0)) return null
+        if (type == ShopAdReward.COMMON_CASE && (!ShopAdRewardEngine.canWatchCase(state) ||
+                state.shopCaseAdProgress >= ShopAdRewardEngine.CASE_ADS)) return null
+        val id = java.util.UUID.randomUUID().toString()
+        _gameState.update { it.copy(shopAdOfferId = id, shopAdOfferType = type,
+            shopAdOfferAmount = if (type == ShopAdReward.DEBRIS) amount else 0.0) }
+        return id
+    }
+
+    fun claimShopAdReward(offerId: String): Boolean {
+        val before = _gameState.value
+        val after = ShopAdRewardEngine.claim(before, offerId) ?: return false
+        if (!_gameState.compareAndSet(before, after)) return claimShopAdReward(offerId)
+        if (!saveGameState(durable = true)) {
+            _gameState.update { it.copy(totalDebris = (it.totalDebris - (after.totalDebris - before.totalDebris)).coerceAtLeast(0.0),
+                shopCaseAdProgress = before.shopCaseAdProgress, shopAdOfferId = before.shopAdOfferId,
+                shopAdOfferType = before.shopAdOfferType, shopAdOfferAmount = before.shopAdOfferAmount) }
+            saveGameState()
+            return false
+        }
+        return true
+    }
+
+    fun openShopAdCase() {
+        val before = _gameState.value
+        val after = ShopAdRewardEngine.openEarnedCase(before) ?: return
+        _gameState.value = after
+        if (!saveGameState(durable = true)) {
+            _gameState.value = before
+            saveGameState()
+        }
+    }
+
+    private var rewardedAdShowing = false
+
+    fun beginRewardedAd() {
+        rewardedAdShowing = true
+        pauseSimulation()
+    }
+
+    fun finishRewardedAd() {
+        // Advertising time is not a new offline earning window.
+        saveGameState()
+        rewardedAdShowing = false
+        // Open the earned case after the full-screen ad is dismissed, so its animation is visible.
+        if (_gameState.value.shopCaseAdProgress >= ShopAdRewardEngine.CASE_ADS) openShopAdCase()
+    }
+
+    fun claimOfflineAdBonus(offerId: String): Boolean {
+        while (true) {
+            val before = _gameState.value
+            val after = RewardedBonusEngine.claim(before, offerId) ?: return false
+            if (!_gameState.compareAndSet(before, after)) continue
+            if (saveGameState(durable = true)) return true
+            // Preserve any final background tick that completed while cancellation was pending.
+            _gameState.update { it.copy(totalDebris = (it.totalDebris - before.lastOfflineReward).coerceAtLeast(0.0),
+                lastOfflineReward = before.lastOfflineReward, lastOfflineSeconds = before.lastOfflineSeconds,
+                offlineBonusOfferId = before.offlineBonusOfferId) }
+            // commit also changes SharedPreferences memory on failure; restore that representation.
+            saveGameState()
+            return false
+        }
     }
 
     fun prestige() {
@@ -1537,19 +1665,19 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
         saveGameState()
     }
 
-    private fun updateStoreState(actionKey: String, transform: (GameState) -> GameState?) {
+    private fun updateStoreState(actionKey: String, transform: (GameState) -> GameState?): Boolean {
         synchronized(storeActionLock) {
             val now = System.nanoTime()
             val lastAction = lastStoreActionNanos[actionKey] ?: 0L
-            if (now - lastAction < STORE_ACTION_DEBOUNCE_NANOS) return
+            if (now - lastAction < STORE_ACTION_DEBOUNCE_NANOS) return false
 
             while (true) {
                 val state = _gameState.value
-                val updatedState = transform(state) ?: return
+                val updatedState = transform(state) ?: return false
                 if (_gameState.compareAndSet(state, updatedState)) {
                     lastStoreActionNanos[actionKey] = now
                     saveGameState()
-                    return
+                    return true
                 }
             }
         }
@@ -1578,5 +1706,5 @@ private const val SAVE_INTERVAL_SECONDS = 15
 private const val LAST_ACTIVE_AT_KEY = "lastActiveAt"
 private const val ACTIVE_EVENT_KEY = "activeEventState"
 private const val PENDING_EVENT_KEY = "pendingEventChainState"
-private const val MAX_COMBO = 10
+private const val MAX_COMBO = ComboRules.MAX_LEVEL
 private const val COMBO_BONUS_PER_LEVEL = 0.05

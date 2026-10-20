@@ -34,16 +34,13 @@ class EconomyBalanceTest {
     }
 
     @Test
-    fun outerGalaxyGraduallyRequiresALargerActiveFleet() {
-        assertEquals(1, EconomyBalance.requiredActiveDronesForPlanet(2))
+    fun planetRequirementsUseDiscoveryAndPrestigeWithoutAnActiveFleet() {
         assertEquals("drone_1", EconomyBalance.requiredDroneIdForPlanet(2))
         assertEquals("drone_13", EconomyBalance.requiredDroneIdForPlanet(13))
         assertEquals(0, EconomyBalance.requiredPrestigeForPlanet(10))
         assertEquals(1, EconomyBalance.requiredPrestigeForPlanet(11))
-        assertEquals(3, EconomyBalance.requiredActiveDronesForPlanet(14))
-        assertEquals(7, EconomyBalance.requiredActiveDronesForPlanet(39))
         assertTrue(EconomyBalance.planetFleetObjectiveMet(
-            GameState(activeFleetCounts = mapOf("drone_1" to 1), discoveredDroneIds = setOf("drone_1")),
+            GameState(discoveredDroneIds = setOf("drone_1")),
             2
         ))
         val finalFleet = GameState(
@@ -53,6 +50,11 @@ class EconomyBalanceTest {
         )
         assertEquals(7, FleetController.activeCapacity(finalFleet))
         assertTrue(EconomyBalance.planetFleetObjectiveMet(finalFleet, 39))
+        assertTrue(EconomyBalance.planetFleetObjectiveMet(finalFleet.copy(activeFleetCounts = emptyMap()), 39))
+        assertFalse(EconomyBalance.planetFleetObjectiveMet(GameState(), 2))
+        assertFalse(EconomyBalance.planetFleetObjectiveMet(GameState(), 11))
+        assertTrue(EconomyBalance.planetFleetObjectiveMet(
+            GameState(lifetimeStats = LifetimeStats(prestiges = 1)), 11))
     }
 
     @Test

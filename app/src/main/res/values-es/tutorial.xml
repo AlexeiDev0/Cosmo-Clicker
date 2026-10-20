@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tutorial_title">Primeros pasos</string>
+    <string name="tutorial_collect_title">Recoge recursos</string>
+    <string name="tutorial_collect_body">Toca el planeta para obtener recursos. Úsalos para comprar drones y mejoras.</string>
+    <string name="tutorial_drones_title">Crea tu flota</string>
+    <string name="tutorial_drones_body">Compra drones en la tienda: recogen restos por ti. Consulta tu flota en el hangar. El color indica la rareza del dron.</string>
+    <string name="tutorial_upgrade_title">Mejora tu equipo</string>
+    <string name="tutorial_upgrade_body">Las mejoras de la tienda aumentan los recursos por toque. Compara el precio y la bonificación antes de comprar.</string>
+    <string name="tutorial_explore_title">Explora el espacio</string>
+    <string name="tutorial_explore_body">Descubre nuevos mundos, completa misiones y participa en eventos. Tu expedición empieza ahora.</string>
+    <string name="tutorial_next">Siguiente</string>
+    <string name="tutorial_back">Atrás</string>
+    <string name="tutorial_skip">Omitir</string>
+    <string name="tutorial_finish">Jugar</string>
+    <string name="tutorial_replay">Repetir tutorial</string>
+</resources>

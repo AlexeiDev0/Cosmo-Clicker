@@ -6,17 +6,34 @@ data class LifetimeStats(
     val debrisCollected: Long = 0L,
     val casesOpened: Int = 0,
     val eventsCompleted: Int = 0,
-    val prestiges: Int = 0
+    val prestiges: Int = 0,
+    val playTimeMillis: Long = 0L
 )
 
 data class AchievementDefinition(
     val id: String,
     val rewardDebris: Double = 0.0,
     val rewardPrestigePoints: Int = 0,
+    val scaleDebrisReward: Boolean = true,
     val isUnlocked: (GameState) -> Boolean
 )
 
 object AchievementEngine {
+    // Keep persisted achievement IDs stable while making banked-resource goals attainable.
+    const val FIRST_WEALTH_TARGET = 10_000_000.0
+    const val SECOND_WEALTH_TARGET = 100_000_000.0
+    val timeMilestones = listOf(
+        Triple("time_30m", 1_800_000L, 100.0),
+        Triple("time_1h", 3_600_000L, 250.0),
+        Triple("time_3h", 10_800_000L, 750.0),
+        Triple("time_6h", 21_600_000L, 1_500.0),
+        Triple("time_12h", 43_200_000L, 3_000.0),
+        Triple("time_1d", 86_400_000L, 7_500.0),
+        Triple("time_3d", 259_200_000L, 25_000.0),
+        Triple("time_7d", 604_800_000L, 75_000.0),
+        Triple("time_14d", 1_209_600_000L, 175_000.0),
+        Triple("time_30d", 2_592_000_000L, 500_000.0)
+    )
     val definitions = listOf(
         AchievementDefinition("salvage_10", rewardDebris = 100_000.0) { it.discoveredDebrisIds.size >= 10 },
         AchievementDefinition("salvage_15", rewardDebris = 300_000.0) { it.discoveredDebrisIds.size >= 15 },
@@ -66,10 +83,17 @@ object AchievementEngine {
         ,AchievementDefinition("station_5", rewardDebris = 5_000_000.0) { it.stationLevels.values.sum() >= 5 }
         ,AchievementDefinition("station_10", rewardPrestigePoints = 4) { it.stationLevels.values.sum() >= 10 }
         ,AchievementDefinition("station_20", rewardPrestigePoints = 10) { it.stationLevels.values.sum() >= 20 }
-        ,AchievementDefinition("wealth_1t", rewardPrestigePoints = 5) { it.totalDebris >= 1_000_000_000_000.0 }
-        ,AchievementDefinition("wealth_1q", rewardPrestigePoints = 12) { it.totalDebris >= 1_000_000_000_000_000.0 }
+        ,AchievementDefinition("wealth_1t", rewardPrestigePoints = 5) { it.totalDebris >= FIRST_WEALTH_TARGET }
+        ,AchievementDefinition("wealth_1q", rewardPrestigePoints = 12) { it.totalDebris >= SECOND_WEALTH_TARGET }
         ,AchievementDefinition("tech_all", rewardPrestigePoints = 5) { it.technologies.size >= Technology.entries.size }
         ,AchievementDefinition("achievements_40", rewardPrestigePoints = 15) { it.claimedAchievementIds.size >= 40 }
+    ) + timeMilestones.map { (id, duration, reward) ->
+        AchievementDefinition(id, rewardDebris = reward, scaleDebrisReward = false) { it.lifetimeStats.playTimeMillis >= duration }
+    } + listOf(
+        AchievementDefinition("rank_novice", rewardDebris = 250.0, scaleDebrisReward = false) { it.claimedAchievementIds.size >= 5 },
+        AchievementDefinition("rank_professional", rewardDebris = 2_500.0, scaleDebrisReward = false) { it.claimedAchievementIds.size >= 15 },
+        AchievementDefinition("rank_veteran", rewardDebris = 15_000.0, scaleDebrisReward = false) { it.claimedAchievementIds.size >= 30 },
+        AchievementDefinition("rank_legend", rewardDebris = 75_000.0, scaleDebrisReward = false) { it.claimedAchievementIds.size >= 50 }
     )
 
     private val byId = definitions.associateBy(AchievementDefinition::id)
@@ -89,12 +113,13 @@ object AchievementEngine {
             achievementId in state.claimedAchievementIds
         ) return null
         return state.copy(
-            totalDebris = state.totalDebris + EconomyBalance.scaledReward(
-                achievement.rewardDebris,
-                state.currentPlanetId
-            ),
+            totalDebris = state.totalDebris + debrisReward(achievement, state),
             prestigePoints = state.prestigePoints + achievement.rewardPrestigePoints,
             claimedAchievementIds = state.claimedAchievementIds + achievementId
         )
     }
+
+    fun debrisReward(achievement: AchievementDefinition, state: GameState): Double =
+        if (achievement.scaleDebrisReward) EconomyBalance.scaledReward(achievement.rewardDebris, state.currentPlanetId)
+        else achievement.rewardDebris
 }

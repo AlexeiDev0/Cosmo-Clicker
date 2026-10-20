@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ad_disclosure_title">Load a rewarded ad?</string>
+    <string name="ad_disclosure_body">If you allow this, Google AdMob and UMP may send your IP address (including approximate location), available device identifiers, ad interactions, diagnostics and advertising privacy choices to Google for advertising, measurement and fraud prevention. This does not permit personalized advertising. You can keep playing and collect your regular reward without loading an ad. Permission lasts for this app session; stop further requests in Settings. Stopping requests does not delete data already processed by Google.</string>
+    <string name="ad_disclosure_allow">Allow and load ad</string>
+    <string name="ad_disclosure_decline">Continue without an ad</string>
+    <string name="ad_stop_requests">Stop further ad requests</string>
+    <string name="case_currency_notice">Uses game debris or optional rewarded ads. No real-money purchases or cash prizes.</string>
+    <string name="case_pool_notice">These are rarity chances, not a guaranteed reward. In a bundle, drones not yet drawn in that bundle are preferred within the selected rarity.</string>
+    <string name="case_rarity_common">Common</string>
+    <string name="case_rarity_uncommon">Uncommon</string>
+    <string name="case_rarity_rare">Rare</string>
+    <string name="case_rarity_epic">Epic</string>
+    <string name="case_rarity_legendary">Legendary</string>
+    <string name="case_rarity_void">Void</string>
+</resources>

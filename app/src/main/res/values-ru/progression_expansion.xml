@@ -1,0 +1,31 @@
+<resources>
+    <string name="achievement_time_30m">30 минут в космосе</string>
+    <string name="achievement_time_1h">1 час в космосе</string>
+    <string name="achievement_time_3h">3 часа в космосе</string>
+    <string name="achievement_time_6h">6 часов в космосе</string>
+    <string name="achievement_time_12h">12 часов в космосе</string>
+    <string name="achievement_time_1d">1 день активной игры</string>
+    <string name="achievement_time_3d">3 дня активной игры</string>
+    <string name="achievement_time_7d">1 неделя активной игры</string>
+    <string name="achievement_time_14d">2 недели активной игры</string>
+    <string name="achievement_time_30d">1 месяц активной игры (30 дней)</string>
+    <string name="time_achievement_hint">Учитывается только время активной игры. Звания растут с числом полученных достижений.</string>
+    <string name="player_rank">Звание: %1$s</string>
+    <string name="rank_noob">Нуб</string>
+    <string name="rank_novice">Новичок</string>
+    <string name="rank_professional">Профессионал</string>
+    <string name="rank_veteran">Ветеран</string>
+    <string name="rank_legend">Легенда космоса</string>
+    <string name="trade_title_manta">Торговая манта</string>
+    <string name="trade_title_crown">Корона каравана</string>
+    <string name="trade_title_drone_swap">Лишний дрон → редкий кейс</string>
+    <string name="trade_title_parts_swap">Детали → Корона каравана</string>
+    <string name="trade_title_repair">Ремкомплект флота</string>
+    <string name="trade_desc_exclusive">Эксклюзивный дрон торговца. Не выпадает из кейсов.</string>
+    <string name="trade_desc_drone_swap">Обмен одного неактивного дубликата. Последний дрон этого вида остаётся у вас.</string>
+    <string name="trade_desc_parts_swap">Обмен 20 деталей на специального дрона.</string>
+    <string name="trade_desc_repair">Починить всех сломанных дронов на игровом поле.</string>
+    <string name="trade_cost_drone">1 лишний дрон</string>
+    <string name="trade_cost_parts">20 деталей</string>
+    <string name="daily_reward_growth">Награда растёт с каждым полученным днём, даже после седьмого. Пропуск дня сохраняет прогресс.</string>
+</resources>

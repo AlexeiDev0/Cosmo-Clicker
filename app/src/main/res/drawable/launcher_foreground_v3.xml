@@ -1,0 +1,3 @@
+<inset xmlns:android="http://schemas.android.com/apk/res/android" android:inset="16dp">
+    <bitmap android:src="@drawable/launcher_foreground_art_v3" android:gravity="fill" />
+</inset>

@@ -1,0 +1,26 @@
+<resources>
+    <string name="settings">Paramètres</string>
+    <string name="language">Langue</string>
+    <string name="language_system">Langue du système</string>
+    <string name="cancel">Annuler</string>
+    <string name="close">Fermer</string>
+    <string name="buy">Acheter</string>
+    <string name="collect">Récupérer</string>
+    <string name="collect_reward">Récupérer la récompense</string>
+    <string name="sound">Son</string>
+    <string name="reduced_motion">Animations réduites</string>
+    <string name="navigation_shop">Boutique</string>
+    <string name="navigation_hangar">Hangar</string>
+    <string name="shop_tab_upgrades">Améliorations</string>
+    <string name="shop_tab_cases">Caisses</string>
+    <string name="shop_tab_planets">Planètes</string>
+    <string name="shop_tab_systems">Systèmes</string>
+    <string name="settings_preferences_section">Préférences</string>
+    <string name="settings_about_section">À propos du jeu</string>
+    <string name="privacy_title">Confidentialité</string>
+    <string name="rarity_common">Commun</string>
+    <string name="rarity_uncommon">Peu commun</string>
+    <string name="rarity_rare">Rare</string>
+    <string name="rarity_epic">Épique</string>
+    <string name="rarity_legendary">Légendaire</string>
+</resources>

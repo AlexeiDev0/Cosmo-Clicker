@@ -1,0 +1,10 @@
+<resources>
+    <string name="shop_tab_rewards">Premios</string>
+    <string name="shop_ad_rewards">Recompensas por anuncios</string>
+    <string name="shop_ad_notice">Al pulsar una recompensa se carga un anuncio de Google. Solo cuentan las visualizaciones con recompensa confirmada. Ver anuncios es opcional.</string>
+    <string name="shop_ad_debris">Ver 1 anuncio · +%1$s restos</string>
+    <string name="shop_ad_scaling">La cantidad aumenta con los planetas desbloqueados y los ingresos de la flota.</string>
+    <string name="shop_ad_case">Caja común · %1$d/3 · Ver 1 anuncio</string>
+    <string name="shop_ad_unavailable">Anuncio no disponible. Inténtalo más tarde. No se cuenta ninguna visualización.</string>
+    <string name="shop_ad_open_case">Abrir caja común ganada</string>
+</resources>

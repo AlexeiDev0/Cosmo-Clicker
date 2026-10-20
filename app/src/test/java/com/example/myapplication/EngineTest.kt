@@ -227,16 +227,12 @@ class EngineTest {
 
     @Test
     fun randomEventPoolContainsOnlyFieldEvents() {
-        val selected = listOf(0, 31, 32, 51, 52, 63, 64, 75, 76, 85)
+        val selected = (0 until 67)
             .mapNotNull { EventEngine.selectType("p1", FixedRandom(it)) }
             .toSet()
 
         assertEquals(
             setOf(
-                GameEventType.METEOR_SHOWER,
-                GameEventType.SOLAR_FLARE,
-                GameEventType.CYBER_VIRUS,
-                GameEventType.PIRATE_RAID,
                 GameEventType.TRADING_SHIP
             ),
             selected

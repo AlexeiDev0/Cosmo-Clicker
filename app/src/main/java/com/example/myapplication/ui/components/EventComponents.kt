@@ -46,7 +46,6 @@ import androidx.compose.ui.layout.ContentScale
 import com.example.myapplication.ui.components.cosmicIconPainter as painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -62,6 +61,7 @@ import com.example.myapplication.GameResourceRegistry
 import com.example.myapplication.PendingEventChain
 import com.example.myapplication.R
 import com.example.myapplication.ui.theme.AppColors
+import com.example.myapplication.ui.theme.SpaceDisplayFont
 import com.example.myapplication.utils.formatNum
 import kotlinx.coroutines.delay
 import kotlin.math.ceil
@@ -147,7 +147,7 @@ fun EventBanner(event: GameEvent, tapsLeft: Int) {
                 GameEventType.ABANDONED_STATION -> stringResource(R.string.event_choose_route)
                 GameEventType.PIRATE_RAID -> stringResource(R.string.event_taps_left, tapsLeft)
                 GameEventType.CYBER_VIRUS -> stringResource(R.string.cyber_banner_objective)
-                GameEventType.TRADING_SHIP -> stringResource(R.string.event_ship_hull, tapsLeft)
+                GameEventType.TRADING_SHIP -> stringResource(R.string.trade_market_subtitle)
                 else -> null
             }
             objective?.let {
@@ -249,7 +249,7 @@ fun MeteorInterceptChallenge(
     ) {
         Column(Modifier.align(Alignment.TopCenter), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(stringResource(R.string.meteor_intercept_title), color = Color(0xFFFFB44D), fontWeight = FontWeight.Black, fontSize = 12.sp)
-            Text(stringResource(R.string.meteor_intercept_hint, remaining), color = Color.White.copy(.68f), fontSize = 9.sp)
+            Text(stringResource(R.string.meteor_intercept_hint, remaining), color = Color.White.copy(.68f), fontSize = 11.sp)
         }
         positions.forEachIndexed { index, (x, y) ->
             val active = index == target
@@ -328,7 +328,7 @@ fun SolarFlareProtocol(event: GameEvent, sequence: List<Int>, progress: Int, pha
         }
         Column(Modifier.align(Alignment.TopCenter).background(Color(0xDD0A1425), RoundedCornerShape(50)).padding(horizontal = 12.dp, vertical = 5.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(stringResource(R.string.solar_protocol_phase, phase, 4), color = Color(0xFFFFB14A), fontWeight = FontWeight.Black)
-            Text(stringResource(if (memorizing) R.string.solar_protocol_memorize else R.string.solar_protocol_repeat), color = if (memorizing) AppColors.Warning else AppColors.Primary, fontSize = 10.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(if (memorizing) R.string.solar_protocol_memorize else R.string.solar_protocol_repeat), color = if (memorizing) AppColors.Warning else AppColors.Primary, fontSize = 11.sp, fontWeight = FontWeight.Bold)
         }
         positions.forEachIndexed { index, (x, y) ->
             Box(Modifier.offset(x, y).size(52.dp).shadow(if (memorizing) 14.dp else 5.dp, CircleShape, spotColor = colors[index]).background(Color(0xE90B1728), CircleShape).border(2.dp, colors[index].copy(alpha = if (memorizing) .45f else .9f), CircleShape).eventClickable { if (!memorizing) onChannelClick(index) }, contentAlignment = Alignment.Center) {
@@ -369,8 +369,8 @@ fun CyberVirusField(
         "SYS_ERR // 0x${event.startedAt.toString(16).takeLast(4)} // NODE_BREACH",
         modifier = Modifier.offset(x = 18.dp, y = gameAreaHeight * .10f),
         color = Color(0xFF63FFD8).copy(alpha = .72f),
-        fontFamily = FontFamily.Monospace,
-        fontSize = 10.sp
+        fontFamily = SpaceDisplayFont,
+        fontSize = 11.sp
     )
     Column(
         Modifier.offset(x = (gameAreaWidth - 230.dp) / 2, y = gameAreaHeight * .20f).width(230.dp)
@@ -379,8 +379,8 @@ fun CyberVirusField(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(feedback, color = Color(0xFF63FFD8), fontFamily = FontFamily.Monospace, fontSize = 11.sp)
-        Text(entered.padEnd(4, '•'), color = Color.White, fontFamily = FontFamily.Monospace, fontSize = 28.sp, fontWeight = FontWeight.Black)
+        Text(feedback, color = Color(0xFF63FFD8), fontFamily = SpaceDisplayFont, fontSize = 11.sp)
+        Text(entered.padEnd(4, '•'), color = Color.White, fontFamily = SpaceDisplayFont, fontSize = 28.sp, fontWeight = FontWeight.Black)
         (0..9).chunked(3).forEach { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 row.forEach { digit ->
@@ -399,11 +399,11 @@ fun CyberVirusField(
                                 }
                             },
                         contentAlignment = Alignment.Center
-                    ) { Text("$digit", color = Color(0xFF63FFD8), fontFamily = FontFamily.Monospace, fontWeight = FontWeight.Bold) }
+                    ) { Text("$digit", color = Color(0xFF63FFD8), fontFamily = SpaceDisplayFont, fontWeight = FontWeight.Bold) }
                 }
             }
         }
-        Text("$remaining TRACE", color = Color(0xFF63FFD8).copy(.7f), fontFamily = FontFamily.Monospace, fontSize = 10.sp)
+        Text("$remaining TRACE", color = Color(0xFF63FFD8).copy(.7f), fontFamily = SpaceDisplayFont, fontSize = 11.sp)
     }
 }
 
@@ -622,7 +622,7 @@ fun AbandonedStationAccess(
                         Text(
                             stringResource(R.string.station_relay, index + 1),
                             color = Color.White.copy(alpha = 0.55f),
-                            fontSize = 9.sp
+                            fontSize = 11.sp
                         )
                     }
                 }
@@ -742,14 +742,14 @@ fun BlackHoleComponent(
             Text(
                 stringResource(R.string.black_hole_nodes_progress, progress, progress + tapsLeft),
                 color = Color.White,
-                fontSize = 10.sp,
+                fontSize = 11.sp,
                 fontWeight = FontWeight.Bold
             )
             if (mistakes > 0) {
                 Text(
                     stringResource(R.string.black_hole_instability, mistakes),
                     color = Color(0xFFFF8A9A),
-                    fontSize = 9.sp
+                    fontSize = 11.sp
                 )
             }
         }
@@ -923,7 +923,7 @@ fun PirateAmbushComponent(
                                     stringResource(R.string.pirate_signal_locked),
                                     modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 4.dp),
                                     color = scanner,
-                                    fontSize = 8.sp,
+                                    fontSize = 11.sp,
                                     fontWeight = FontWeight.Bold
                                 )
                             }
@@ -974,7 +974,8 @@ fun TradingShipComponent(
     event: GameEvent,
     hullLeft: Int,
     gameAreaWidth: Dp,
-    gameAreaHeight: Dp
+    gameAreaHeight: Dp,
+    onOpenMarket: () -> Unit = {}
 ) {
     val shipSize = 112.dp
     Box(
@@ -983,7 +984,7 @@ fun TradingShipComponent(
                 x = gameAreaWidth * event.x - shipSize / 2,
                 y = gameAreaHeight * event.y - shipSize / 2
             )
-            .size(shipSize),
+            .size(shipSize).eventClickable(onOpenMarket),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -992,12 +993,7 @@ fun TradingShipComponent(
                 contentDescription = stringResource(R.string.event_trading_ship),
                 modifier = Modifier.size(88.dp)
             )
-            LinearProgressIndicator(
-                progress = { (hullLeft / 18f).coerceIn(0f, 1f) },
-                modifier = Modifier.width(92.dp).height(6.dp).clip(CircleShape),
-                color = Color(0xFFFF6B6B),
-                trackColor = Color.White.copy(alpha = .16f)
-            )
+            Text(stringResource(R.string.trade_market_title), color = AppColors.Primary, fontSize = 12.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -1012,31 +1008,34 @@ fun TradingShipMarket(
     priceMultiplier: Double,
     onChannelClick: (Int) -> Unit,
     onBuy: (TradeOffer) -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    canBuy: (TradeOffer) -> Boolean = { true }
 ) {
     val offers = remember(event.startedAt) { EventEngine.tradeOffers(event) }
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xF20A1020)),
+            .background(AppColors.SpaceBlack.copy(alpha = .72f)),
         contentAlignment = Alignment.Center
     ) {
         Column(
             modifier = Modifier
-                .fillMaxWidth()
                 .widthIn(max = 380.dp)
+                .fillMaxWidth()
                 .heightIn(max = 620.dp)
                 .padding(horizontal = 20.dp, vertical = 14.dp)
                 .verticalScroll(rememberScrollState())
-                .background(Color(0xFF101A2D), RoundedCornerShape(24.dp))
-                .border(1.dp, Color(0xFF66E0FF).copy(alpha = .42f), RoundedCornerShape(24.dp))
+                .background(AppColors.CardBackground, RoundedCornerShape(24.dp))
+                .border(1.dp, AppColors.Secondary.copy(alpha = .42f), RoundedCornerShape(24.dp))
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(stringResource(R.string.trade_market_title), color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Black)
+            Image(painterResource(R.drawable.event_merchant_v4), contentDescription = null, modifier = Modifier.size(96.dp))
+            Text(stringResource(R.string.trade_market_title), color = AppColors.Secondary, fontSize = 22.sp, fontWeight = FontWeight.Black,
+                style = androidx.compose.ui.text.TextStyle(shadow = androidx.compose.ui.graphics.Shadow(AppColors.Secondary.copy(alpha = .4f), blurRadius = 10f)))
             Text(
                 stringResource(if (phase == 1) R.string.trade_docking_hint else R.string.trade_market_subtitle),
-                color = Color.White.copy(alpha = .68f), fontSize = 12.sp, textAlign = TextAlign.Center
+                color = AppColors.TextMuted, fontSize = 13.sp, textAlign = TextAlign.Center
             )
             Spacer(Modifier.height(8.dp))
             Image(
@@ -1068,14 +1067,14 @@ fun TradingShipMarket(
                     modifier = Modifier.padding(top = 10.dp)
                 )
             } else {
-            Text(stringResource(R.string.trade_balance, formatNum(totalDebris)), color = Color(0xFF66E0FF), fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.trade_balance, formatNum(totalDebris)), color = AppColors.Primary, fontWeight = FontWeight.Bold)
             Spacer(Modifier.height(12.dp))
             offers.forEach { offer ->
                 val cost = EventEngine.tradeOfferCost(event, offer, priceMultiplier)
                 TradeOfferCard(
                     offer = offer,
                     cost = cost,
-                    enabled = totalDebris >= cost,
+                    enabled = totalDebris >= cost && canBuy(offer),
                     onBuy = { onBuy(offer) }
                 )
                 Spacer(Modifier.height(8.dp))
@@ -1092,8 +1091,9 @@ fun TradingShipMarket(
 private fun TradeOfferCard(offer: TradeOffer, cost: Double, enabled: Boolean, onBuy: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF151E32)),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF66E0FF).copy(alpha = .45f))
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
+        border = androidx.compose.foundation.BorderStroke(1.dp, AppColors.Outline)
     ) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(10.dp),
@@ -1102,22 +1102,29 @@ private fun TradeOfferCard(offer: TradeOffer, cost: Double, enabled: Boolean, on
         ) {
             Image(painterResource(tradeOfferIcon(offer)), contentDescription = null, modifier = Modifier.size(52.dp))
             Column(Modifier.weight(1f)) {
-                Text(stringResource(tradeOfferTitle(offer)), color = Color.White, fontWeight = FontWeight.Bold)
-                Text(stringResource(tradeOfferDescription(offer)), color = Color.White.copy(alpha = .62f), fontSize = 11.sp)
+                Text(stringResource(tradeOfferTitle(offer)), color = AppColors.Secondary, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                Text(stringResource(tradeOfferDescription(offer)), color = AppColors.TextMuted, fontSize = 12.sp)
             }
             Button(
                 onClick = onBuy,
                 enabled = enabled,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF36C5E8)),
+                colors = ButtonDefaults.buttonColors(containerColor = AppColors.Primary, contentColor = AppColors.SpaceBlack),
                 contentPadding = PaddingValues(horizontal = 10.dp, vertical = 6.dp)
             ) {
-                Text(formatNum(cost), fontSize = 11.sp, fontWeight = FontWeight.Black)
+                Text(if (offer == TradeOffer.DRONE_FOR_CASE) stringResource(R.string.trade_cost_drone)
+                    else if (offer == TradeOffer.PARTS_FOR_DRONE) stringResource(R.string.trade_cost_parts)
+                    else formatNum(cost), fontSize = 11.sp, fontWeight = FontWeight.Black)
             }
         }
     }
 }
 
 private fun tradeOfferTitle(offer: TradeOffer): Int = when (offer) {
+    TradeOffer.MERCHANT_MANTA -> R.string.trade_title_manta
+    TradeOffer.MERCHANT_CROWN -> R.string.trade_title_crown
+    TradeOffer.DRONE_FOR_CASE -> R.string.trade_title_drone_swap
+    TradeOffer.PARTS_FOR_DRONE -> R.string.trade_title_parts_swap
+    TradeOffer.REPAIR_KIT -> R.string.trade_title_repair
     TradeOffer.POWER_CORE -> R.string.trade_title_power
     TradeOffer.LUCK_SCANNER -> R.string.trade_title_luck
     TradeOffer.CLICK_AMPLIFIER -> R.string.trade_title_click
@@ -1130,6 +1137,10 @@ private fun tradeOfferTitle(offer: TradeOffer): Int = when (offer) {
 }
 
 private fun tradeOfferDescription(offer: TradeOffer): Int = when (offer) {
+    TradeOffer.MERCHANT_MANTA, TradeOffer.MERCHANT_CROWN -> R.string.trade_desc_exclusive
+    TradeOffer.DRONE_FOR_CASE -> R.string.trade_desc_drone_swap
+    TradeOffer.PARTS_FOR_DRONE -> R.string.trade_desc_parts_swap
+    TradeOffer.REPAIR_KIT -> R.string.trade_desc_repair
     TradeOffer.POWER_CORE -> R.string.trade_desc_power
     TradeOffer.LUCK_SCANNER -> R.string.trade_desc_luck
     TradeOffer.CLICK_AMPLIFIER -> R.string.trade_desc_click
@@ -1142,10 +1153,15 @@ private fun tradeOfferDescription(offer: TradeOffer): Int = when (offer) {
 }
 
 private fun tradeOfferIcon(offer: TradeOffer): Int = when (offer) {
-    TradeOffer.POWER_CORE, TradeOffer.CLICK_AMPLIFIER -> R.drawable.event_reactor_core
-    TradeOffer.LUCK_SCANNER -> R.drawable.upgrade_signal_beacon_v2
-    TradeOffer.FLEET_OVERDRIVE -> R.drawable.drone_20
-    TradeOffer.DEBRIS_CARGO -> R.drawable.debris_01_v2
+    TradeOffer.MERCHANT_MANTA -> R.drawable.drone_40_v6
+    TradeOffer.MERCHANT_CROWN, TradeOffer.PARTS_FOR_DRONE -> R.drawable.drone_41_v6
+    TradeOffer.DRONE_FOR_CASE -> GameResourceRegistry.caseFrame(CaseType.RARE, 1)
+    TradeOffer.REPAIR_KIT -> R.drawable.ui_upgrade_repair_v3
+    TradeOffer.POWER_CORE -> R.drawable.ui_upgrade_omega_v3
+    TradeOffer.CLICK_AMPLIFIER -> R.drawable.ui_upgrade_amplifier_v3
+    TradeOffer.LUCK_SCANNER -> R.drawable.ui_upgrade_beacon_v3
+    TradeOffer.FLEET_OVERDRIVE -> R.drawable.ui_upgrade_fleet_v3
+    TradeOffer.DEBRIS_CARGO -> R.drawable.debris_01_v8
     TradeOffer.COMMON_CASE -> GameResourceRegistry.caseFrame(CaseType.COMMON, 1)
     TradeOffer.RARE_CASE -> GameResourceRegistry.caseFrame(CaseType.RARE, 1)
     TradeOffer.LEGENDARY_CASE -> GameResourceRegistry.caseFrame(CaseType.LEGENDARY, 1)

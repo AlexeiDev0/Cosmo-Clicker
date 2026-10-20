@@ -28,5 +28,5 @@ class PrivacyConsent(context: Context) {
         saved
     }
 
-    companion object { const val POLICY_VERSION = 3 }
+    companion object { const val POLICY_VERSION = 11 }
 }

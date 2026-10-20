@@ -5,6 +5,14 @@ import org.junit.Test
 
 class OfflineProgressEngineTest {
     @Test
+    fun invalidOrUnrepresentableRewardDoesNotCorruptBalanceOrCreateOffer() {
+        val initial = GameState(totalDebris = Double.MAX_VALUE)
+        listOf(Double.MAX_VALUE, Double.NaN, Double.POSITIVE_INFINITY, -1.0, 1.0).forEach { reward ->
+            assertEquals(initial, OfflineProgressEngine.apply(initial, OfflineProgressEngine.Result(60L, reward)))
+        }
+    }
+
+    @Test
     fun applyingAcknowledgedOfflineWindowDoesNotAddRewardTwice() {
         val initial = GameState(totalDebris = 100.0)
         val rewarded = OfflineProgressEngine.apply(initial, OfflineProgressEngine.Result(60L, 25.0))
@@ -24,7 +32,7 @@ class OfflineProgressEngineTest {
         )
 
         assertEquals(3_600L, result.elapsedSeconds)
-        assertEquals(10_800.0, result.reward, 0.0001)
+        assertEquals(32_400.0, result.reward, 0.0001)
     }
 
     @Test
@@ -37,7 +45,7 @@ class OfflineProgressEngineTest {
         )
 
         assertEquals(OfflineProgressEngine.MAX_OFFLINE_SECONDS, result.elapsedSeconds)
-        assertEquals(7_200.0, result.reward, 0.0001)
+        assertEquals(21_600.0, result.reward, 0.0001)
     }
 
     @Test

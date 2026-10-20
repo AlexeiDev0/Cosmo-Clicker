@@ -25,7 +25,8 @@ class PrivacyConsentUiTest {
         val before = prefs.all.toMap()
         ActivityScenario.launch(MainActivity::class.java).use {
             compose.onNodeWithTag("privacy_gate").assertIsDisplayed()
-            compose.onNodeWithTag("privacy_accept").assertIsNotEnabled()
+            compose.onNodeWithTag("privacy_accept").assertIsEnabled()
+            compose.onNodeWithTag("privacy_policy_link").assertIsDisplayed()
             assertEquals(before, prefs.all)
             compose.onNodeWithTag("privacy_decline").performClick()
             compose.waitForIdle()
@@ -36,7 +37,6 @@ class PrivacyConsentUiTest {
 
     @Test fun acceptanceSurvivesRecreationAndCanBeWithdrawn() {
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
-            compose.onNodeWithTag("privacy_agreement").performClick()
             compose.onNodeWithTag("privacy_accept").performClick()
             compose.waitUntil(5_000) { PrivacyConsent(context).isAccepted() }
             scenario.recreate()

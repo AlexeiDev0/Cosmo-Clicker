@@ -1,0 +1,6 @@
+<resources>
+    <string name="case_information">Información sobre %1$s</string>
+    <string name="case_common_description">Empieza a crear tu flota. Abre una caja y recibe un dron aleatorio para tu próxima expedición.</string>
+    <string name="case_rare_description">Amplía tu colección. Esta caja ofrece una mayor probabilidad de conseguir un dron épico o legendario.</string>
+    <string name="case_legendary_description">Busca algo especial. Esta caja ofrece la mayor probabilidad de conseguir un dron épico o legendario.</string>
+</resources>
